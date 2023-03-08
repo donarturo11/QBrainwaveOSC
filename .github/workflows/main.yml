@@ -257,8 +257,7 @@ jobs:
            ICONFILE=$(find ${{ env.APPDIR }} -name *.png)
            DESKTOPFILE=$(find ${{env.APPDIR}} -name *.desktop)
            EXECFILE=$(find ${{env.APPDIR}} -name ${{env.pkgname}} -type f -executable)
-           #export QTDIR=${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}
-           #export QMAKE=${QTDIR}/bin/qmake
+           $QMAKE=${{env.QMAKE}}
            export PATH=${PATH}:${QTDIR}/bin
            export QT_INSTALL_PLUGINS=${QTDIR}/plugins/
            echo "::group:: Linux deploy QT"
@@ -267,7 +266,7 @@ jobs:
                    --executable=${EXECFILE} \
                    --icon-file=${ICONFILE} \
                    --desktop-file=${DESKTOPFILE} \
-                   --plugin qt
+                   --plugin qt $QTDIR=${{env.QTDIR}} $QMAKE=${{env.QMAKE}}
            echo "::endgroup::"
            echo "::group:: Creating AppImage"
                ./${LINUXDEPLOY} --appdir=${APPDIR} --output=appimage
