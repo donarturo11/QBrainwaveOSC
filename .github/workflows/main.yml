@@ -266,6 +266,7 @@ jobs:
                    --icon-file=${ICONFILE} \
                    --desktop-file=${DESKTOPFILE} \
                    --plugin qt
+                cp -Rv $QT_INSTALL_PLUGINS/generic ${APPDIR}/usr/plugins/ || echo "::warning:: generic plugin not found
            echo "::endgroup::"
            echo "::group:: Creating AppImage"
                ./${LINUXDEPLOY} --appdir=${APPDIR} --output=appimage
