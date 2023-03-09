@@ -16,7 +16,7 @@
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
-  <widget class="DeviceConfiguration" name="widget" native="true">
+  <widget class="DeviceConfiguration" name="deviceconfiguration" native="true">
    <property name="geometry">
     <rect>
      <x>0</x>
