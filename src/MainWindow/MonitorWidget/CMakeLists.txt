@@ -1,0 +1,14 @@
+#projectName(QBrainwaveOSC)
+set(RFCOMMMONITOR_SOURCES
+   ${CMAKE_CURRENT_SOURCE_DIR}/RfCommMonitor.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/RfCommMonitor.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/RfCommMonitor.ui
+   )
+
+set(MONITOR_WIDGET_SOURCES
+    ${RFCOMMMONITOR_SOURCES}
+    ${CMAKE_CURRENT_SOURCE_DIR}/MonitorWidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/MonitorWidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/MonitorWidget.ui
+    PARENT_SCOPE
+   )

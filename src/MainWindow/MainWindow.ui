@@ -14,13 +14,13 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QWidget" name="graphs" native="true">
+   <widget class="MonitorWidget" name="monitor_widget" native="true">
     <property name="geometry">
      <rect>
       <x>340</x>
       <y>10</y>
-      <width>571</width>
-      <height>441</height>
+      <width>651</width>
+      <height>581</height>
      </rect>
     </property>
    </widget>
@@ -30,7 +30,7 @@
       <x>21</x>
       <y>11</y>
       <width>311</width>
-      <height>440</height>
+      <height>581</height>
      </rect>
     </property>
    </widget>
@@ -58,6 +58,12 @@
    <class>SettingsWidget</class>
    <extends>QWidget</extends>
    <header>SettingsWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>MonitorWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">MonitorWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
