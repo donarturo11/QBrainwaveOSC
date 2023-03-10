@@ -7,7 +7,6 @@ BluetoothManager::BluetoothManager(QObject *parent) :
 {
     qDebug() << "BluetoothManager c-tor";
     BluetoothManager::currentInstance = this;
-    
 }
 
 BluetoothManager::~BluetoothManager()

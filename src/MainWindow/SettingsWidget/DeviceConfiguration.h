@@ -34,9 +34,8 @@ private:
     Ui::DeviceConfiguration *ui;
 protected:
     QList<QBluetoothDeviceInfo> bt_devices;
-    DeviceDiscovery *bt_discovery;
     Status status;
-    BluetoothManager *bt_manager;
+    const BluetoothManager *bt_manager;
 };
 
 #endif // DEVICECONFIGURATION_H

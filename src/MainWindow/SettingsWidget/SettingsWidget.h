@@ -16,12 +16,9 @@ public:
     explicit SettingsWidget(QWidget *parent = nullptr);
     ~SettingsWidget();
 public slots:
-    void onConnectionRequest(QString address);
-    void onDisconnectionRequest();
+    
 signals:
-    void connectionStatusChanged(int status); //receive from BrainwaveConnection
-    void connectionRequest(QString address);
-    void disconnectionRequest();
+    
 private:
     Ui::SettingsWidget *ui;
 
