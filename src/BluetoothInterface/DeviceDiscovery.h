@@ -4,12 +4,12 @@
 #include <QtCore>
 #include <QBluetoothDeviceDiscoveryAgent>
 
-class BluetoothDiscovery : public QObject
+class DeviceDiscovery : public QObject
 {
     Q_OBJECT
 public:
-    BluetoothDiscovery(QObject *parent = nullptr);
-    ~BluetoothDiscovery();
+    DeviceDiscovery(QObject *parent = nullptr);
+    ~DeviceDiscovery();
     void refresh();
     void updateList();
     QList<QBluetoothDeviceInfo> getDevicesList() { return bt_devices; }

@@ -1,32 +1,32 @@
-#include "BluetoothDiscovery.h"
+#include "DeviceDiscovery.h"
 #include <QBluetoothLocalDevice>
 #include <QBluetoothServer>
 #include <QBluetoothSocket>
 #include <QBluetoothServiceDiscoveryAgent>
 
-BluetoothDiscovery::BluetoothDiscovery(QObject *parent) :
+DeviceDiscovery::DeviceDiscovery(QObject *parent) :
     QObject(parent)
 {
-    qDebug() << "BluetoothDiscovery c-tor";
+    qDebug() << "DeviceDiscovery c-tor";
 }
 
-BluetoothDiscovery::~BluetoothDiscovery()
+DeviceDiscovery::~DeviceDiscovery()
 {
 
 }
 
-void BluetoothDiscovery::refresh()
+void DeviceDiscovery::refresh()
 {
     start();
 }
 
-void  BluetoothDiscovery::updateList()
+void  DeviceDiscovery::updateList()
 {
     if (!bt_agent) return;
     bt_devices = bt_agent->discoveredDevices();
 }
 
-void BluetoothDiscovery::start()
+void DeviceDiscovery::start()
 {
     qDebug() << "Start";
     if (!bt_devices.empty()) bt_devices.clear();
@@ -36,18 +36,18 @@ void BluetoothDiscovery::start()
     search();
 }
 
-void BluetoothDiscovery::stop()
+void DeviceDiscovery::stop()
 {
     qDebug() << "Stop";
 }
 
-void BluetoothDiscovery::clear()
+void DeviceDiscovery::clear()
 {
     if (!bt_agent) return;
     delete bt_agent;
 }
 
-void BluetoothDiscovery::search()
+void DeviceDiscovery::search()
 {
     qDebug() << "Searching " << bt_agent->isActive();
     for (auto dev : bt_agent->discoveredDevices()) {
