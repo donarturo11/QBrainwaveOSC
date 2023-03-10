@@ -5,7 +5,7 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DeviceConfiguration),
     status(Status::NOT_READY),
-    bt_discovery(new BluetoothDiscovery(this))
+    bt_discovery(new DeviceDiscovery(this))
 {
     ui->setupUi(this);
     connect(ui->refresh_btn, SIGNAL(clicked()), this, SLOT(refreshDevices()));
@@ -15,6 +15,7 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseBaudrate(int)));
 
     connect(bt_discovery, SIGNAL(finished()), this, SLOT(onDiscoveryFinished()));
+    
     
     refreshDevices();
     
@@ -27,6 +28,7 @@ DeviceConfiguration::~DeviceConfiguration()
 void DeviceConfiguration::refreshDevices()
 {
     status = Status::SEARCHING;
+    qDebug() << "DeviceConfiguration: Bluetooth manager " << BluetoothManager::bluetoothManager();
     bt_discovery->refresh();
 }
 

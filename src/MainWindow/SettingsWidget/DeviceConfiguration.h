@@ -2,7 +2,8 @@
 #define DEVICECONFIGURATION_H
 
 #include <QWidget>
-#include "BluetoothDiscovery.h"
+#include "DeviceDiscovery.h"
+#include "BluetoothManager.h"
 
 typedef enum { NOT_READY, SEARCHING, READY, RUNNING } Status;
 
@@ -17,7 +18,6 @@ class DeviceConfiguration : public QWidget
 public:
     explicit DeviceConfiguration(QWidget *parent = nullptr);
     ~DeviceConfiguration();
-
 public slots:
     void refreshDevices();
     void chooseDevice(int id);
@@ -34,8 +34,9 @@ private:
     Ui::DeviceConfiguration *ui;
 protected:
     QList<QBluetoothDeviceInfo> bt_devices;
-    BluetoothDiscovery *bt_discovery;
+    DeviceDiscovery *bt_discovery;
     Status status;
+    BluetoothManager *bt_manager;
 };
 
 #endif // DEVICECONFIGURATION_H
