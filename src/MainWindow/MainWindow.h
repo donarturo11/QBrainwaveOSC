@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "RfcommListener.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -16,5 +17,6 @@ public:
     ~MainWindow();
 private:
     Ui::MainWindow *ui;
+    RfcommListener *rfcommListener;
 };
 #endif // MAINWINDOW_H

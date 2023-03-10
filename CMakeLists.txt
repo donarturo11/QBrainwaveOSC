@@ -14,6 +14,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include_directories(
    ${PROJECT_SOURCE_DIR}/src
+   ${PROJECT_SOURCE_DIR}/src/BluetoothInterface
    ${PROJECT_SOURCE_DIR}/src/MainWindow
    ${PROJECT_SOURCE_DIR}/src/MainWindow/SettingsWidget
    ${PROJECT_SOURCE_DIR}/src/MainWindow/MonitorWidget
@@ -55,8 +56,7 @@ endif()
 
 set(PROJECT_SOURCES
         ${RESOURCES}
-        ${MAINWINDOW_SOURCES}
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/main.cpp
+        ${PROJECT_SOURCES}
     )
 
 

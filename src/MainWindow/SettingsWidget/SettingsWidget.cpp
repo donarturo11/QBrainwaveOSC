@@ -15,12 +15,12 @@ SettingsWidget::~SettingsWidget()
     delete ui;
 }
 
-void SettingsWidget::onConnectionRequest(QString name)
+void SettingsWidget::onConnectionRequest(QString address)
 {
-    qDebug() << "[SettingsWidget] connection request for: " << name;
+    emit connectionRequest(address);
 }
 
 void SettingsWidget::onDisconnectionRequest()
 {
-    qDebug() << "[SettingsWidget] disconnection request";
+    emit disconnectionRequest();
 }

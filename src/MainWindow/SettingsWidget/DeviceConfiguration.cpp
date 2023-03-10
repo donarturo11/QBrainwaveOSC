@@ -3,7 +3,9 @@
 #include <QList>
 DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::DeviceConfiguration)
+    ui(new Ui::DeviceConfiguration),
+    status(Status::NOT_READY),
+    bt_discovery(new BluetoothDiscovery(this))
 {
     ui->setupUi(this);
     connect(ui->refresh_btn, SIGNAL(clicked()), this, SLOT(refreshDevices()));
@@ -11,7 +13,11 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     connect(ui->disconnect_btn, SIGNAL(clicked()), this, SLOT(disconnectDevice()));
     connect(ui->devices_cb, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseDevice(int)));
     connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseBaudrate(int)));
-    devices << "dev1" << "dev2" << "dev3";
+
+    connect(bt_discovery, SIGNAL(finished()), this, SLOT(onDiscoveryFinished()));
+    
+    refreshDevices();
+    
 }
 
 DeviceConfiguration::~DeviceConfiguration()
@@ -20,22 +26,19 @@ DeviceConfiguration::~DeviceConfiguration()
 }
 void DeviceConfiguration::refreshDevices()
 {
-    auto devices_cb = ui->devices_cb;
-    devices_cb->clear();
-    devices_cb->addItems(devices);
-    qDebug() << "discovery->getDevicesList(devices_list) QBluetoothDeviceInfo name [mac address]";
-    qDebug() << "discovery->getBaudratesList(devices_list)";
+    status = Status::SEARCHING;
+    bt_discovery->refresh();
 }
 
 
 
 void DeviceConfiguration::connectDevice()
 {
-    if (devices.empty()) return;
+    if (status != Status::READY) return;
     auto devices_cb = ui->devices_cb;
     int devId=devices_cb->currentIndex();
-    QString name = devices[devId];
-    emit connectionRequest(name);
+    QString address = bt_devices[devId].address().toString();
+    emit connectionRequest(address);
 }
 
 void DeviceConfiguration::disconnectDevice()
@@ -45,13 +48,27 @@ void DeviceConfiguration::disconnectDevice()
 
 void DeviceConfiguration::chooseDevice(int id)
 {
-    if (devices.empty()) return;
+    if (status != Status::READY) return;
     qDebug() << "[DeviceConfiguration] choosed device[" << id
-             <<  "]" << devices[id];
+             <<  "]" << bt_devices[id].name() << " " << bt_devices[id].address();
 }
 
 void DeviceConfiguration::chooseBaudrate(int id)
 {
     qDebug() << "[DeviceConfiguration] choosed baudrate[" << id
              <<  "]" ; //<< devices[id];
+}
+
+void DeviceConfiguration::onDiscoveryFinished()
+{
+    qDebug() << "Discovery finished";
+    bt_devices.clear();
+    ui->devices_cb->clear();
+    bt_devices = bt_discovery->getDevicesList();
+    for (auto dev : bt_devices) {
+        QString nameItem = dev.name() + " " + dev.address().toString();
+        ui->devices_cb->addItem(nameItem);
+    }
+    status = Status::READY;
+    emit statusNotify(status);
 }
