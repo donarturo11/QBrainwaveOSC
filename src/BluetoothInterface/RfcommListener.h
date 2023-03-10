@@ -2,6 +2,7 @@
 #define RFCOMMLISTENER_H
 #include <QObject>
 #include <QtCore>
+#include <QBluetoothLocalDevice>
 #include <QBluetoothServer>
 #include <QBluetoothSocket>
 #include <QBluetoothUuid>
@@ -24,12 +25,13 @@ public slots:
 signals:
 
 protected:
-    QBluetoothAddress deviceAddress;
+    QBluetoothLocalDevice localDevice;
+    QBluetoothAddress remoteAddress;
     QBluetoothUuid bt_uuid;
     QBluetoothServer *rfcommServer;
     QBluetoothSocket *socket;
     QBluetoothServiceInfo *service;
     ConnectionStatus status;
+    qint16 port;
 };
-
 #endif // RFCOMMLISTENER_H
