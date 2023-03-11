@@ -19,23 +19,16 @@ public:
     explicit DeviceConfiguration(QWidget *parent = nullptr);
     ~DeviceConfiguration();
 public slots:
-    void refreshDevices();
     void chooseDevice(int id);
     void chooseBaudrate(int id);
-    void connectDevice();
-    void disconnectDevice();
-    void onDiscoveryFinished();
+    void onDeviceDiscoveryFinished();
 signals:
-    void connectionRequest(QString address);
-    void disconnectionRequest();
-    void refreshRequest();
     void statusNotify(int status);
 private:
     Ui::DeviceConfiguration *ui;
 protected:
-    QList<QBluetoothDeviceInfo> bt_devices;
     Status status;
-    const BluetoothManager *bt_manager;
+    BluetoothManager *bt_manager;
 };
 
 #endif // DEVICECONFIGURATION_H

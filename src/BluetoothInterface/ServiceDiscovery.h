@@ -10,15 +10,15 @@ class ServiceDiscovery : public QObject
 public:
     ServiceDiscovery(const QBluetoothAddress &address, QObject *parent = nullptr);
     ~ServiceDiscovery();
+    void updateServicesList();
+    QList<QBluetoothServiceInfo> getServicesList() { return detectedServices; }
 public slots:
     void addService(const QBluetoothServiceInfo &info);
+    void refresh();
     void onFinished();
-private:
-    void start();
-    void stop();
 protected:
     QBluetoothServiceDiscoveryAgent *discoveryAgent;
-    QList<QBluetoothDeviceInfo> bt_devices;
+    QList<QBluetoothServiceInfo> detectedServices;
 };
 
 #endif // SERVICEDISCOVERY_H

@@ -17,7 +17,6 @@ public:
     ~MainWindow();
 private:
     Ui::MainWindow *ui;
-    RfcommListener *rfcommListener;
     BluetoothManager *bt_manager;
 };
 #endif // MAINWINDOW_H

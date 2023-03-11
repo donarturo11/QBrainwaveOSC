@@ -8,42 +8,29 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     bt_manager(BluetoothManager::bluetoothManager())
 {
     ui->setupUi(this);
-    /*
-    connect(ui->refresh_btn, SIGNAL(clicked()), this, SLOT(refreshDevices()));
-    connect(ui->connect_btn, SIGNAL(clicked()), this, SLOT(connectDevice()));
-    connect(ui->disconnect_btn, SIGNAL(clicked()), this, SLOT(disconnectDevice()));
-    connect(ui->devices_cb, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseDevice(int)));
-    connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseBaudrate(int)));
-
-    connect(bt_discovery, SIGNAL(finished()), this, SLOT(onDiscoveryFinished()));
-    */
-    
+    connect(ui->refresh_btn, SIGNAL(clicked()),
+            bt_manager, SLOT(refreshDevices()));
+    connect(ui->connect_btn, SIGNAL(clicked()),
+            bt_manager, SLOT(connectDevice()));
+    connect(ui->disconnect_btn, SIGNAL(clicked()),
+            bt_manager, SLOT(disconnectDevice()));
+    connect(ui->devices_cb, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(chooseDevice(int)));
+    connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(chooseBaudrate(int)));
+    connect(bt_manager, SIGNAL(deviceDiscoveryFinished()), this, SLOT(onDeviceDiscoveryFinished()));
 }
 
 DeviceConfiguration::~DeviceConfiguration()
 {
     delete ui;
 }
-void DeviceConfiguration::refreshDevices()
-{
-
-}
-
-
-
-void DeviceConfiguration::connectDevice()
-{
-
-}
-
-void DeviceConfiguration::disconnectDevice()
-{
-
-}
 
 void DeviceConfiguration::chooseDevice(int id)
 {
-   
+    auto address = ui->devices_cb->currentData().toString();
+    qDebug() << "Choose device" << address;
+    bt_manager->setup(address);
 }
 
 void DeviceConfiguration::chooseBaudrate(int id)
@@ -52,7 +39,14 @@ void DeviceConfiguration::chooseBaudrate(int id)
              <<  "]" ; //<< devices[id];
 }
 
-void DeviceConfiguration::onDiscoveryFinished()
+void DeviceConfiguration::onDeviceDiscoveryFinished()
 {
-
+    auto detected_devices = bt_manager->getDevicesList();
+    auto devices_cb = ui->devices_cb;
+    devices_cb->clear();
+    for (auto dev : detected_devices) {
+        QString itemText = dev.name() + " " + dev.address().toString();
+        devices_cb->addItem(itemText, dev.address().toString() );
+    }
+    qDebug() << "Device discovery finished";
 }

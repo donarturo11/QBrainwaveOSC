@@ -49,10 +49,10 @@ void DeviceDiscovery::clear()
 
 void DeviceDiscovery::search()
 {
-    qDebug() << "Searching " << bt_agent->isActive();
-    for (auto dev : bt_agent->discoveredDevices()) {
-        qDebug() << dev.name() << " " << dev.address() << " " << dev.isValid();
-    }
+    qDebug() << "Searching devices...";
+    //for (auto dev : bt_agent->discoveredDevices()) {
+    //    qDebug() << dev.name() << " " << dev.address() << " " << dev.isValid();
+    //}
     updateList();
     emit finished();
     clear();

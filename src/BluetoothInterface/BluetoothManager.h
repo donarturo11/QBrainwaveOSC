@@ -2,6 +2,7 @@
 #define BLUETOOTHMANAGER_H
 #include <QObject>
 #include <QtCore>
+#include <memory>
 #include "DeviceDiscovery.h"
 #include "ServiceDiscovery.h"
 #include "RfcommListener.h"
@@ -12,23 +13,26 @@ class BluetoothManager : public QObject
 public:
     BluetoothManager(QObject *parent = nullptr);
     ~BluetoothManager();
+    void setup(QString address);
     void printPtr();
-    static const BluetoothManager* bluetoothManager(){ return currentInstance; };
+    QList<QBluetoothDeviceInfo> getDevicesList(){ return bt_devices; }
+    static BluetoothManager* bluetoothManager(){ return currentInstance; };
 signals:
     void deviceDiscoveryFinished();
 public slots:
-    /*void connect(QString address);
-    void disconnect();
-    void startServer();
-    void stopServer();
-    void discoveryDevices();
-    void discoveryServices();*/
+    void updateDevicesList();
+    void refreshDevices();
+    void connectDevice();
+    void disconnectDevice();
 private:
     //void setupServer();
 protected:
     static BluetoothManager *currentInstance;
-    DeviceDiscovery *dev_discovery;
-    RfcommListener *bt_listener;
+    DeviceDiscovery dev_discovery;
+    RfcommListener bt_listener;
+    QBluetoothLocalDevice localDevice;
+    QBluetoothDeviceInfo currentRemoteDevice;
+    QList<QBluetoothDeviceInfo> bt_devices;
 };
 
 #endif // BLUETOOTHMANAGER_H

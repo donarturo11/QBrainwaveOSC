@@ -5,7 +5,6 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , bt_manager(new BluetoothManager(this))
     , ui(new Ui::MainWindow)
-    , rfcommListener(new RfcommListener(this))
 {
     ui->setupUi(this);
     /*
