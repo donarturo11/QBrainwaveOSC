@@ -13,7 +13,9 @@ class BluetoothManager : public QObject
 public:
     BluetoothManager(QObject *parent = nullptr);
     ~BluetoothManager();
-    void setup(QString address);
+    void setup(QString addressStr);
+    void setupDevice(QBluetoothAddress address);
+    void setupService();
     void printPtr();
     QList<QBluetoothDeviceInfo> getDevicesList(){ return bt_devices; }
     static BluetoothManager* bluetoothManager(){ return currentInstance; };
@@ -26,13 +28,16 @@ public slots:
     void disconnectDevice();
 private:
     //void setupServer();
+    bool rfcommEnabled(const QBluetoothServiceInfo &serviceInfo);
 protected:
     static BluetoothManager *currentInstance;
     DeviceDiscovery dev_discovery;
     RfcommListener bt_listener;
     QBluetoothLocalDevice localDevice;
     QBluetoothDeviceInfo currentRemoteDevice;
+    QBluetoothServiceInfo currentRemoteService;
     QList<QBluetoothDeviceInfo> bt_devices;
+    QList<QBluetoothServiceInfo> bt_services;
 };
 
 #endif // BLUETOOTHMANAGER_H

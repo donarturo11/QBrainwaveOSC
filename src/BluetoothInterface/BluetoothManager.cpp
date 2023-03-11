@@ -38,17 +38,42 @@ void BluetoothManager::disconnectDevice()
     qDebug() << "disconnect";
 }
 
-void BluetoothManager::setup(QString address)
+void BluetoothManager::setup(QString addressStr)
+{
+    QBluetoothAddress address(addressStr);
+    setupDevice(address);
+    setupService();
+}
+
+void BluetoothManager::setupDevice(QBluetoothAddress address)
 {
     qDebug() << "setup address: " << address;
-    QBluetoothAddress btAddress(address);
     for (auto dev : bt_devices) {
-        if (dev.address()==btAddress) {
+        if (dev.address()==address) {
             qDebug() << dev.name();
             currentRemoteDevice = dev;
             break;
         }
-    }
+    }    
+}
+
+void BluetoothManager::setupService()
+{
     ServiceDiscovery discovery(currentRemoteDevice.address(), this);
-    qDebug() << discovery.getServicesList();
+    bt_services = discovery.getServicesList();
+    for (auto s : bt_services) {
+        if (rfcommEnabled(s)) {
+            currentRemoteService = s;
+            break;
+        }
+    }
+    
+}
+
+bool BluetoothManager::rfcommEnabled(const QBluetoothServiceInfo &serviceInfo)
+{
+    auto uuids = serviceInfo.serviceClassUuids();
+    for (auto uuid : uuids)
+        if (uuid.data1==0x1101) return true;
+    return false;
 }
