@@ -218,7 +218,7 @@ jobs:
       if: ${{runner.os == 'Windows'}}
       run: |
            export ARTIFACT_DIR=${{env.WORKDIR}}/${PACKAGE_NAME}
-           cp -v ${{env.DEPSPATH}}/bin/*.dll ${{env.APPDIR}}/
+           find "${{env.DEPSPATH}}" -name "*.dll"  -exec cp {} ${{env.APPDIR}}/ \;
            ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/windeployqt.exe ${{env.APPDIR}}/
            mkdir $ARTIFACT_DIR || echo "::warning::${ARTIFACT_DIR} already exists"
            cd $ARTIFACT_DIR
@@ -276,13 +276,13 @@ jobs:
                cp ${PACKAGE_NAME}.AppImage ${PACKAGE_NAME}
            echo "::endgroup::"
     
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      if: ${{ failure() }}
-      with:
-          limit-access-to-actor: true
-          #install-dependencies: false
-          timeout-minutes: 60
+#    - name: Setup tmate session
+#      uses: mxschmitt/action-tmate@v3
+#      if: ${{ failure() }}
+#      with:
+#          limit-access-to-actor: true
+#          #install-dependencies: false
+#          timeout-minutes: 60
     
     - name: Upload All Binaries
       uses: actions/upload-artifact@v3
