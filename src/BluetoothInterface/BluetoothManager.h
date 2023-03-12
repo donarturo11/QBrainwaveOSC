@@ -2,10 +2,13 @@
 #define BLUETOOTHMANAGER_H
 #include <QObject>
 #include <QtCore>
+#include <QtCore>
 #include <memory>
 #include "DeviceDiscovery.h"
 #include "ServiceDiscovery.h"
 #include "RfcommListener.h"
+
+class BluetoothManagerError {};
 
 class BluetoothManager : public QObject
 {
@@ -18,6 +21,7 @@ public:
     void setupService();
     void printPtr();
     QList<QBluetoothDeviceInfo> getDevicesList(){ return bt_devices; }
+    bool isSetupReady(){ return setupReady; }
     static BluetoothManager* bluetoothManager(){ return currentInstance; };
 signals:
     void deviceDiscoveryFinished();
@@ -38,6 +42,7 @@ protected:
     QBluetoothServiceInfo currentRemoteService;
     QList<QBluetoothDeviceInfo> bt_devices;
     QList<QBluetoothServiceInfo> bt_services;
+    bool setupReady;
 };
 
 #endif // BLUETOOTHMANAGER_H

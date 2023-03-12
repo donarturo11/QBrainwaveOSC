@@ -16,12 +16,12 @@ class RfcommListener : public QObject
 public:
     RfcommListener(QObject *parent = nullptr);
     ~RfcommListener();
-    void connect(QString address);
-    void disconnect();
+    void connectService(QBluetoothServiceInfo& remoteService);
+    void disconnectService();
 
 public slots:
-    void onConnectionRequest(QString address);
-    void onDisconnectionRequest();
+    void readData();
+    void writeData();
 signals:
 
 protected:

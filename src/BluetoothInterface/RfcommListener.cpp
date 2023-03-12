@@ -5,14 +5,8 @@ RfcommListener::RfcommListener(QObject *parent) :
 {
     qDebug() << "RfcommListener c-tor";
     status = ConnectionStatus::DISCONNECTED;
-    bt_uuid = QBluetoothUuid(QBluetoothUuid::ProtocolUuid::Rfcomm);
-    rfcommServer = new QBluetoothServer(QBluetoothServiceInfo::RfcommProtocol, this);
-    rfcommServer->listen(localDevice.address());
     socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
-    port = rfcommServer->serverPort();
-    bt_uuid = QBluetoothUuid(QBluetoothUuid::ProtocolUuid::Rfcomm);
-    qDebug() << "Server port " << port;
-    qDebug() << localDevice.connectedDevices();
+    connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
 }
 
 RfcommListener::~RfcommListener()
@@ -20,26 +14,25 @@ RfcommListener::~RfcommListener()
 
 }
 
-void RfcommListener::connect(QString address)
+void RfcommListener::connectService(QBluetoothServiceInfo& remoteService)
 {
-    //if(address_) delete address_;
-    //qDebug() << "RfcommListener::connect(" << address << ")";
-    remoteAddress = QBluetoothAddress(address);
-    
-    
+    socket->connectToService(remoteService);
 }
 
-void RfcommListener::disconnect()
+void RfcommListener::disconnectService()
 {
    qDebug() << "RfcommListener::disconnect()";
+   socket->disconnectFromService();
 }
 
-void RfcommListener::onDisconnectionRequest()
+void RfcommListener::readData()
 {
-    disconnect();
+    const char *data = socket->read(1);
+    if (*data == 0xAA) printf("\n");
+    printf("x%X ", *data);
 }
 
-void RfcommListener::onConnectionRequest(QString address)
+void RfcommListener::writeData()
 {
-    connect(address);
+
 }

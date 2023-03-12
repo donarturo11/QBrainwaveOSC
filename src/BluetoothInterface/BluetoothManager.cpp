@@ -4,6 +4,7 @@ BluetoothManager* BluetoothManager::currentInstance;
 
 BluetoothManager::BluetoothManager(QObject *parent) :
     QObject(parent)
+    , setupReady(false)
 {
     qDebug() << "BluetoothManager c-tor";
     connect(&dev_discovery, SIGNAL(finished()), this, SLOT(updateDevicesList()));
@@ -29,13 +30,21 @@ void BluetoothManager::updateDevicesList()
 
 void BluetoothManager::connectDevice()
 {
-    qDebug() << "connect to " << currentRemoteDevice.name() << " "
+    try {
+        qDebug() << "Connecting to  " << currentRemoteDevice.name() << " "
              << currentRemoteDevice.address().toString();
+        if (!setupReady) throw BluetoothManagerError();
+        bt_listener.connectService(currentRemoteService);
+    } catch (BluetoothManagerError &e) {
+        qDebug() << "Connection error ";
+    }
+    qDebug() << "Connection established";
 }
 
 void BluetoothManager::disconnectDevice()
 {
     qDebug() << "disconnect";
+    bt_listener.disconnectService();
 }
 
 void BluetoothManager::setup(QString addressStr)
@@ -64,6 +73,7 @@ void BluetoothManager::setupService()
     for (auto s : bt_services) {
         if (rfcommEnabled(s)) {
             currentRemoteService = s;
+            setupReady = true;
             break;
         }
     }
