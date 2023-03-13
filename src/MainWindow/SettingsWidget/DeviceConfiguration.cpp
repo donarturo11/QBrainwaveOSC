@@ -3,55 +3,50 @@
 #include <QList>
 DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::DeviceConfiguration)
+    ui(new Ui::DeviceConfiguration),
+    status(Status::NOT_READY),
+    bt_manager(BluetoothManager::bluetoothManager())
 {
     ui->setupUi(this);
-    connect(ui->refresh_btn, SIGNAL(clicked()), this, SLOT(refreshDevices()));
-    connect(ui->connect_btn, SIGNAL(clicked()), this, SLOT(connectDevice()));
-    connect(ui->disconnect_btn, SIGNAL(clicked()), this, SLOT(disconnectDevice()));
-    connect(ui->devices_cb, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseDevice(int)));
-    connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)), this, SLOT(chooseBaudrate(int)));
-    devices << "dev1" << "dev2" << "dev3";
+    connect(ui->refresh_btn, SIGNAL(clicked()),
+            bt_manager, SLOT(refreshDevices()));
+    connect(ui->connect_btn, SIGNAL(clicked()),
+            bt_manager, SLOT(connectDevice()));
+    connect(ui->disconnect_btn, SIGNAL(clicked()),
+            bt_manager, SLOT(disconnectDevice()));
+    connect(ui->devices_cb, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(chooseDevice(int)));
+    connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(chooseBaudrate(int)));
+    connect(bt_manager, SIGNAL(deviceDiscoveryFinished()), this, SLOT(onDeviceDiscoveryFinished()));
 }
 
 DeviceConfiguration::~DeviceConfiguration()
 {
     delete ui;
 }
-void DeviceConfiguration::refreshDevices()
-{
-    auto devices_cb = ui->devices_cb;
-    devices_cb->clear();
-    devices_cb->addItems(devices);
-    qDebug() << "discovery->getDevicesList(devices_list) QBluetoothDeviceInfo name [mac address]";
-    qDebug() << "discovery->getBaudratesList(devices_list)";
-}
-
-
-
-void DeviceConfiguration::connectDevice()
-{
-    if (devices.empty()) return;
-    auto devices_cb = ui->devices_cb;
-    int devId=devices_cb->currentIndex();
-    QString name = devices[devId];
-    emit connectionRequest(name);
-}
-
-void DeviceConfiguration::disconnectDevice()
-{
-    emit disconnectionRequest();
-}
 
 void DeviceConfiguration::chooseDevice(int id)
 {
-    if (devices.empty()) return;
-    qDebug() << "[DeviceConfiguration] choosed device[" << id
-             <<  "]" << devices[id];
+    auto address = ui->devices_cb->currentData().toString();
+    qDebug() << "Choose device" << address;
+    bt_manager->setup(address);
 }
 
 void DeviceConfiguration::chooseBaudrate(int id)
 {
     qDebug() << "[DeviceConfiguration] choosed baudrate[" << id
              <<  "]" ; //<< devices[id];
+}
+
+void DeviceConfiguration::onDeviceDiscoveryFinished()
+{
+    auto detected_devices = bt_manager->getDevicesList();
+    auto devices_cb = ui->devices_cb;
+    devices_cb->clear();
+    for (auto dev : detected_devices) {
+        QString itemText = dev.name() + " " + dev.address().toString();
+        devices_cb->addItem(itemText, dev.address().toString() );
+    }
+    qDebug() << "Device discovery finished";
 }
