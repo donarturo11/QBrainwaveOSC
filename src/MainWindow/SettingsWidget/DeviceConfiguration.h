@@ -22,6 +22,7 @@ public slots:
     void chooseDevice(int id);
     void chooseBaudrate(int id);
     void onDeviceDiscoveryFinished();
+    void onDeviceDiscoveryUpdated(QBluetoothDeviceInfo dev);
 signals:
     void statusNotify(int status);
 private:

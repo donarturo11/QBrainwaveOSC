@@ -16,6 +16,9 @@ public:
 signals:
     void devicesDetected();
     void finished();
+    void updated(QBluetoothDeviceInfo dev);
+public slots:
+    void onDeviceDiscovered(const QBluetoothDeviceInfo &info);
 private:
     void start();
     void stop();

@@ -19,6 +19,7 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)),
             this, SLOT(chooseBaudrate(int)));
     connect(bt_manager, SIGNAL(deviceDiscoveryFinished()), this, SLOT(onDeviceDiscoveryFinished()));
+    connect(bt_manager, SIGNAL(deviceDiscoveryUpdated(QBluetoothDeviceInfo)), this, SLOT(onDeviceDiscoveryUpdated(QBluetoothDeviceInfo)));
 }
 
 DeviceConfiguration::~DeviceConfiguration()
@@ -49,4 +50,12 @@ void DeviceConfiguration::onDeviceDiscoveryFinished()
         devices_cb->addItem(itemText, dev.address().toString() );
     }
     qDebug() << "Device discovery finished";
+}
+
+void DeviceConfiguration::onDeviceDiscoveryUpdated(QBluetoothDeviceInfo dev)
+{
+    qDebug() << "onDeviceDiscoveryUpdated";
+    QString itemText = dev.name() + " " + dev.address().toString();
+    qDebug() << "item to add: " << itemText;
+    ui->devices_cb->addItem(itemText, dev.address().toString() );
 }

@@ -18,6 +18,8 @@ BluetoothManager::~BluetoothManager()
 
 void BluetoothManager::refreshDevices()
 {
+    qDebug() << "Refresh devices";
+    localDevice.setHostMode(QBluetoothLocalDevice::HostDiscoverable);
     dev_discovery.refresh();
 }
 

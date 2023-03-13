@@ -26,6 +26,7 @@ public:
     RfcommListener* btListener() {return &bt_listener;}
 signals:
     void deviceDiscoveryFinished();
+    void deviceDiscoveryUpdated(const QBluetoothDeviceInfo &info);
     void receivedData(char* data);
 public slots:
     void updateDevicesList();
