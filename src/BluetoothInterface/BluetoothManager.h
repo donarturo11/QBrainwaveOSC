@@ -26,13 +26,16 @@ public:
     RfcommListener* btListener() {return &bt_listener;}
 signals:
     void deviceDiscoveryFinished();
-    void deviceDiscoveryUpdated(const QBluetoothDeviceInfo &info);
+    void deviceDiscovered(const QBluetoothDeviceInfo &info);
     void receivedData(char* data);
 public slots:
     void updateDevicesList();
     void refreshDevices();
     void connectDevice();
     void disconnectDevice();
+    void onDeviceDiscovered(const QBluetoothDeviceInfo &info);
+    void startDeviceDiscovery();
+    void stopDeviceDiscovery();
 private:
     //void setupServer();
     bool rfcommEnabled(const QBluetoothServiceInfo &serviceInfo);

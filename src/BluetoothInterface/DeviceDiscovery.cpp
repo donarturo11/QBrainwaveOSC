@@ -9,19 +9,22 @@ DeviceDiscovery::DeviceDiscovery(QObject *parent) :
 {
     qDebug() << "DeviceDiscovery c-tor";
     bt_agent = new QBluetoothDeviceDiscoveryAgent(this);
-    connect (bt_agent, SIGNAL(deviceDiscovered(const QBluetoothDeviceInfo)),
-             this, SLOT(onDeviceDiscovered(const QBluetoothDeviceInfo)));
-    bt_agent->start();
+    connect (bt_agent, SIGNAL(finished()),
+             this, SLOT(onDeviceDiscoveryFinished()));
+    connect (bt_agent, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
+             this, SLOT(onDeviceDiscovered(QBluetoothDeviceInfo)));
 }
 
 DeviceDiscovery::~DeviceDiscovery()
 {
-
+    delete bt_agent;
 }
 
 void DeviceDiscovery::refresh()
 {
-    start();
+    qDebug() << "Called DeviceDiscovery::refresh";
+    bt_agent->stop();
+    bt_agent->start();
 }
 
 void  DeviceDiscovery::updateList()
@@ -37,12 +40,11 @@ void DeviceDiscovery::start()
     qDebug() << "Init agent";
 
     bt_agent->start();
-    search();
 }
 
 void DeviceDiscovery::stop()
 {
-    qDebug() << "Stop";
+    bt_agent->stop();
 }
 
 void DeviceDiscovery::clear()
@@ -64,7 +66,13 @@ void DeviceDiscovery::search()
 
 void DeviceDiscovery::onDeviceDiscovered(const QBluetoothDeviceInfo &info)
 {
-     if (bt_devices.contains(info)) return;
-     bt_devices << info;
-     emit updated(info);
+    qDebug() << "bt_devices contains " << info.name() << ":" << bt_devices.contains(info);
+    if (bt_devices.contains(info)) return;
+    bt_devices << info;
+    emit deviceDiscovered(info);
+}
+void DeviceDiscovery::onDeviceDiscoveryFinished()
+{
+    search();
+    stop();
 }

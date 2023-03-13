@@ -13,15 +13,16 @@ public:
     void refresh();
     void updateList();
     QList<QBluetoothDeviceInfo> getDevicesList() { return bt_devices; }
+    void start();
+    void stop();
 signals:
     void devicesDetected();
     void finished();
-    void updated(QBluetoothDeviceInfo dev);
+    void deviceDiscovered(const QBluetoothDeviceInfo &dev);
 public slots:
     void onDeviceDiscovered(const QBluetoothDeviceInfo &info);
+    void onDeviceDiscoveryFinished();
 private:
-    void start();
-    void stop();
     void search();
     void clear();
 protected:
