@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
        include:
-        - { name: "windows", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "windows", aqt-arch: "win64_mingw", aqt-prefix: "/opt/Qt", aqt-subdir: "mingw_64", qt-version: '6.4.2', msystem: 'UCRT64' }
+        - { name: "windows", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "/opt/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.4.2', msystem: 'UCRT64' }
         - { name: "windows-legacy", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "windows", aqt-arch: "win64_mingw81", aqt-prefix: "/opt/Qt", aqt-subdir: "mingw81_64", qt-version: '5.15.2', msystem: 'MINGW64' }
         - { name: "linux", os: ubuntu-latest, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "linux", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/Qt", aqt-subdir: "gcc_64", qt-version: '6.2.0'}
         - { name: "macos-universal", os: macos-11, flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "macos", qt-version: '6.4.2'}
@@ -182,8 +182,14 @@ jobs:
                  -DCMAKE_INSTALL_PREFIX="${{env.INSTALL_PREFIX}}" \
                  -DCMAKE_PREFIX_PATH="${{env.AQTPATH}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}};${{env.DEPSPATH}}" 
 
-    - name: Compile Code
+    - name: Compile Code (POSIX)
+      if: ${{matrix.name != 'windows'}}
       run: cmake --build ${{env.WORKDIR}}/build
+
+    - name: Compile Code (WINDOWS)
+      if: ${{matrix.name == 'windows'}}
+      shell: pwsh
+      run: cmake --build ${{github.workspace}}/build --config Release
 
     - name: Prepare appdir
       run: |
