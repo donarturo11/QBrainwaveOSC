@@ -187,7 +187,7 @@ jobs:
       run: cmake --build ${{env.WORKDIR}}/build
 
     - name: Compile Code (WINDOWS)
-      if: ${{matrix.name != 'windows'}}
+      if: ${{matrix.name == 'windows'}}
       shell: pwsh
       run: cmake --build ${{github.workspace}}/build --config Release
 
