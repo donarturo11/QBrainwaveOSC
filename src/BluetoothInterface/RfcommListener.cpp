@@ -6,7 +6,7 @@ RfcommListener::RfcommListener(QObject *parent) :
     qDebug() << "RfcommListener c-tor";
     status = ConnectionStatus::DISCONNECTED;
     socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
-    socket->setTextModeEnabled(false);
+    //socket->setTextModeEnabled(false);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
 }
 

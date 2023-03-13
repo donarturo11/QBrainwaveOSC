@@ -7,7 +7,10 @@ BluetoothManager::BluetoothManager(QObject *parent) :
     , setupReady(false)
 {
     qDebug() << "BluetoothManager c-tor";
-    connect(&dev_discovery, SIGNAL(finished()), this, SLOT(updateDevicesList()));
+    localDevice.setHostMode(QBluetoothLocalDevice::HostDiscoverable);
+    //connect(&dev_discovery, SIGNAL(finished()), this, SLOT(updateDevicesList()));
+    connect(&dev_discovery, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
+             this, SLOT(onDeviceDiscovered(QBluetoothDeviceInfo)));
     BluetoothManager::currentInstance = this;
 }
 
@@ -16,8 +19,27 @@ BluetoothManager::~BluetoothManager()
     //if(currentInstance) delete currentInstance;
 }
 
+void BluetoothManager::startDeviceDiscovery()
+{
+    dev_discovery.start();
+}
+
+void BluetoothManager::stopDeviceDiscovery()
+{
+    dev_discovery.stop();
+}
+
+void BluetoothManager::onDeviceDiscovered(const QBluetoothDeviceInfo &info)
+{
+    qDebug() << "[BluetoothManager] onDeviceDiscovered";
+    if (!bt_devices.contains(info))
+        bt_devices << info;
+    emit deviceDiscovered(info);
+}
+
 void BluetoothManager::refreshDevices()
 {
+    qDebug() << "Refresh devices";
     dev_discovery.refresh();
 }
 
@@ -34,6 +56,7 @@ void BluetoothManager::connectDevice()
         qDebug() << "Connecting to  " << currentRemoteDevice.name() << " "
              << currentRemoteDevice.address().toString();
         if (!setupReady) throw BluetoothManagerError();
+        dev_discovery.stop();
         bt_listener.connectService(currentRemoteService);
     } catch (BluetoothManagerError &e) {
         qDebug() << "Connection error ";
