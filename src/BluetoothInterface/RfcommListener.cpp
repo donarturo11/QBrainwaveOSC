@@ -6,6 +6,7 @@ RfcommListener::RfcommListener(QObject *parent) :
     qDebug() << "RfcommListener c-tor";
     status = ConnectionStatus::DISCONNECTED;
     socket = new QBluetoothSocket(QBluetoothServiceInfo::RfcommProtocol);
+    socket->setTextModeEnabled(false);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readData()));
 }
 
@@ -27,9 +28,8 @@ void RfcommListener::disconnectService()
 
 void RfcommListener::readData()
 {
-    const char *data = socket->read(1);
-    if (*data == 0xAA) printf("\n");
-    printf("x%X ", *data);
+    auto data = socket->read(1);
+    emit receivedData(data);
 }
 
 void RfcommListener::writeData()

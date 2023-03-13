@@ -23,8 +23,10 @@ public:
     QList<QBluetoothDeviceInfo> getDevicesList(){ return bt_devices; }
     bool isSetupReady(){ return setupReady; }
     static BluetoothManager* bluetoothManager(){ return currentInstance; };
+    RfcommListener* btListener() {return &bt_listener;}
 signals:
     void deviceDiscoveryFinished();
+    void receivedData(char* data);
 public slots:
     void updateDevicesList();
     void refreshDevices();

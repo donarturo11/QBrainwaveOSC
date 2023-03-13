@@ -23,7 +23,7 @@ public slots:
     void readData();
     void writeData();
 signals:
-
+    void receivedData(QByteArray data);
 protected:
     QBluetoothLocalDevice localDevice;
     QBluetoothAddress remoteAddress;
