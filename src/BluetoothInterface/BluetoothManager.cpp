@@ -31,10 +31,53 @@ void BluetoothManager::stopDeviceDiscovery()
 
 void BluetoothManager::onDeviceDiscovered(const QBluetoothDeviceInfo &info)
 {
-    qDebug() << "[BluetoothManager] onDeviceDiscovered";
+    
     if (!bt_devices.contains(info))
         bt_devices << info;
     emit deviceDiscovered(info);
+}
+
+void BluetoothManager::startServiceDiscovery()
+{
+    srv_discovery = new ServiceDiscovery(currentRemoteDevice.address(), this);
+    connect(srv_discovery, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)),
+            this, SLOT(onServiceDiscovered(QBluetoothServiceInfo)));
+    //connect(srv_discovery, SIGNAL(serviceDiscoveryFinished()),
+    //        this, SLOT(onServiceDiscoveryFinished()));
+    connect(this, SIGNAL(serviceFound()),
+            this, SLOT(onServiceDiscoveryFinished()));
+    srv_discovery->updateServicesList();
+}
+
+void BluetoothManager::stopServiceDiscovery()
+{
+    //if (!srv_discovery) break;
+    //srv_discovery->stop();
+    if (srv_discovery) {
+        delete srv_discovery;
+    }
+}
+
+
+void BluetoothManager::onServiceDiscovered(const QBluetoothServiceInfo &info)
+{
+    qDebug() << "[BluetoothManager] onServiceDiscovered";
+    if (rfcommEnabled(info)) {
+        currentRemoteService = info;
+        setupReady = true; 
+        qDebug() << "[BluetoothManager] Serial Port found successfully";
+        emit serviceFound();
+        stopServiceDiscovery();
+    } else {
+        setupReady = false;
+        qDebug() << "[BluetoothManager] Serial Port found FAILED";
+    }
+}
+
+void BluetoothManager::onServiceDiscoveryFinished()
+{
+    qDebug() << "[BluetoothManager] Service Discovery finished";
+    //stopServiceDiscovery();
 }
 
 void BluetoothManager::refreshDevices()
@@ -58,10 +101,11 @@ void BluetoothManager::connectDevice()
         if (!setupReady) throw BluetoothManagerError();
         dev_discovery.stop();
         bt_listener.connectService(currentRemoteService);
+        qDebug() << "Connection established";
     } catch (BluetoothManagerError &e) {
         qDebug() << "Connection error ";
     }
-    qDebug() << "Connection established";
+    
 }
 
 void BluetoothManager::disconnectDevice()
@@ -91,16 +135,7 @@ void BluetoothManager::setupDevice(QBluetoothAddress address)
 
 void BluetoothManager::setupService()
 {
-    ServiceDiscovery discovery(currentRemoteDevice.address(), this);
-    bt_services = discovery.getServicesList();
-    for (auto s : bt_services) {
-        if (rfcommEnabled(s)) {
-            currentRemoteService = s;
-            setupReady = true;
-            break;
-        }
-    }
-    
+    startServiceDiscovery();
 }
 
 bool BluetoothManager::rfcommEnabled(const QBluetoothServiceInfo &serviceInfo)

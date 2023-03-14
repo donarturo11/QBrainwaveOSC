@@ -12,11 +12,10 @@ ServiceDiscovery::ServiceDiscovery(const QBluetoothAddress &address, QObject *pa
     QBluetoothAddress adapterAddress = localDevice.address();
     discoveryAgent = new QBluetoothServiceDiscoveryAgent(adapterAddress);
     discoveryAgent->setRemoteAddress(address);
-    //connect(discoveryAgent, SIGNAL(serviceDiscovered(const QBluetoothServiceInfo)),
-    //        this, SLOT(addService(const QBluetoothServiceInfo &info)));
+    connect(discoveryAgent, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)),
+            this, SLOT(onServiceDiscovered(QBluetoothServiceInfo)));
     connect(discoveryAgent, SIGNAL(finished()),
             this, SLOT(onFinished()));
-    refresh();
 }
 
 ServiceDiscovery::~ServiceDiscovery()
@@ -24,33 +23,20 @@ ServiceDiscovery::~ServiceDiscovery()
     delete discoveryAgent;
 }
 
-void ServiceDiscovery::refresh()
+void ServiceDiscovery::updateServicesList()
 {
     discoveryAgent->start();
 }
 
-void ServiceDiscovery::updateServicesList()
+void ServiceDiscovery::onServiceDiscovered(const QBluetoothServiceInfo &info)
 {
-    detectedServices = discoveryAgent->discoveredServices();
-}
-
-void ServiceDiscovery::addService(const QBluetoothServiceInfo &info)
-{
-    if (info.serviceName().isEmpty())
-        return;
-
-    QString line = info.serviceName();
-    if (!info.serviceDescription().isEmpty())
-        line.append("\n\t" + info.serviceDescription());
-    if (!info.serviceProvider().isEmpty())
-        line.append("\n\t" + info.serviceProvider());
-
-    qDebug() << line;
+    detectedServices << info;
+    emit serviceDiscovered(info);
 }
 
 
 void ServiceDiscovery::onFinished()
 {
     discoveryAgent->stop();
-    updateServicesList();
+    emit serviceDiscoveryFinished();
 }
