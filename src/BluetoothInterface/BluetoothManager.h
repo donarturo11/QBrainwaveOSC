@@ -27,6 +27,7 @@ public:
 signals:
     void deviceDiscoveryFinished();
     void deviceDiscovered(const QBluetoothDeviceInfo &info);
+    void serviceFound();
     void receivedData(char* data);
 public slots:
     void updateDevicesList();
@@ -34,14 +35,19 @@ public slots:
     void connectDevice();
     void disconnectDevice();
     void onDeviceDiscovered(const QBluetoothDeviceInfo &info);
+    void onServiceDiscovered(const QBluetoothServiceInfo &info);
+    void onServiceDiscoveryFinished();
     void startDeviceDiscovery();
     void stopDeviceDiscovery();
 private:
     //void setupServer();
     bool rfcommEnabled(const QBluetoothServiceInfo &serviceInfo);
+    void startServiceDiscovery();
+    void stopServiceDiscovery();
 protected:
     static BluetoothManager *currentInstance;
     DeviceDiscovery dev_discovery;
+    ServiceDiscovery *srv_discovery;
     RfcommListener bt_listener;
     QBluetoothLocalDevice localDevice;
     QBluetoothDeviceInfo currentRemoteDevice;
@@ -49,6 +55,7 @@ protected:
     QList<QBluetoothDeviceInfo> bt_devices;
     QList<QBluetoothServiceInfo> bt_services;
     bool setupReady;
+    bool serviceDiscovered;
 };
 
 #endif // BLUETOOTHMANAGER_H

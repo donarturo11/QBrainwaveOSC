@@ -12,9 +12,12 @@ public:
     ~ServiceDiscovery();
     void updateServicesList();
     QList<QBluetoothServiceInfo> getServicesList() { return detectedServices; }
+signals:
+    void serviceDiscovered(const QBluetoothServiceInfo &info);
+    void serviceDiscoveryFinished();
 public slots:
-    void addService(const QBluetoothServiceInfo &info);
-    void refresh();
+    void onServiceDiscovered(const QBluetoothServiceInfo &info);
+    //void refresh();
     void onFinished();
 protected:
     QBluetoothServiceDiscoveryAgent *discoveryAgent;
