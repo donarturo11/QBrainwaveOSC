@@ -16,17 +16,13 @@ public:
     void start();
     void stop();
 signals:
-    void devicesDetected();
     void finished();
     void deviceDiscovered(const QBluetoothDeviceInfo &dev);
 public slots:
     void onDeviceDiscovered(const QBluetoothDeviceInfo &info);
     void onDeviceDiscoveryFinished();
-private:
-    void search();
-    void clear();
 protected:
-    QBluetoothDeviceDiscoveryAgent* bt_agent;
+    QBluetoothDeviceDiscoveryAgent bt_agent;
     QList<QBluetoothDeviceInfo> bt_devices;
 };
 

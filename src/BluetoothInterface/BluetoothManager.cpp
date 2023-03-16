@@ -3,12 +3,11 @@
 BluetoothManager* BluetoothManager::currentInstance;
 
 BluetoothManager::BluetoothManager(QObject *parent) :
-    QObject(parent)
-    , setupReady(false)
+    QObject(parent),
+    setupReady(false)
 {
     qDebug() << "BluetoothManager c-tor";
     localDevice.setHostMode(QBluetoothLocalDevice::HostDiscoverable);
-    //connect(&dev_discovery, SIGNAL(finished()), this, SLOT(updateDevicesList()));
     connect(&dev_discovery, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)),
              this, SLOT(onDeviceDiscovered(QBluetoothDeviceInfo)));
     BluetoothManager::currentInstance = this;
@@ -42,8 +41,6 @@ void BluetoothManager::startServiceDiscovery()
     srv_discovery = new ServiceDiscovery(currentRemoteDevice.address(), this);
     connect(srv_discovery, SIGNAL(serviceDiscovered(QBluetoothServiceInfo)),
             this, SLOT(onServiceDiscovered(QBluetoothServiceInfo)));
-    //connect(srv_discovery, SIGNAL(serviceDiscoveryFinished()),
-    //        this, SLOT(onServiceDiscoveryFinished()));
     connect(this, SIGNAL(serviceFound()),
             this, SLOT(onServiceDiscoveryFinished()));
     srv_discovery->updateServicesList();
@@ -51,8 +48,6 @@ void BluetoothManager::startServiceDiscovery()
 
 void BluetoothManager::stopServiceDiscovery()
 {
-    //if (!srv_discovery) break;
-    //srv_discovery->stop();
     if (srv_discovery) {
         delete srv_discovery;
     }
@@ -62,7 +57,7 @@ void BluetoothManager::stopServiceDiscovery()
 void BluetoothManager::onServiceDiscovered(const QBluetoothServiceInfo &info)
 {
     qDebug() << "[BluetoothManager] onServiceDiscovered";
-    if (rfcommEnabled(info)) {
+    if (serialPortEnabled(info)) {
         currentRemoteService = info;
         setupReady = true; 
         qDebug() << "[BluetoothManager] Serial Port found successfully";
@@ -84,13 +79,6 @@ void BluetoothManager::refreshDevices()
 {
     qDebug() << "Refresh devices";
     dev_discovery.refresh();
-}
-
-void BluetoothManager::updateDevicesList()
-{
-    qDebug() << "update devices list";
-    bt_devices = dev_discovery.getDevicesList();
-    emit deviceDiscoveryFinished();
 }
 
 void BluetoothManager::connectDevice()
@@ -138,7 +126,7 @@ void BluetoothManager::setupService()
     startServiceDiscovery();
 }
 
-bool BluetoothManager::rfcommEnabled(const QBluetoothServiceInfo &serviceInfo)
+bool BluetoothManager::serialPortEnabled(const QBluetoothServiceInfo &serviceInfo)
 {
     auto uuids = serviceInfo.serviceClassUuids();
     for (auto uuid : uuids)

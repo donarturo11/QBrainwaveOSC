@@ -30,7 +30,6 @@ signals:
     void serviceFound();
     void receivedData(char* data);
 public slots:
-    void updateDevicesList();
     void refreshDevices();
     void connectDevice();
     void disconnectDevice();
@@ -40,8 +39,7 @@ public slots:
     void startDeviceDiscovery();
     void stopDeviceDiscovery();
 private:
-    //void setupServer();
-    bool rfcommEnabled(const QBluetoothServiceInfo &serviceInfo);
+    bool serialPortEnabled(const QBluetoothServiceInfo &serviceInfo);
     void startServiceDiscovery();
     void stopServiceDiscovery();
 protected:
