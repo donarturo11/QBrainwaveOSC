@@ -33,5 +33,6 @@ protected:
     QBluetoothServiceInfo *service;
     ConnectionStatus status;
     qint16 port;
+    bool running;
 };
 #endif // RFCOMMLISTENER_H
