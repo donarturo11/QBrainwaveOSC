@@ -20,7 +20,8 @@ ServiceDiscovery::ServiceDiscovery(const QBluetoothAddress &address, QObject *pa
 
 ServiceDiscovery::~ServiceDiscovery()
 {
-    delete discoveryAgent;
+    if (discoveryAgent && !discoveryAgent->isActive())
+        delete discoveryAgent;
 }
 
 void ServiceDiscovery::updateServicesList()
