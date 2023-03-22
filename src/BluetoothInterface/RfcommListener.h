@@ -24,6 +24,7 @@ public slots:
     void writeData();
 signals:
     void receivedData(QByteArray data);
+    void stateChanged(QBluetoothSocket::SocketState state);
 protected:
     QBluetoothLocalDevice localDevice;
     QBluetoothAddress remoteAddress;
