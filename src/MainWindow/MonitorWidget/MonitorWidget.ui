@@ -56,13 +56,37 @@
      </property>
     </widget>
    </widget>
+   <widget class="QWidget" name="tab">
+    <attribute name="title">
+     <string>Debug</string>
+    </attribute>
+    <widget class="DebugMonitor" name="widget_2" native="true">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>631</width>
+       <height>531</height>
+      </rect>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+    </widget>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
   <customwidget>
    <class>RfCommMonitor</class>
    <extends>QWidget</extends>
-   <header location="global">RfCommMonitor.h</header>
+   <header>RfCommMonitor.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DebugMonitor</class>
+   <extends>QWidget</extends>
+   <header>DebugMonitor.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

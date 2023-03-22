@@ -15,8 +15,14 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    static MainWindow* mainWindow() { return mainwindow; }
+    void onDebugReceived(QString msg);
+signals:
+    void debugReceived(QString msg);
 private:
     Ui::MainWindow *ui;
     BluetoothManager *bt_manager;
+    static MainWindow *mainwindow;
+
 };
 #endif // MAINWINDOW_H

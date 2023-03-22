@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QTextCursor>
 #include "BluetoothManager.h"
+#include <QBluetoothSocket>
 namespace Ui {
 class RfCommMonitor;
 }
