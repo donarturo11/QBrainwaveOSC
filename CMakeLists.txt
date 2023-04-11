@@ -15,9 +15,9 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include_directories(
    ${PROJECT_SOURCE_DIR}/src
    ${PROJECT_SOURCE_DIR}/src/ThinkGear
-   ${PROJECT_SOURCE_DIR}/src/MainWindow
-   ${PROJECT_SOURCE_DIR}/src/MainWindow/SettingsWidget
-   ${PROJECT_SOURCE_DIR}/src/MainWindow/MonitorWidget
+   ${PROJECT_SOURCE_DIR}/src/GUI
+   ${PROJECT_SOURCE_DIR}/src/GUI/SettingsWidget
+   ${PROJECT_SOURCE_DIR}/src/GUI/MonitorWidget
 )
 
 option(FORCE_QT5 "Force qt5 install" OFF)
