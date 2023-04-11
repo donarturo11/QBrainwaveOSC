@@ -1,26 +1,29 @@
 #include "DeviceConfiguration.h"
 #include "ui_DeviceConfiguration.h"
+#include "MainWindow.h"
 #include <QList>
+#include <QSerialPortInfo>
 DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DeviceConfiguration),
     status(Status::NOT_READY),
-    bt_manager(BluetoothManager::bluetoothManager())
+    tg(MainWindow::mainWindow()->thinkGear())
 {
     ui->setupUi(this);
     connect(ui->refresh_btn, SIGNAL(clicked()),
-            bt_manager, SLOT(refreshDevices()));
+            this, SLOT(refresh()));
     connect(ui->connect_btn, SIGNAL(clicked()),
-            bt_manager, SLOT(connectDevice()));
+            this, SLOT(connectDevice()));
     connect(ui->disconnect_btn, SIGNAL(clicked()),
-            bt_manager, SLOT(disconnectDevice()));
+            this, SLOT(disconnectDevice()));
     connect(ui->devices_cb, SIGNAL(currentIndexChanged(int)),
             this, SLOT(chooseDevice(int)));
     connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)),
             this, SLOT(chooseBaudrate(int)));
-    connect(bt_manager, SIGNAL(deviceDiscovered(QBluetoothDeviceInfo)), 
-            this, SLOT(onDeviceDiscovered(QBluetoothDeviceInfo)));
-    bt_manager->startDeviceDiscovery();
+
+    initBaudRates();
+    refresh();
+
 }
 
 DeviceConfiguration::~DeviceConfiguration()
@@ -28,20 +31,35 @@ DeviceConfiguration::~DeviceConfiguration()
     delete ui;
 }
 
+void DeviceConfiguration::initBaudRates()
+{
+    for (auto bRate : ThinkgearBaudrates) {
+        ui->baudrates_cb->addItem(QString::number(bRate), bRate);
+    }
+}
+
 void DeviceConfiguration::chooseDevice(int id)
 {
-    auto address = ui->devices_cb->currentData().toString();
-    bt_manager->setup(address);
+    auto portName = ui->devices_cb->currentData().toString();
+    tg->setPortName(portName);
 }
 
 void DeviceConfiguration::chooseBaudrate(int id)
 {
-    qDebug() << "[DeviceConfiguration] choosed baudrate[" << id
-             <<  "]" ; //<< devices[id];
+    int bRate = ui->baudrates_cb->currentData().toInt();
+    qDebug() << "[DeviceConfiguration] choosed baudrate" << bRate;
+    tg->setBaudRate(bRate);
 }
 
-void DeviceConfiguration::onDeviceDiscovered(const QBluetoothDeviceInfo &dev)
+
+
+void DeviceConfiguration::refresh()
 {
-    QString itemText = dev.name() + " " + dev.address().toString();
-    ui->devices_cb->addItem(itemText, dev.address().toString() );
+    qDebug() << "DeviceConfiguration::refresh()";
+    auto ports = QSerialPortInfo::availablePorts();
+    ui->devices_cb->clear();
+    for (auto port : ports) {
+        auto portName = port.portName();
+        ui->devices_cb->addItem(portName, portName);
+    }
 }

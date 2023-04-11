@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>RfCommMonitor</class>
- <widget class="QWidget" name="RfCommMonitor">
+ <class>SerialPortMonitor</class>
+ <widget class="QWidget" name="SerialPortMonitor">
   <property name="enabled">
    <bool>true</bool>
   </property>

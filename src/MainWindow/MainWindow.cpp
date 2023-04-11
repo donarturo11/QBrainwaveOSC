@@ -3,27 +3,20 @@
 MainWindow *MainWindow::mainwindow;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , bt_manager(new BluetoothManager(this))
+    , tg(new ThinkGear(this))
     , ui(new Ui::MainWindow)
 {
     MainWindow::mainwindow = this;
     ui->setupUi(this);
-    /*
-    connect(ui->settings_widget, SIGNAL(connectionRequest(QString)),
-            rfcommListener, SLOT(onConnectionRequest(QString)));
-    connect(ui->settings_widget, SIGNAL(disconnectionRequest()),
-            rfcommListener, SLOT(onDisconnectionRequest()));
-    */
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete bt_manager;
+    delete tg;
 }
 
  void MainWindow::onDebugReceived(QString msg)
 {
-    fprintf(stderr, "MainWindow::onDebugRecived\n");
     emit debugReceived(msg);
 }

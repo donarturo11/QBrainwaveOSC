@@ -1,30 +1,31 @@
-#include "RfCommMonitor.h"
-#include "ui_RfCommMonitor.h"
+#include "SerialPortMonitor.h"
+#include "ui_SerialPortMonitor.h"
 #include <QList>
 
-RfCommMonitor::RfCommMonitor(QWidget *parent) :
+SerialPortMonitor::SerialPortMonitor(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::RfCommMonitor),
-    listener(BluetoothManager::bluetoothManager()->btListener())
+    ui(new Ui::SerialPortMonitor),
+    tg(MainWindow::mainWindow()->thinkGear())
 {
     ui->setupUi(this);
-    connect(listener, SIGNAL(receivedData(QByteArray)),
+    connect(tg, SIGNAL(receivedData(QByteArray)),
             this, SLOT(onDataReceived(QByteArray)));
     initCursor();
 }
 
-RfCommMonitor::~RfCommMonitor()
+SerialPortMonitor::~SerialPortMonitor()
 {
     delete ui;
 }
 
-void RfCommMonitor::initCursor()
+void SerialPortMonitor::initCursor()
 {
     status_cursor = new QTextCursor(ui->status_text->textCursor());
 }
 
-void RfCommMonitor::onDataReceived(QByteArray data)
+void SerialPortMonitor::onDataReceived(QByteArray data)
 {
+    qDebug() << "onDataReceived " << data;
     QString msg;
     QTextStream stream(&msg);
     status_cursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor);

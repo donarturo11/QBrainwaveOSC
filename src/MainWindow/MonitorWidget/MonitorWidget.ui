@@ -38,11 +38,11 @@
      <string>OSC</string>
     </attribute>
    </widget>
-   <widget class="QWidget" name="rfcomm_mon">
+   <widget class="QWidget" name="com_mon">
     <attribute name="title">
-     <string>RfComm</string>
+     <string>SerialPort</string>
     </attribute>
-    <widget class="RfCommMonitor" name="widget" native="true">
+    <widget class="SerialPortMonitor" name="widget" native="true">
      <property name="geometry">
       <rect>
        <x>0</x>
@@ -78,9 +78,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>RfCommMonitor</class>
+   <class>SerialPortMonitor</class>
    <extends>QWidget</extends>
-   <header>RfCommMonitor.h</header>
+   <header>SerialPortMonitor.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

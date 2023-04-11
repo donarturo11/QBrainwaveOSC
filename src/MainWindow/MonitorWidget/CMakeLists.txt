@@ -1,8 +1,8 @@
 #projectName(QBrainwaveOSC)
 set(RFCOMMMONITOR_SOURCES
-   ${CMAKE_CURRENT_SOURCE_DIR}/RfCommMonitor.h
-   ${CMAKE_CURRENT_SOURCE_DIR}/RfCommMonitor.cpp
-   ${CMAKE_CURRENT_SOURCE_DIR}/RfCommMonitor.ui
+   ${CMAKE_CURRENT_SOURCE_DIR}/SerialPortMonitor.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/SerialPortMonitor.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/SerialPortMonitor.ui
    )
 
 set(DEBUGMONITOR_SOURCES

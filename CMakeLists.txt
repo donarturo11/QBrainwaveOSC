@@ -14,7 +14,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include_directories(
    ${PROJECT_SOURCE_DIR}/src
-   ${PROJECT_SOURCE_DIR}/src/BluetoothInterface
+   ${PROJECT_SOURCE_DIR}/src/ThinkGear
    ${PROJECT_SOURCE_DIR}/src/MainWindow
    ${PROJECT_SOURCE_DIR}/src/MainWindow/SettingsWidget
    ${PROJECT_SOURCE_DIR}/src/MainWindow/MonitorWidget
@@ -25,13 +25,13 @@ option(FORCE_QT6 "Force qt6 install" OFF)
 
 if(FORCE_QT5)
     set(QT_VERSION_MAJOR 5)
-    find_package(Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth)
+    find_package(Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort)
 elseif(FORCE_QT6)
     set(QT_VERSION_MAJOR 6)
-    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Bluetooth)
+    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort)
 else()
-    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth)
-    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Bluetooth)
+    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort)
 endif()
 
 if (${QT_VERSION_MAJOR} EQUAL 5)
@@ -100,6 +100,7 @@ ENDIF()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Bluetooth)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::SerialPort)
 
 if(WIN32)
     message("Installing for Windows")

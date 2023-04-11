@@ -2,8 +2,7 @@
 #define DEVICECONFIGURATION_H
 
 #include <QWidget>
-#include "DeviceDiscovery.h"
-#include "BluetoothManager.h"
+#include "ThinkGear.h"
 
 typedef enum { NOT_READY, SEARCHING, READY, RUNNING } Status;
 
@@ -21,14 +20,17 @@ public:
 public slots:
     void chooseDevice(int id);
     void chooseBaudrate(int id);
-    void onDeviceDiscovered(const QBluetoothDeviceInfo &dev);
+    void connectDevice() { tg->open(); }
+    void disconnectDevice() { tg->close(); }
+    void refresh();
 signals:
     void statusNotify(int status);
 private:
     Ui::DeviceConfiguration *ui;
+    void initBaudRates();
 protected:
     Status status;
-    BluetoothManager *bt_manager;
+    ThinkGear *tg;
 };
 
 #endif // DEVICECONFIGURATION_H
