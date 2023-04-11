@@ -18,7 +18,11 @@ void ThinkGear::open()
     qDebug() << "ThinkGear: connect to : "
              << device.portName() << "@" 
              << device.baudRate();
+#ifdef QT6
     bool opened = device.open(QIODeviceBase::ReadWrite);
+#else
+    bool opened = device.open(QIODevice::ReadWrite);
+#endif
     if (opened) qDebug() << "Open SUCCESS";
     else qDebug() << "Open FAILED";
 }
