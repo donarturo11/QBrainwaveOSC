@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QTextCursor>
-#include "ThinkGear.h"
+#include "QThinkGear.h"
 #include "MainWindow.h"
 //#include "BluetoothManager.h"
 //#include <QBluetoothSocket>
@@ -23,7 +23,7 @@ public slots:
     void onDataReceived(QByteArray data);
 private:
     Ui::SerialPortMonitor *ui;
-    ThinkGear *tg;
+    QThinkGear *tg;
     QTextCursor *status_cursor;
 };
 

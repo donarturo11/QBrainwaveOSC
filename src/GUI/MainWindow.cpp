@@ -3,7 +3,7 @@
 MainWindow *MainWindow::mainwindow;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , tg(new ThinkGear(this))
+    , tg(new QThinkGear(this))
     , ui(new Ui::MainWindow)
 {
     MainWindow::mainwindow = this;

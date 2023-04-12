@@ -2,7 +2,7 @@
 #define DEVICECONFIGURATION_H
 
 #include <QWidget>
-#include "ThinkGear.h"
+#include "QThinkGear.h"
 
 typedef enum { NOT_READY, SEARCHING, READY, RUNNING } Status;
 
@@ -30,7 +30,7 @@ private:
     void initBaudRates();
 protected:
     Status status;
-    ThinkGear *tg;
+    QThinkGear *tg;
 };
 
 #endif // DEVICECONFIGURATION_H

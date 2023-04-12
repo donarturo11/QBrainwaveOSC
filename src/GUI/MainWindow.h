@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include <QMainWindow>
-#include "ThinkGear.h"
+#include "QThinkGear.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,13 +15,13 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     static MainWindow* mainWindow() { return mainwindow; }
-    ThinkGear* thinkGear() { return tg; }
+    QThinkGear* thinkGear() { return tg; }
     void onDebugReceived(QString msg);
 signals:
     void debugReceived(QString msg);
 private:
     Ui::MainWindow *ui;
-    ThinkGear *tg;
+    QThinkGear *tg;
     static MainWindow *mainwindow;
 
 };

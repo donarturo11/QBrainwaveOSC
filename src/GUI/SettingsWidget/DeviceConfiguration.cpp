@@ -7,7 +7,7 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DeviceConfiguration),
     status(Status::NOT_READY),
-    tg(MainWindow::mainWindow()->thinkGear())
+    tg(QThinkGear::qThinkGear())
 {
     ui->setupUi(this);
     connect(ui->refresh_btn, SIGNAL(clicked()),

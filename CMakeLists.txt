@@ -14,7 +14,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include_directories(
    ${PROJECT_SOURCE_DIR}/src
-   ${PROJECT_SOURCE_DIR}/src/ThinkGear
+   ${PROJECT_SOURCE_DIR}/src/QThinkGear
    ${PROJECT_SOURCE_DIR}/src/GUI
    ${PROJECT_SOURCE_DIR}/src/GUI/SettingsWidget
    ${PROJECT_SOURCE_DIR}/src/GUI/MonitorWidget

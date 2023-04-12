@@ -5,7 +5,7 @@
 SerialPortMonitor::SerialPortMonitor(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::SerialPortMonitor),
-    tg(MainWindow::mainWindow()->thinkGear())
+    tg(QThinkGear::qThinkGear())
 {
     ui->setupUi(this);
     connect(tg, SIGNAL(receivedData(QByteArray)),
