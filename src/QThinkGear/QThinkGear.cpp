@@ -1,19 +1,22 @@
-#include "ThinkGear.h"
+#include "QThinkGear.h"
 
-ThinkGear::ThinkGear(QObject *parent) :
+QThinkGear* QThinkGear::currentInstance;
+
+QThinkGear::QThinkGear(QObject *parent) :
     QObject(parent)
 {
-    qDebug() << "ThinkGear c-tor";
+    qDebug() << "QThinkGear c-tor";
     connect(&device, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     device.setReadBufferSize(512);
+    QThinkGear::currentInstance = this;
 }
 
-ThinkGear::~ThinkGear()
+QThinkGear::~QThinkGear()
 {
-
+    QThinkGear::currentInstance = nullptr;
 }
 
-void ThinkGear::open()
+void QThinkGear::open()
 {
     qDebug() << "ThinkGear: connect to : "
              << device.portName() << "@" 
@@ -27,14 +30,14 @@ void ThinkGear::open()
     else qDebug() << "Open FAILED";
 }
 
-void ThinkGear::close()
+void QThinkGear::close()
 {
     qDebug() << "ThinkGear::disconnect";
     device.flush();
     device.close();
 }
 
-void ThinkGear::onReadyRead()
+void QThinkGear::onReadyRead()
 {
     qDebug() << "[ThinkGear] readData " << device.readBufferSize();
     auto data = device.read(device.readBufferSize());

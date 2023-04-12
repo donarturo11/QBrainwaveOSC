@@ -1,5 +1,5 @@
-#ifndef THINKGEAR_H
-#define THINKGEAR_H
+#ifndef QTHINKGEAR_H
+#define QTHINKGEAR_H
 #include <QObject>
 #include <QtCore>
 #include <QSerialPortInfo>
@@ -9,12 +9,13 @@ const int ThinkgearBaudrates[] {
     1200, 2400, 4800, 9600, 57600, 115200
 };
 
-class ThinkGear : public QObject
+class QThinkGear : public QObject
 {
     Q_OBJECT
 public:
-    ThinkGear(QObject *parent = nullptr);
-    ~ThinkGear();
+    QThinkGear(QObject *parent = nullptr);
+    ~QThinkGear();
+    static QThinkGear* qThinkGear() { return currentInstance; }
     void setPortName(QString portName) { device.setPortName(portName); }
     void setBaudRate(int baudRate){ device.setBaudRate(baudRate); }
     void open();
@@ -23,8 +24,10 @@ public slots:
     void onReadyRead();
 signals:
     void receivedData(QByteArray data);
+private:
+    static QThinkGear* currentInstance;
 protected:
     QSerialPort device;
     
 };
-#endif // THINKGEAR_H
+#endif // QTHINKGEAR_H
