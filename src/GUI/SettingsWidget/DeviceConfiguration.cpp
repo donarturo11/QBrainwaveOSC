@@ -10,6 +10,8 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     tg(QThinkGear::qThinkGear())
 {
     ui->setupUi(this);
+    connect(ui->runtest_btn, SIGNAL(clicked()),
+            this, SLOT(runTest()));
     connect(ui->refresh_btn, SIGNAL(clicked()),
             this, SLOT(refresh()));
     connect(ui->connect_btn, SIGNAL(clicked()),

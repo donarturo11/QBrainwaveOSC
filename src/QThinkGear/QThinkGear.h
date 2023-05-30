@@ -20,6 +20,7 @@ public:
     void setBaudRate(int baudRate){ device.setBaudRate(baudRate); }
     void open();
     void close();
+    void test();
 public slots:
     void onReadyRead();
 signals:
