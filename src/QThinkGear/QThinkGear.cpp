@@ -59,7 +59,7 @@ void QThinkGear::test()
 void QThinkGear::onReadyRead()
 {
     int bufsize = _device.readBufferSize();
-    char *buffer;
+    char buffer[1024];
     int size = _device.bytesAvailable();
     _device.read(buffer, bufsize);
     for (int i=0; i<size; i++) {
