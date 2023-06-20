@@ -4,9 +4,11 @@
 #include <QtCore>
 #include <QSerialPortInfo>
 #include <QSerialPort>
+#include "ThinkGearStreamParser.h"
+#include "QThinkGearDataHandler.h"
 
 const int ThinkgearBaudrates[] {
-    1200, 2400, 4800, 9600, 57600, 115200
+    9600, 57600
 };
 
 class QThinkGear : public QObject
@@ -16,8 +18,8 @@ public:
     QThinkGear(QObject *parent = nullptr);
     ~QThinkGear();
     static QThinkGear* qThinkGear() { return currentInstance; }
-    void setPortName(QString portName) { device.setPortName(portName); }
-    void setBaudRate(int baudRate){ device.setBaudRate(baudRate); }
+    void setPortName(QString portName) { _device.setPortName(portName); }
+    void setBaudRate(int baudRate){ _device.setBaudRate(baudRate); }
     void open();
     void close();
     void test();
@@ -28,7 +30,9 @@ signals:
 private:
     static QThinkGear* currentInstance;
 protected:
-    QSerialPort device;
+    QSerialPort _device;
+    ThinkGearStreamParser _parser;
+    QThinkGearDataHandler _handler;
     
 };
 #endif // QTHINKGEAR_H

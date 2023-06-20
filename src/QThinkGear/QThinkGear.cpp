@@ -6,9 +6,10 @@ QThinkGear::QThinkGear(QObject *parent) :
     QObject(parent)
 {
     qDebug() << "QThinkGear c-tor";
-    connect(&device, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-    device.setReadBufferSize(512);
+    connect(&_device, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
+    _device.setReadBufferSize(512);
     QThinkGear::currentInstance = this;
+    THINKGEAR_initParser(&_parser, PARSER_TYPE_PACKETS, QThinkGearDataHandle, &_handler);
 }
 
 QThinkGear::~QThinkGear()
@@ -19,12 +20,12 @@ QThinkGear::~QThinkGear()
 void QThinkGear::open()
 {
     qDebug() << "ThinkGear: connect to : "
-             << device.portName() << "@" 
-             << device.baudRate();
+             << _device.portName() << "@" 
+             << _device.baudRate();
 #ifdef QT6
-    bool opened = device.open(QIODeviceBase::ReadWrite);
+    bool opened = _device.open(QIODeviceBase::ReadWrite);
 #else
-    bool opened = device.open(QIODevice::ReadWrite);
+    bool opened = _device.open(QIODevice::ReadWrite);
 #endif
     if (opened) qDebug() << "Open SUCCESS";
     else qDebug() << "Open FAILED";
@@ -33,8 +34,8 @@ void QThinkGear::open()
 void QThinkGear::close()
 {
     qDebug() << "ThinkGear::disconnect";
-    device.flush();
-    device.close();
+    _device.flush();
+    _device.close();
 }
 
 void QThinkGear::test()
@@ -57,7 +58,12 @@ void QThinkGear::test()
 
 void QThinkGear::onReadyRead()
 {
-    qDebug() << "[ThinkGear] readData " << device.readBufferSize();
-    auto data = device.read(device.readBufferSize());
-    emit receivedData(data);
+    int bufsize = _device.readBufferSize();
+    char *buffer;
+    int size = _device.bytesAvailable();
+    _device.read(buffer, bufsize);
+    for (int i=0; i<size; i++) {
+        THINKGEAR_parseByte(&_parser, buffer[i]);
+    }
+    _device.waitForReadyRead(1);
 }
