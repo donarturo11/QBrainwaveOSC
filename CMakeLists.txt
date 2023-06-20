@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(QBrainwaveOSC VERSION 0.1 LANGUAGES CXX)
+project(QBrainwaveOSC VERSION 0.1 LANGUAGES CXX C)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -13,12 +13,15 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include_directories(
+   ${PROJECT_SOURCE_DIR}/addons/neurosky/lib/MinSet_Dev_tools/ThinkGear
    ${PROJECT_SOURCE_DIR}/src
    ${PROJECT_SOURCE_DIR}/src/QThinkGear
    ${PROJECT_SOURCE_DIR}/src/GUI
    ${PROJECT_SOURCE_DIR}/src/GUI/SettingsWidget
    ${PROJECT_SOURCE_DIR}/src/GUI/MonitorWidget
 )
+
+add_library(tgparser STATIC ${PROJECT_SOURCE_DIR}/addons/neurosky/lib/MinSet_Dev_tools/ThinkGear/ThinkGearStreamParser.c)
 
 option(FORCE_QT5 "Force qt5 install" OFF)
 option(FORCE_QT6 "Force qt6 install" OFF)
@@ -101,6 +104,7 @@ ENDIF()
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Bluetooth)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::SerialPort)
+target_link_libraries(${PROJECT_NAME} PUBLIC tgparser)
 
 if(WIN32)
     message("Installing for Windows")
