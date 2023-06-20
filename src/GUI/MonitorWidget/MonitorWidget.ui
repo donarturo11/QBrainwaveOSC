@@ -26,7 +26,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>2</number>
+    <number>0</number>
    </property>
    <widget class="QWidget" name="graphs">
     <attribute name="title">
@@ -37,24 +37,6 @@
     <attribute name="title">
      <string>OSC</string>
     </attribute>
-   </widget>
-   <widget class="QWidget" name="com_mon">
-    <attribute name="title">
-     <string>SerialPort</string>
-    </attribute>
-    <widget class="SerialPortMonitor" name="widget" native="true">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>631</width>
-       <height>531</height>
-      </rect>
-     </property>
-     <property name="focusPolicy">
-      <enum>Qt::NoFocus</enum>
-     </property>
-    </widget>
    </widget>
    <widget class="QWidget" name="tab">
     <attribute name="title">
@@ -77,12 +59,6 @@
   </widget>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>SerialPortMonitor</class>
-   <extends>QWidget</extends>
-   <header>SerialPortMonitor.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>DebugMonitor</class>
    <extends>QWidget</extends>
