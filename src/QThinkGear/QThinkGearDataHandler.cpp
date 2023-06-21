@@ -1,5 +1,5 @@
 #include "QThinkGearDataHandler.h"
-
+#include <QtEndian>
 int QThinkGearDataHandler::dataCount=0;
 
 void QThinkGearDataHandle( unsigned char extendedCodeLevel,
@@ -29,13 +29,13 @@ void QThinkGearDataHandler::pushData(unsigned char extendedCodeLevel,
                                      const unsigned char *value)
 {
     QByteArray val((const char*) value, numBytes);
-    int val_s; 
-    QDataStream((const char*) value) >> val_s;
-    
-    qDebug() << "Push data [" << dataCount << "]\t"
-             << "Code: " << Qt::hex << code << "\t"
-             << "Value: " << val_s ;
-    qDebug() << "ByteArray: " << val.toHex();
-    dataCount++;
+    /*switch (code) {
+        case(0x81)
+    }
+    */
+}
+
+void QThinkGearDataHandler::handleEeg(QByteArray d)
+{
     
 }

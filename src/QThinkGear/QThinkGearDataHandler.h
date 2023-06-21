@@ -21,6 +21,8 @@ public:
                   unsigned char code,
                   unsigned char numBytes,
                   const unsigned char *value);
+private:
+    void handleEeg(QByteArray d);
 };
 
 

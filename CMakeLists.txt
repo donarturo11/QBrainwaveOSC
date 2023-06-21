@@ -13,7 +13,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include_directories(
-   ${PROJECT_SOURCE_DIR}/addons/neurosky/lib/MinSet_Dev_tools/ThinkGear
+   ${PROJECT_SOURCE_DIR}/thirdparty/neurosky/lib/MinSet_Dev_tools/ThinkGear
    ${PROJECT_SOURCE_DIR}/src
    ${PROJECT_SOURCE_DIR}/src/QThinkGear
    ${PROJECT_SOURCE_DIR}/src/GUI
@@ -21,7 +21,7 @@ include_directories(
    ${PROJECT_SOURCE_DIR}/src/GUI/MonitorWidget
 )
 
-add_library(tgparser STATIC ${PROJECT_SOURCE_DIR}/addons/neurosky/lib/MinSet_Dev_tools/ThinkGear/ThinkGearStreamParser.c)
+add_library(tgparser STATIC ${PROJECT_SOURCE_DIR}/thirdparty/neurosky/lib/MinSet_Dev_tools/ThinkGear/ThinkGearStreamParser.c)
 
 option(FORCE_QT5 "Force qt5 install" OFF)
 option(FORCE_QT6 "Force qt6 install" OFF)
