@@ -29,10 +29,10 @@ void QThinkGearDataHandler::pushData(unsigned char extendedCodeLevel,
                                      const unsigned char *value)
 {
     QByteArray val((const char*) value, numBytes);
-    /*switch (code) {
-        case(0x81)
+    switch (code) {
+        case(PARSER_CODE_ASIC_EEG_POWER_INT): handleEeg(val); break;
     }
-    */
+    
 }
 
 void QThinkGearDataHandler::handleEeg(QByteArray d)
