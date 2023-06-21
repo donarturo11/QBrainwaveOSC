@@ -16,6 +16,7 @@ class QThinkGearDataHandler : public QObject
 public:
     QThinkGearDataHandler(QObject *parent = nullptr);
     ~QThinkGearDataHandler();
+    static int dataCount;
     void pushData(unsigned char extendedCodeLevel,
                   unsigned char code,
                   unsigned char numBytes,
