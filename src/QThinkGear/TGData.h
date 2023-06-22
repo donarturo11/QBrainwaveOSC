@@ -25,6 +25,7 @@ public:
     std::vector<uint32_t> deserializeArray(uint8_t capacity);
     int size() const { return _value.size(); }
     unsigned char code() const { return _code; }
+    unsigned char* value() { return _value.data(); }
     tgdata_t TGData_c() const;
 protected:
     uint8_t _code;
