@@ -1,5 +1,4 @@
 #include "QThinkGearDataHandler.h"
-#include "eegValues.h"
 
 int QThinkGearDataHandler::dataCount=0;
 
@@ -20,6 +19,34 @@ QThinkGearDataHandler::QThinkGearDataHandler(QObject *parent)
     
 }
 
+void QThinkGearDataHandler::addListener(QThinkGearListener *listener)
+{
+    connect(this, &QThinkGearDataHandler::onRaw, listener, &QThinkGearListener::onThinkGearRaw);     
+    connect(this, &QThinkGearDataHandler::onBattery, listener, &QThinkGearListener::onThinkGearBattery);
+    connect(this, &QThinkGearDataHandler::onPoorSignal, listener, &QThinkGearListener::onThinkGearPoorSignal);
+    connect(this, &QThinkGearDataHandler::onAttention, listener, &QThinkGearListener::onThinkGearAttention);
+    connect(this, &QThinkGearDataHandler::onMeditation, listener, &QThinkGearListener::onThinkGearMeditation);
+    connect(this, &QThinkGearDataHandler::onEeg, listener, &QThinkGearListener::onThinkGearEeg);
+    connect(this, &QThinkGearDataHandler::onConnecting, listener, &QThinkGearListener::onThinkGearConnecting);
+    connect(this, &QThinkGearDataHandler::onReady, listener, &QThinkGearListener::onThinkGearReady);
+    connect(this, &QThinkGearDataHandler::onError, listener, &QThinkGearListener::onThinkGearError);
+    connect(this, &QThinkGearDataHandler::onBlinkStrength, listener, &QThinkGearListener::onThinkGearBlinkStrength);
+}
+
+void QThinkGearDataHandler::removeListener(QThinkGearListener *listener)
+{
+    disconnect(this, &QThinkGearDataHandler::onRaw, listener, &QThinkGearListener::onThinkGearRaw);     
+    disconnect(this, &QThinkGearDataHandler::onBattery, listener, &QThinkGearListener::onThinkGearBattery);
+    disconnect(this, &QThinkGearDataHandler::onPoorSignal, listener, &QThinkGearListener::onThinkGearPoorSignal);
+    disconnect(this, &QThinkGearDataHandler::onAttention, listener, &QThinkGearListener::onThinkGearAttention);
+    disconnect(this, &QThinkGearDataHandler::onMeditation, listener, &QThinkGearListener::onThinkGearMeditation);
+    disconnect(this, &QThinkGearDataHandler::onEeg, listener, &QThinkGearListener::onThinkGearEeg);
+    disconnect(this, &QThinkGearDataHandler::onConnecting, listener, &QThinkGearListener::onThinkGearConnecting);
+    disconnect(this, &QThinkGearDataHandler::onReady, listener, &QThinkGearListener::onThinkGearReady);
+    disconnect(this, &QThinkGearDataHandler::onError, listener, &QThinkGearListener::onThinkGearError);
+    disconnect(this, &QThinkGearDataHandler::onBlinkStrength, listener, &QThinkGearListener::onThinkGearBlinkStrength);    
+}
+
 QThinkGearDataHandler::~QThinkGearDataHandler()
 {
     
@@ -29,8 +56,13 @@ void QThinkGearDataHandler::pushData(TGData val)
 {
     
     switch (val.code()) {
-        case(ParserCodes::Battery): break;
+        case(ParserCodes::PoorSignal): emit onPoorSignal(val.toUChar()); break;
+        case(ParserCodes::Attention): emit onAttention(val.toUChar()); break;
+        case(ParserCodes::Meditation): emit onMeditation(val.toUChar()); break;
+        case(ParserCodes::RawSignal): emit onRaw(val.toShort()); break;
+        case(ParserCodes::Battery): emit onBattery(val.toUChar()); break;
         case(ParserCodes::AsicEegPowerInt): receiveEeg(val); break;
+        default: qDebug() << "undefined code: " << val.code();
     }
     
 }
@@ -38,22 +70,5 @@ void QThinkGearDataHandler::pushData(TGData val)
 void QThinkGearDataHandler::receiveEeg(TGData val)
 {
     auto eeg = val.deserializeArray(8);
-    EegValues eegVals(eeg);
-    /*
-    qDebug() << "Eeg values: ";
-    auto arr = QByteArray((const char*) val.value(), val.size()).toHex();
-    for (int i = 6; i <= 48; i++) {
-        arr.insert(i, " ");
-        i += 6;
-    }
-    qDebug() << arr;
-    for ( auto v : eegVals.getAllValues() ) {
-        qDebug() << "Name: " << v.name();
-        qDebug() << "Key: " << v.key();
-        qDebug() << "Value: " << Qt::hex << v.value();
-    }
-   qDebug() << " ";
-   */
-   // emit onEeg(eeg) 
-    
+    emit onEeg(EegValues(eeg));
 }
