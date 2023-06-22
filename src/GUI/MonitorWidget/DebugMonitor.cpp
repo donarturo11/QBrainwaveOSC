@@ -26,7 +26,7 @@ void DebugMonitor::initCursor()
 
 void DebugMonitor::onDebugReceived(QString dbgString)
 {
-    fprintf(stderr, "DebugMonitor::onDebugReceived\n");
+    //fprintf(stderr, "DebugMonitor::onDebugReceived\n");
     QString msg;
     QTextStream stream(&msg);
     status_cursor->movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
