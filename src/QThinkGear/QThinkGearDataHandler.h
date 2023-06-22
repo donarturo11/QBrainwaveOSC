@@ -100,7 +100,7 @@ public slots:
     { 
         qDebug() << __FUNCTION__;
         for (auto v : val.getAllValues()) {
-            qDebug() << v.key() << ":" << v.value();
+            qDebug() << QString::fromStdString(v.key()) << ":" << QString::number(v.value());
         } 
     }
     void onThinkGearConnecting(unsigned char val) { qDebug() << __FUNCTION__ << " " << val; }

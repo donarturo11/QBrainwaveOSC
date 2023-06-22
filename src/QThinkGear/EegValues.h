@@ -12,7 +12,7 @@ public:
         _name = name;
         _value = value;
     }
-    unsigned int operator=(EegValue&) const { return value(); }
+    unsigned int operator=(EegValue&) { return value(); }
     void operator=(unsigned int val) { setValue(val); }
     std::string key() { return _key; }
     std::string name() { return _name; }
