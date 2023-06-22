@@ -9,8 +9,7 @@ void QThinkGearDataHandle( unsigned char extendedCodeLevel,
                             void *customData )
 {
     auto handler = reinterpret_cast<QThinkGearDataHandler*>(customData);
-    TGData val(code, numBytes, value);
-    handler->pushData(val);
+    handler->pushData(TGData(code, numBytes, value));
 }                    
 
 QThinkGearDataHandler::QThinkGearDataHandler(QObject *parent)
@@ -54,7 +53,6 @@ QThinkGearDataHandler::~QThinkGearDataHandler()
 
 void QThinkGearDataHandler::pushData(TGData val)
 {
-    
     switch (val.code()) {
         case(ParserCodes::PoorSignal): emit onPoorSignal(val.toUChar()); break;
         case(ParserCodes::Attention): emit onAttention(val.toUChar()); break;
@@ -64,7 +62,6 @@ void QThinkGearDataHandler::pushData(TGData val)
         case(ParserCodes::AsicEegPowerInt): receiveEeg(val); break;
         default: qDebug() << "undefined code: " << val.code();
     }
-    
 }
 
 void QThinkGearDataHandler::receiveEeg(TGData val)
