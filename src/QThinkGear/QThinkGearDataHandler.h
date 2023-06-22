@@ -18,7 +18,20 @@
  *  PARSER_CODE_EEG_POWERS         0x81
  *  PARSER_CODE_ASIC_EEG_POWER_INT 0x83
  */
-
+typedef enum {
+    Battery=0x01,
+    PoorSignal,
+    HeartRate,
+    Attention,
+    Meditation,
+    Raw8Bit,
+    RawMarker,
+    RawSignal=0x80,
+    EegPowers,
+    AsicEegPowerInt=0x83,
+    SyncByte=0xAA,
+    ExcodeByte=0x55
+} ParserCodes;
 
 void QThinkGearDataHandle( unsigned char extendedCodeLevel,
                             unsigned char code,
@@ -33,12 +46,9 @@ public:
     QThinkGearDataHandler(QObject *parent = nullptr);
     ~QThinkGearDataHandler();
     static int dataCount;
-    void pushData(unsigned char extendedCodeLevel,
-                  unsigned char code,
-                  unsigned char numBytes,
-                  const unsigned char *value);
+    void pushData(TGData val);
 private:
-    void handleEeg(QByteArray d);
+    void receiveEeg(TGData val);
 };
 
 
