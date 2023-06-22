@@ -14,9 +14,9 @@ public:
     }
     unsigned int operator=(EegValue&) const { return value(); }
     void operator=(unsigned int val) { setValue(val); }
-    std::string key() const { return _key; }
-    std::string name() const { return _name; }
-    unsigned int value() const { return _value; }
+    std::string key() { return _key; }
+    std::string name() { return _name; }
+    unsigned int value() { return _value; }
     void setValue(int v) { _value = v; }
 private:    
     std::string _key;
