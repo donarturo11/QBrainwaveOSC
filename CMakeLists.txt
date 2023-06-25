@@ -19,6 +19,7 @@ include_directories(
    ${PROJECT_SOURCE_DIR}/src/GUI
    ${PROJECT_SOURCE_DIR}/src/GUI/SettingsWidget
    ${PROJECT_SOURCE_DIR}/src/GUI/MonitorWidget
+   ${PROJECT_SOURCE_DIR}/src/GUI/GraphsWidget
 )
 
 add_library(tgparser STATIC ${PROJECT_SOURCE_DIR}/thirdparty/neurosky/lib/MinSet_Dev_tools/ThinkGear/ThinkGearStreamParser.c)
