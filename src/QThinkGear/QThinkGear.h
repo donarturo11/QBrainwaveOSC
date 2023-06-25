@@ -18,6 +18,12 @@ public:
     QThinkGear(QObject *parent = nullptr);
     ~QThinkGear();
     static QThinkGear* qThinkGear() { return currentInstance; }
+    void addListener(QObject* listener) {
+        _handler.addListener(listener); 
+        }
+    void removeListener(QObject* listener) { 
+        _handler.removeListener(listener); 
+        }
     void setPortName(QString portName) { _device.setPortName(portName); }
     void setBaudRate(int baudRate){ _device.setBaudRate(baudRate); }
     void open();

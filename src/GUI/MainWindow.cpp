@@ -18,5 +18,5 @@ MainWindow::~MainWindow()
 
  void MainWindow::onDebugReceived(QString msg)
 {
-    emit debugReceived(msg);
+    //emit debugReceived(msg);
 }

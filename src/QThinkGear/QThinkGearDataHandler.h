@@ -5,6 +5,7 @@
 #include <QtCore>
 #include "TGData.h"
 #include "EegValues.h"
+#include "QThinkGearListener.h"
 
 /**
  *  Data CODE definitions:
@@ -49,8 +50,8 @@ public:
     ~QThinkGearDataHandler();
     static int dataCount;
     void pushData(TGData val);
-    void addListener(QThinkGearListener *listener);
-    void removeListener(QThinkGearListener *listener);
+    void addListener(QObject *listener);
+    void removeListener(QObject *listener);
 private:
     void receiveRaw(short val);
     void receiveEeg(TGData val);
@@ -65,52 +66,5 @@ signals:
     void onReady(unsigned char val);
     void onError(unsigned char val);
     void onBlinkStrength(unsigned char val);
-};
-
-class QThinkGearListener : public QObject
-{
-    Q_OBJECT
-public:
-    QThinkGearListener(QObject *parent=0) : QObject(parent){}
-public slots:
-    virtual void onThinkGearRaw(short val) = 0;
-    virtual void onThinkGearBattery(unsigned char val) = 0;
-    virtual void onThinkGearPoorSignal(unsigned char val) = 0;
-    virtual void onThinkGearAttention(unsigned char val) = 0;
-    virtual void onThinkGearMeditation(unsigned char val) = 0;
-    virtual void onThinkGearEeg(EegValues val) = 0;
-    virtual void onThinkGearConnecting(unsigned char val) = 0;
-    virtual void onThinkGearReady(unsigned char val) = 0;
-    virtual void onThinkGearError(unsigned char val) = 0;
-    virtual void onThinkGearBlinkStrength(unsigned char val) = 0;
-};
-
-class QThinkGearDebugListener : public QThinkGearListener
-{
-    Q_OBJECT
-public:
-    QThinkGearDebugListener(QObject *parent=0) : QThinkGearListener(parent){}
-public slots:
-    void onThinkGearRaw(short val) { qDebug() << __FUNCTION__ << " " << val; }
-    void onThinkGearBattery(unsigned char val) { qDebug() << __FUNCTION__ << " " << val; }
-    void onThinkGearPoorSignal(unsigned char val) { qDebug() << __FUNCTION__ << " " << val; }
-    void onThinkGearAttention(unsigned char val) { qDebug() << __FUNCTION__ << " " << val; }
-    void onThinkGearMeditation(unsigned char val) { qDebug() << __FUNCTION__ << " " << val; }
-    void onThinkGearEeg(EegValues val)
-    { 
-        qDebug() << __FUNCTION__;
-        for (auto v : val.getAllValues()) {
-            qDebug() << QString::fromStdString(v.key()) << ":" << QString::number(v.value());
-        } 
-    }
-    void onThinkGearConnecting(unsigned char val) { qDebug() << __FUNCTION__ << " " << val; }
-    void onThinkGearReady(unsigned char val) { qDebug() << __FUNCTION__ << " " << val; }
-    void onThinkGearError(unsigned char val) { qDebug() << __FUNCTION__ << " " << val; }
-    void onThinkGearBlinkStrength(unsigned char val) { qDebug() << __FUNCTION__ << " " << val; }
-};
-
-class QThinkGearWidget : public QThinkGearListener, public QWidget
-{
-    
 };
 #endif // QTHINKGEARDATAHANDLER_H
