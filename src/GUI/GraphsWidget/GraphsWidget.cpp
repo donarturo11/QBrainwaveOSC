@@ -11,7 +11,9 @@ GraphsWidget::GraphsWidget(QWidget *parent) :
 }
 
 GraphsWidget::~GraphsWidget()
-{}
+{
+    delete _rawgraph;
+}
 
 void GraphsWidget::onThinkGearRaw(short val)
 {

@@ -19,9 +19,9 @@ public:
         _chartview->show();
     }
     virtual ~TGWidget() {
-        delete _label;
         delete _chart;
         delete _chartview;
+        delete _label;
     }
     virtual void init(){}
 protected:
