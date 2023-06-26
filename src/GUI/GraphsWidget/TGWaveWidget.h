@@ -2,7 +2,7 @@
 #define TGWAVE_WIDGET_H
 #include "TGWidget.h"
 #include <QList>
-#include <QLineSeries>
+#include <QSplineSeries>
 #include <QSpinBox>
 #include <QLabel>
 
@@ -14,6 +14,7 @@ class TGWaveWidget : public TGWidget
     Q_OBJECT
 public:
     TGWaveWidget(QString label, QWidget *parent = nullptr);
+    ~TGWaveWidget();
     void insertValue(int val);
     void init();
 public slots:
@@ -23,11 +24,12 @@ public slots:
 private:
     void update();
 protected:
-    QLineSeries *_series;
+    QSplineSeries *_series;
     QSpinBox *_maxvals_spin;
     QLabel *_maxvals_label;
     QList<double> _saved_values;
     static int _maxValuesToSave;
+    static double _maxGraphWidth;
     int _cur_pos;
 };
 
