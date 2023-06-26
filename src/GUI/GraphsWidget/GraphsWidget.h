@@ -4,18 +4,18 @@
 #include <QWidget>
 #include "GraphsWidget.h"
 #include "QThinkGear.h"
-#include "QThinkGearListener.h"
-
+#include "TGWaveWidget.h"
+/*
 namespace Ui {
 class GraphsWidget;
 }
-
-class GraphsWidget : public QWidget, public QThinkGearListener
+*/
+class GraphsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit GraphsWidget(QWidget *parent = nullptr);
+    GraphsWidget(QWidget *parent = nullptr);
     ~GraphsWidget();
 public slots:
     void onThinkGearRaw(short val);
@@ -29,7 +29,7 @@ public slots:
     void onThinkGearError(unsigned char val);
     void onThinkGearBlinkStrength(unsigned char val);
 private:
-    Ui::GraphsWidget *ui;
+    TGWaveWidget *_rawgraph;
     QThinkGear *_tg;
 
 };

@@ -25,7 +25,7 @@ void QThinkGearDataHandler::addListener(QObject *listener)
     connect(this, SIGNAL(onPoorSignal(unsigned char)), listener, SLOT(onThinkGearPoorSignal(unsigned char)));
     connect(this, SIGNAL(onAttention(unsigned char)), listener, SLOT(onThinkGearAttention(unsigned char)));
     connect(this, SIGNAL(onMeditation(unsigned char)), listener, SLOT(onThinkGearMeditation(unsigned char)));
-    connect(this, SIGNAL(onEeg(eegValues)), listener, SLOT(onThinkGearEeg(eegValues)));
+    connect(this, SIGNAL(onEeg(EegValues)), listener, SLOT(onThinkGearEeg(EegValues)));
     connect(this, SIGNAL(onConnecting(unsigned char)), listener, SLOT(onThinkGearConnecting(unsigned char)));
     connect(this, SIGNAL(onReady(unsigned char)), listener, SLOT(onThinkGearReady(unsigned char)));
     connect(this, SIGNAL(onError(unsigned char)), listener, SLOT(onThinkGearError(unsigned char)));

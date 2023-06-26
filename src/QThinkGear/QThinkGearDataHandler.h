@@ -5,7 +5,6 @@
 #include <QtCore>
 #include "TGData.h"
 #include "EegValues.h"
-#include "QThinkGearListener.h"
 
 /**
  *  Data CODE definitions:

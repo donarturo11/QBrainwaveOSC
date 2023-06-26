@@ -65,5 +65,4 @@ void QThinkGear::onReadyRead()
     for (int i=0; i<size; i++) {
         THINKGEAR_parseByte(&_parser, buffer[i]);
     }
-    _device.waitForReadyRead(1);
 }

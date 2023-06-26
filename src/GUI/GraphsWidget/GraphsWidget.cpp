@@ -2,23 +2,23 @@
 #include "GraphsWidget.h"
 #include "ui_GraphsWidget.h"
 
+
 GraphsWidget::GraphsWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::GraphsWidget)
+    QWidget(parent)
 {
-    ui->setupUi(this);
     MainWindow::mainWindow()->thinkGear()->addListener(this);
+    _rawgraph = new TGWaveWidget("Raw wave: ", this);
     
 }
 
 GraphsWidget::~GraphsWidget()
 {
-    delete ui;
+    qDebug() << __PRETTY_FUNCTION__;
 }
 
 void GraphsWidget::onThinkGearRaw(short val)
 {
-    
+    _rawgraph->insertValue((int) val);
 }
 
 void GraphsWidget::onThinkGearBattery(unsigned char val)
