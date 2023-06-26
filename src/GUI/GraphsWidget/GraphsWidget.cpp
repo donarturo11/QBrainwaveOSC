@@ -8,13 +8,10 @@ GraphsWidget::GraphsWidget(QWidget *parent) :
 {
     MainWindow::mainWindow()->thinkGear()->addListener(this);
     _rawgraph = new TGWaveWidget("Raw wave: ", this);
-    
 }
 
 GraphsWidget::~GraphsWidget()
-{
-    qDebug() << __PRETTY_FUNCTION__;
-}
+{}
 
 void GraphsWidget::onThinkGearRaw(short val)
 {
