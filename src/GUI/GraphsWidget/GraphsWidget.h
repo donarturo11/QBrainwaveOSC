@@ -5,6 +5,7 @@
 #include <QBoxLayout>
 #include "GraphsWidget.h"
 #include "QThinkGear.h"
+#include "TGSimpleWidget.h"
 #include "TGWaveWidget.h"
 #include "TGEegWidget.h"
 /*
@@ -32,6 +33,9 @@ public slots:
     void onThinkGearBlinkStrength(unsigned char val);
 private:
     QBoxLayout *_layout;
+    TGSimpleWidget *_signal;
+    TGSimpleWidget *_attention;
+    TGSimpleWidget *_meditation;
     TGEegWidget *_eeggraph;
     TGWaveWidget *_rawgraph;
     QThinkGear *_tg;

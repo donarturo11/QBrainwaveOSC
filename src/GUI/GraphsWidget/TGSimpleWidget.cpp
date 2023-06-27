@@ -1,7 +1,7 @@
 #include "TGSimpleWidget.h"
 #include <QMargins>
 
-int TGSimpleWidget::defaultMax=255;
+int TGSimpleWidget::defaultMax=100;
 
 TGSimpleWidget::TGSimpleWidget(QString label, QWidget *parent) 
 : TGWidget(label, parent)
@@ -55,7 +55,7 @@ void TGSimpleWidget::initValues()
 void TGSimpleWidget::setupGui()
 {
     _label->setGeometry(0, 0, 100, 40);
-    _chartview->setGeometry(120,0,500,60);
+    _chartview->setGeometry(100, 0, 500, 50);
     _chart->addSeries(_series);
-    _chart->setMargins(QMargins(0, 0 , 0, 0));    
+    _chart->setMargins(QMargins(0, 0 , 10, 0));
 }

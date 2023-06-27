@@ -21,7 +21,7 @@ TGEegWidget::~TGEegWidget()
 void TGEegWidget::init()
 {
     _label->setGeometry(0, 40, 100, 40);
-    _chartview->setGeometry(120,0,500,160);
+    _chartview->setGeometry(100,0,500,180);
     series()->setBarWidth(0.9);
     _chart->addSeries(_series);
 

@@ -24,7 +24,7 @@ TGWaveWidget::~TGWaveWidget()
 void TGWaveWidget::init()
 {
     _label->setGeometry(0, 10, 100, 20);
-    _chartview->setGeometry(120,0,500,130);
+    _chartview->setGeometry(100,0,500,180);
     _chart->addSeries(_series);
     _chart->createDefaultAxes();
     _chart->axes()[0]->setMax(_maxGraphWidth);
