@@ -17,13 +17,13 @@ public:
     ~TGEegWidget();
     void init();
     void setValues(EegValues vals);
+    QBarSeries* series() { return reinterpret_cast<QBarSeries*>(_series); }
 private:
     void initAxes();
     void initValues();
     void setupLabels();
     void setupFonts();
 protected:
-    QBarSeries *_series;
     QBarSet* _eegValues;
     QValueAxis *_axisY;
     QBarCategoryAxis *_axisX;

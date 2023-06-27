@@ -40,7 +40,7 @@ void TGWaveWidget::init()
     _maxvals_spin->setValue(_maxValuesToSave);
     connect(_maxvals_spin, &QSpinBox::valueChanged, this, &TGWaveWidget::setAccuracy);
 
-    _series->setColor(0x00FF00);
+    //series()->setColor(0x00FF00);
 
     while (_cur_pos/SAMPLERATE < _maxGraphWidth) {
         insertValue(0);
@@ -71,7 +71,7 @@ void TGWaveWidget::update()
         idx++;
     }
     average = sum / _maxValuesToSave;
-    _series->append(QPointF(_cur_pos/SAMPLERATE, average));
+    series()->append(QPointF(_cur_pos/SAMPLERATE, average));
 
     double min = ((_cur_pos - _maxValuesToSave)/SAMPLERATE) - _maxGraphWidth;
     double max = min + _maxGraphWidth;

@@ -17,6 +17,7 @@ public:
     ~TGWaveWidget();
     void insertValue(int val);
     void init();
+    QSplineSeries* series() { return reinterpret_cast<QSplineSeries*>(_series); }
 public slots:
     void setAccuracy(int i) {
         _maxValuesToSave = i;
@@ -24,7 +25,6 @@ public slots:
 private:
     void update();
 protected:
-    QSplineSeries *_series;
     QSpinBox *_maxvals_spin;
     QLabel *_maxvals_label;
     QList<double> _saved_values;

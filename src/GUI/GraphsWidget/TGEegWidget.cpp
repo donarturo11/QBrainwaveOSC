@@ -22,7 +22,7 @@ void TGEegWidget::init()
 {
     _label->setGeometry(0, 40, 100, 40);
     _chartview->setGeometry(120,0,500,160);
-    _series->setBarWidth(0.9);
+    series()->setBarWidth(0.9);
     _chart->addSeries(_series);
 
     initAxes();
@@ -34,7 +34,7 @@ void TGEegWidget::init()
 void TGEegWidget::initAxes()
 {
     _chart->addAxis(_axisX, Qt::AlignBottom);
-    _series->attachAxis(_axisX);
+    series()->attachAxis(_axisX);
     _axisY->setRange(0,100);
 
     _chart->addAxis(_axisY, Qt::AlignLeft);
@@ -46,7 +46,7 @@ void TGEegWidget::initValues()
     for (int i=0; i<8; i++) {
         *_eegValues << 0;
     }
-    _series->append(_eegValues);
+    series()->append(_eegValues);
 }
 
 void TGEegWidget::setupLabels()
@@ -76,7 +76,7 @@ void TGEegWidget::setValues(EegValues vals)
     for (int i=0; i<8; i++) {
         _eegValues->replace(i, (((double)vals[i].value()/(double)vals.sum())*100)  );
     }
-    _series->append(_eegValues);
+    series()->append(_eegValues);
 }
 
 
