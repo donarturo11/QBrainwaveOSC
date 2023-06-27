@@ -10,6 +10,7 @@ QThinkGear::QThinkGear(QObject *parent) :
     _device.setReadBufferSize(512);
     QThinkGear::currentInstance = this;
     THINKGEAR_initParser(&_parser, PARSER_TYPE_PACKETS, QThinkGearDataHandle, &_handler);
+    _status = TGConnectionStatus::Idle;
 }
 
 QThinkGear::~QThinkGear()
@@ -27,8 +28,12 @@ void QThinkGear::open()
 #else
     bool opened = _device.open(QIODevice::ReadWrite);
 #endif
-    if (opened) qDebug() << "Open SUCCESS";
-    else qDebug() << "Open FAILED";
+    if (opened) {
+        changeStatus(TGConnectionStatus::Success);
+    } 
+    else {
+        changeStatus(TGConnectionStatus::Fail);
+    }
 }
 
 void QThinkGear::close()
@@ -36,6 +41,7 @@ void QThinkGear::close()
     qDebug() << "ThinkGear::disconnect";
     _device.flush();
     _device.close();
+    changeStatus(TGConnectionStatus::Idle);
 }
 
 void QThinkGear::test()
@@ -65,4 +71,10 @@ void QThinkGear::onReadyRead()
     for (int i=0; i<size; i++) {
         THINKGEAR_parseByte(&_parser, buffer[i]);
     }
+}
+
+void QThinkGear::changeStatus(TGConnectionStatus status)
+{
+    _status = status;
+    emit statusChanged(status);
 }

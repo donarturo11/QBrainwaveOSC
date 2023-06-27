@@ -8,9 +8,13 @@
 #include "QThinkGearDataHandler.h"
 
 const int ThinkgearBaudrates[] {
-    9600, 57600
+    57600, 9600
 };
-
+typedef enum {
+    Idle,
+    Success,
+    Fail
+} TGConnectionStatus;
 class QThinkGear : public QObject
 {
     Q_OBJECT
@@ -29,16 +33,19 @@ public:
     void open();
     void close();
     void test();
+    void changeStatus(TGConnectionStatus status);
 public slots:
     void onReadyRead();
 signals:
     void receivedData(QByteArray data);
+    void statusChanged(TGConnectionStatus status);
 private:
     static QThinkGear* currentInstance;
 protected:
     QSerialPort _device;
     ThinkGearStreamParser _parser;
     QThinkGearDataHandler _handler;
+    TGConnectionStatus _status;
     
 };
 #endif // QTHINKGEAR_H

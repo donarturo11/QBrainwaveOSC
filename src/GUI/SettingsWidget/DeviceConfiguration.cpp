@@ -10,8 +10,6 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     tg(QThinkGear::qThinkGear())
 {
     ui->setupUi(this);
-    connect(ui->runtest_btn, SIGNAL(clicked()),
-            this, SLOT(runTest()));
     connect(ui->refresh_btn, SIGNAL(clicked()),
             this, SLOT(refresh()));
     connect(ui->connect_btn, SIGNAL(clicked()),
@@ -22,6 +20,8 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
             this, SLOT(chooseDevice(int)));
     connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)),
             this, SLOT(chooseBaudrate(int)));
+    connect(tg, SIGNAL(statusChanged(TGConnectionStatus)),
+            this, SLOT(onThinkGearStatusChanged(TGConnectionStatus)));
 
     initBaudRates();
     refresh();
@@ -64,4 +64,15 @@ void DeviceConfiguration::refresh()
         auto portName = port.portName();
         ui->devices_cb->addItem(portName, portName);
     }
+}
+
+void DeviceConfiguration::onThinkGearStatusChanged(TGConnectionStatus status)
+{
+    QString status_str;
+    switch(status) {
+        case TGConnectionStatus::Idle: status_str = "Idle"; break;
+        case TGConnectionStatus::Success: status_str = "Success"; break;
+        case TGConnectionStatus::Fail: status_str = "FAIL"; break;
+    }
+    ui->connection_status->setText(status_str);
 }
