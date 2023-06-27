@@ -19,6 +19,7 @@ include_directories(
    ${PROJECT_SOURCE_DIR}/src/GUI
    ${PROJECT_SOURCE_DIR}/src/GUI/SettingsWidget
    ${PROJECT_SOURCE_DIR}/src/GUI/MonitorWidget
+   ${PROJECT_SOURCE_DIR}/src/GUI/GraphsWidget
 )
 
 add_library(tgparser STATIC ${PROJECT_SOURCE_DIR}/thirdparty/neurosky/lib/MinSet_Dev_tools/ThinkGear/ThinkGearStreamParser.c)
@@ -33,8 +34,8 @@ elseif(FORCE_QT6)
     set(QT_VERSION_MAJOR 6)
     find_package(Qt6 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort)
 else()
-    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort)
-    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort)
+    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts)
 endif()
 
 if (${QT_VERSION_MAJOR} EQUAL 5)
@@ -104,6 +105,7 @@ ENDIF()
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Bluetooth)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::SerialPort)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Charts)
 target_link_libraries(${PROJECT_NAME} PUBLIC tgparser)
 
 if(WIN32)

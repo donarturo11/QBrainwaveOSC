@@ -111,8 +111,8 @@ jobs:
     - name: Install Qt
       run: |
            AQT_INSTALL="python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} ${{matrix.aqt-os}} desktop ${{matrix.qt-version}} ${{matrix.aqt-arch}}"
-           QT6_MODULES=(qtconnectivity qtserialport)
-           QT5_MODULES=()
+           QT6_MODULES=(qtconnectivity qtserialport qtcharts)
+           QT5_MODULES=(qtcharts)
            ${AQT_INSTALL}
            if [[ ${{matrix.qt-version}} == 6.* ]]; then
                for i in ${QT6_MODULES[@]}; do

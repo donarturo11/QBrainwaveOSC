@@ -1,0 +1,15 @@
+#projectName(QBrainwaveOSC)
+
+set(GRAPHS_WIDGET_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/GraphsWidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/GraphsWidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GraphsWidget.ui
+    ${CMAKE_CURRENT_SOURCE_DIR}/TGWidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/TGWaveWidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/TGWaveWidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/TGEegWidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/TGEegWidget.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/TGSimpleWidget.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/TGSimpleWidget.h
+    PARENT_SCOPE
+   )

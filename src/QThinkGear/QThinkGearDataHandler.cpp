@@ -18,32 +18,34 @@ QThinkGearDataHandler::QThinkGearDataHandler(QObject *parent)
     
 }
 
-void QThinkGearDataHandler::addListener(QThinkGearListener *listener)
+void QThinkGearDataHandler::addListener(QObject *listener)
 {
-    connect(this, &QThinkGearDataHandler::onRaw, listener, &QThinkGearListener::onThinkGearRaw);     
-    connect(this, &QThinkGearDataHandler::onBattery, listener, &QThinkGearListener::onThinkGearBattery);
-    connect(this, &QThinkGearDataHandler::onPoorSignal, listener, &QThinkGearListener::onThinkGearPoorSignal);
-    connect(this, &QThinkGearDataHandler::onAttention, listener, &QThinkGearListener::onThinkGearAttention);
-    connect(this, &QThinkGearDataHandler::onMeditation, listener, &QThinkGearListener::onThinkGearMeditation);
-    connect(this, &QThinkGearDataHandler::onEeg, listener, &QThinkGearListener::onThinkGearEeg);
-    connect(this, &QThinkGearDataHandler::onConnecting, listener, &QThinkGearListener::onThinkGearConnecting);
-    connect(this, &QThinkGearDataHandler::onReady, listener, &QThinkGearListener::onThinkGearReady);
-    connect(this, &QThinkGearDataHandler::onError, listener, &QThinkGearListener::onThinkGearError);
-    connect(this, &QThinkGearDataHandler::onBlinkStrength, listener, &QThinkGearListener::onThinkGearBlinkStrength);
+    connect(this, SIGNAL(onRaw(short)), listener, SLOT(onThinkGearRaw(short)));
+    connect(this, SIGNAL(onBattery(unsigned char)), listener, SLOT(onThinkGearBattery(unsigned char)));
+    connect(this, SIGNAL(onPoorSignal(unsigned char)), listener, SLOT(onThinkGearPoorSignal(unsigned char)));
+    connect(this, SIGNAL(onAttention(unsigned char)), listener, SLOT(onThinkGearAttention(unsigned char)));
+    connect(this, SIGNAL(onMeditation(unsigned char)), listener, SLOT(onThinkGearMeditation(unsigned char)));
+    connect(this, SIGNAL(onEeg(EegValues)), listener, SLOT(onThinkGearEeg(EegValues)));
+    connect(this, SIGNAL(onConnecting(unsigned char)), listener, SLOT(onThinkGearConnecting(unsigned char)));
+    connect(this, SIGNAL(onReady(unsigned char)), listener, SLOT(onThinkGearReady(unsigned char)));
+    connect(this, SIGNAL(onError(unsigned char)), listener, SLOT(onThinkGearError(unsigned char)));
+    connect(this, SIGNAL(onBlinkStrength(unsigned char)), listener, SLOT(onThinkGearBlinkStrength(unsigned char)));
 }
 
-void QThinkGearDataHandler::removeListener(QThinkGearListener *listener)
+void QThinkGearDataHandler::removeListener(QObject *listener)
 {
-    disconnect(this, &QThinkGearDataHandler::onRaw, listener, &QThinkGearListener::onThinkGearRaw);     
-    disconnect(this, &QThinkGearDataHandler::onBattery, listener, &QThinkGearListener::onThinkGearBattery);
-    disconnect(this, &QThinkGearDataHandler::onPoorSignal, listener, &QThinkGearListener::onThinkGearPoorSignal);
-    disconnect(this, &QThinkGearDataHandler::onAttention, listener, &QThinkGearListener::onThinkGearAttention);
-    disconnect(this, &QThinkGearDataHandler::onMeditation, listener, &QThinkGearListener::onThinkGearMeditation);
-    disconnect(this, &QThinkGearDataHandler::onEeg, listener, &QThinkGearListener::onThinkGearEeg);
-    disconnect(this, &QThinkGearDataHandler::onConnecting, listener, &QThinkGearListener::onThinkGearConnecting);
-    disconnect(this, &QThinkGearDataHandler::onReady, listener, &QThinkGearListener::onThinkGearReady);
-    disconnect(this, &QThinkGearDataHandler::onError, listener, &QThinkGearListener::onThinkGearError);
-    disconnect(this, &QThinkGearDataHandler::onBlinkStrength, listener, &QThinkGearListener::onThinkGearBlinkStrength);    
+    
+    disconnect(this, SIGNAL(onRaw(short)), listener, SLOT(onThinkGearRaw(short)));
+    disconnect(this, SIGNAL(onBattery(unsigned char)), listener, SLOT(onThinkGearBattery(unsigned char)));
+    disconnect(this, SIGNAL(onPoorSignal(unsigned char)), listener, SLOT(onThinkGearPoorSignal(unsigned char)));
+    disconnect(this, SIGNAL(onAttention(unsigned char)), listener, SLOT(onThinkGearAttention(unsigned char)));
+    disconnect(this, SIGNAL(onMeditation(unsigned char)), listener, SLOT(onThinkGearMeditation(unsigned char)));
+    disconnect(this, SIGNAL(onEeg(eegValues)), listener, SLOT(onThinkGearEeg(eegValues)));
+    disconnect(this, SIGNAL(onConnecting(unsigned char)), listener, SLOT(onThinkGearConnecting(unsigned char)));
+    disconnect(this, SIGNAL(onReady(unsigned char)), listener, SLOT(onThinkGearReady(unsigned char)));
+    disconnect(this, SIGNAL(onError(unsigned char)), listener, SLOT(onThinkGearError(unsigned char)));
+    disconnect(this, SIGNAL(onBlinkStrength(unsigned char)), listener, SLOT(onThinkGearBlinkStrength(unsigned char)));    
+     
 }
 
 QThinkGearDataHandler::~QThinkGearDataHandler()
