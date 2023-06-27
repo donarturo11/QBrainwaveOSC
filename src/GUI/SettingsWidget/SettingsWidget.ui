@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>311</width>
-    <height>440</height>
+    <width>376</width>
+    <height>393</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,15 +16,51 @@
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
-  <widget class="DeviceConfiguration" name="deviceconfiguration" native="true">
+  <widget class="QGroupBox" name="deviceGroup">
    <property name="geometry">
     <rect>
-     <x>0</x>
-     <y>10</y>
-     <width>301</width>
-     <height>181</height>
+     <x>10</x>
+     <y>0</y>
+     <width>331</width>
+     <height>171</height>
     </rect>
    </property>
+   <property name="title">
+    <string>Serial Port</string>
+   </property>
+   <widget class="DeviceConfiguration" name="deviceconfiguration" native="true">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>40</y>
+      <width>301</width>
+      <height>91</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="oscGroup">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>180</y>
+     <width>331</width>
+     <height>201</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>OSC</string>
+   </property>
+   <widget class="OSCConfiguration" name="oscconfiguration" native="true">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>50</y>
+      <width>301</width>
+      <height>131</height>
+     </rect>
+    </property>
+   </widget>
   </widget>
  </widget>
  <customwidgets>
@@ -32,6 +68,12 @@
    <class>DeviceConfiguration</class>
    <extends>QWidget</extends>
    <header>DeviceConfiguration.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>OSCConfiguration</class>
+   <extends>QWidget</extends>
+   <header>OSCConfiguration.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

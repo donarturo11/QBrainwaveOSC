@@ -7,20 +7,20 @@
     <x>0</x>
     <y>0</y>
     <width>1001</width>
-    <height>666</height>
+    <height>508</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>QBrainWaveOSC</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="GraphsWidget" name="graphs_widget" native="true">
     <property name="geometry">
      <rect>
-      <x>340</x>
+      <x>380</x>
       <y>10</y>
-      <width>651</width>
-      <height>581</height>
+      <width>611</width>
+      <height>491</height>
      </rect>
     </property>
    </widget>
@@ -29,8 +29,8 @@
      <rect>
       <x>21</x>
       <y>11</y>
-      <width>311</width>
-      <height>581</height>
+      <width>351</width>
+      <height>491</height>
      </rect>
     </property>
    </widget>
