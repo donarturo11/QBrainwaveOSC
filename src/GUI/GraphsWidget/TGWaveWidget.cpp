@@ -38,7 +38,7 @@ void TGWaveWidget::init()
     _maxvals_spin->setGeometry(0, 80, 50, 25);
     _maxvals_spin->setRange(2,16);
     _maxvals_spin->setValue(_maxValuesToSave);
-    connect(_maxvals_spin, &QSpinBox::valueChanged, this, &TGWaveWidget::setAccuracy);
+    connect(_maxvals_spin, SIGNAL(valueChanged(int)), this, SLOT(setAccuracy(int)));
 
     //series()->setColor(0x00FF00);
 
