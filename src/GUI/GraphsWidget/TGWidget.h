@@ -17,6 +17,8 @@ public:
         
         _chartview = new QChartView(_chart, this);
         _chartview->show();
+        _label->setGeometry(0, 0, 100, 40);
+        _chartview->setGeometry(120,0,500,100);
     }
     virtual ~TGWidget() {
         delete _chart;
