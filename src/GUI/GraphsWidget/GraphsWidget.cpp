@@ -7,7 +7,11 @@ GraphsWidget::GraphsWidget(QWidget *parent) :
     QWidget(parent)
 {
     MainWindow::mainWindow()->thinkGear()->addListener(this);
+    _eeggraph = new TGEegWidget("Eeg\nvalues", this);
     _rawgraph = new TGWaveWidget("Raw wave: ", this);
+    _layout = new QBoxLayout(QBoxLayout::TopToBottom, this);
+    _layout->addWidget(_eeggraph);
+    _layout->addWidget(_rawgraph);
 }
 
 GraphsWidget::~GraphsWidget()
@@ -42,7 +46,7 @@ void GraphsWidget::onThinkGearMeditation(unsigned char val)
 
 void GraphsWidget::onThinkGearEeg(EegValues val)
 {
-    
+    _eeggraph->setValues(val);
 }
 
 void GraphsWidget::onThinkGearConnecting(unsigned char val)

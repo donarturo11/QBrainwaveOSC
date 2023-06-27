@@ -2,9 +2,11 @@
 #define GRAPHSWIDGET_H
 
 #include <QWidget>
+#include <QBoxLayout>
 #include "GraphsWidget.h"
 #include "QThinkGear.h"
 #include "TGWaveWidget.h"
+#include "TGEegWidget.h"
 /*
 namespace Ui {
 class GraphsWidget;
@@ -29,6 +31,8 @@ public slots:
     void onThinkGearError(unsigned char val);
     void onThinkGearBlinkStrength(unsigned char val);
 private:
+    QBoxLayout *_layout;
+    TGEegWidget *_eeggraph;
     TGWaveWidget *_rawgraph;
     QThinkGear *_tg;
 

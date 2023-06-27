@@ -30,4 +30,5 @@ protected:
     QChart *_chart;
 };
 
+
 #endif // TGWIDGET_H
