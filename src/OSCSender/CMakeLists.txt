@@ -1,0 +1,9 @@
+#projectName(QBrainwaveOSC)
+
+set(OSCSENDER_SOURCES
+   ${CMAKE_CURRENT_SOURCE_DIR}/OSCSender.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/OSCSender.cpp
+   PARENT_SCOPE
+   )
+
+

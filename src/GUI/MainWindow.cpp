@@ -7,12 +7,14 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     MainWindow::mainwindow = this;
+    osc = new OSCSender(this);
     ui->setupUi(this);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete osc;
     delete tg;
 }
 

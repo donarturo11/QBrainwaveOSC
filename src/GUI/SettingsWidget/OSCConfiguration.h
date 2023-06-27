@@ -2,6 +2,8 @@
 #define OSCCONFIGURATION_H
 
 #include <QWidget>
+#include "OSCSender.h"
+
 namespace Ui {
 class OSCConfiguration;
 }
@@ -14,14 +16,16 @@ public:
     explicit OSCConfiguration(QWidget *parent = nullptr);
     ~OSCConfiguration();
 public slots:
-    
-public slots:
-    
+    void onAddressChanged(QString address);
+    void onEditingFinished();
+    void onPortChanged(int port);
+    void onOscOptionChanged(int state);
+    void onOscEnabledStateChanged(int state);
 private:
-    Ui::OSCConfiguration *ui;
-    
+    void updateFlags();
 protected:
-    
+    Ui::OSCConfiguration *ui;
+    OSCSender *osc;
 };
 
 #endif // OSCCONFIGURATION_H
