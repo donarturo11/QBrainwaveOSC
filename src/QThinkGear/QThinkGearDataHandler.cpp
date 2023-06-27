@@ -40,7 +40,7 @@ void QThinkGearDataHandler::removeListener(QObject *listener)
     disconnect(this, SIGNAL(onPoorSignal(unsigned char)), listener, SLOT(onThinkGearPoorSignal(unsigned char)));
     disconnect(this, SIGNAL(onAttention(unsigned char)), listener, SLOT(onThinkGearAttention(unsigned char)));
     disconnect(this, SIGNAL(onMeditation(unsigned char)), listener, SLOT(onThinkGearMeditation(unsigned char)));
-    disconnect(this, SIGNAL(onEeg(eegValues)), listener, SLOT(onThinkGearEeg(eegValues)));
+    disconnect(this, SIGNAL(onEeg(EegValues)), listener, SLOT(onThinkGearEeg(EegValues)));
     disconnect(this, SIGNAL(onConnecting(unsigned char)), listener, SLOT(onThinkGearConnecting(unsigned char)));
     disconnect(this, SIGNAL(onReady(unsigned char)), listener, SLOT(onThinkGearReady(unsigned char)));
     disconnect(this, SIGNAL(onError(unsigned char)), listener, SLOT(onThinkGearError(unsigned char)));
