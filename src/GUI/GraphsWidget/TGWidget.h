@@ -5,7 +5,9 @@
 #include <QChart>
 #include <QChartView>
 #include <QAbstractSeries>
-
+#ifdef QT5
+using namespace QtCharts;
+#endif
 class TGWidget : public QWidget
 {
     Q_OBJECT
