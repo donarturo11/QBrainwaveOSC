@@ -16,7 +16,10 @@ OSCConfiguration::OSCConfiguration(QWidget *parent) :
     connect(ui->signal_toggle, SIGNAL(stateChanged(int)), this, SLOT(onOscOptionChanged(int)));
     connect(ui->osc_enable_toggle, SIGNAL(stateChanged(int)), this, SLOT(onOscEnabledStateChanged(int)));
     osc = MainWindow::mainWindow()->oscSender();
+    osc->setAddress(ui->host_edit->text());
+    osc->setPort(ui->port_chooser->value());
     updateFlags();
+    if (ui->osc_enable_toggle->checkState()) osc->connectListener();
 }
 
 OSCConfiguration::~OSCConfiguration()
