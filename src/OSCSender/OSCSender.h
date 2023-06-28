@@ -6,6 +6,7 @@
 #include "QThinkGear.h"
 #include "QThinkGearDataHandler.h"
 #include <QHostAddress>
+#include <QUdpSocket>
 
 #define OSCSENDER_ENABLE_RAW 0x01
 #define OSCSENDER_ENABLE_EEG 0x02
@@ -34,8 +35,13 @@ public slots:
     void onThinkGearReady(unsigned char val);
     void onThinkGearError(unsigned char val);
     void onThinkGearBlinkStrength(unsigned char val);
+private:
+    void sendDatagram(std::string path, std::string tag, uint32_t value);
+    void sendFloatDatagram(std::string path, float value);
+    void sendIntDatagram(std::string path, int value);
 protected:
     QHostAddress _address;
+    QUdpSocket *_socket;
     short _port;
     int _flags;
     QThinkGear *_tg;
