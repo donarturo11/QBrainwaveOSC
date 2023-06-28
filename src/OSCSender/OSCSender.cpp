@@ -10,6 +10,7 @@ OSCSender::OSCSender(QObject *parent) :
 
 OSCSender::~OSCSender()
 {
+    if (_tg) disconnectListener();
     delete _socket;
 }
 
