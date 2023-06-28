@@ -184,14 +184,8 @@ jobs:
                  -DCMAKE_INSTALL_PREFIX="${{env.INSTALL_PREFIX}}" \
                  -DCMAKE_PREFIX_PATH="${{env.AQTPATH}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}};${{env.DEPSPATH}}" 
 
-    - name: Compile Code (POSIX)
-      #if: ${{matrix.name != 'windows'}}
+    - name: Compile Code
       run: cmake --build ${{env.WORKDIR}}/build
-
-#    - name: Compile Code (WINDOWS)
-#      if: ${{matrix.name == 'windows'}}
-#      shell: pwsh
-#      run: cmake --build ${{github.workspace}}/build --config Release
 
     - name: Prepare appdir
       run: |
