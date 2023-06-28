@@ -22,7 +22,6 @@ public slots:
     void chooseBaudrate(int id);
     void connectDevice() { tg->open(); }
     void disconnectDevice() { tg->close(); }
-    void runTest() { tg->test(); }
     void refresh();
 public slots:
     void onThinkGearStatusChanged(TGConnectionStatus status);

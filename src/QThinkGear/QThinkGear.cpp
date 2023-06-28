@@ -1,5 +1,5 @@
 #include "QThinkGear.h"
-#include "thinkgear_test_packets.h"
+
 QThinkGear* QThinkGear::currentInstance;
 
 QThinkGear::QThinkGear(QObject *parent) :
@@ -42,24 +42,6 @@ void QThinkGear::close()
     _device.flush();
     _device.close();
     changeStatus(TGConnectionStatus::Idle);
-}
-
-void QThinkGear::test()
-{
-    QByteArray data;
-    for (int i=0; i<raw_wave_len; i++) {
-        data.push_back(raw_wave[i]);
-    }
-    for (int i=0; i<eeg_packet_len; i++) {
-        data.push_back(eeg_packet1[i]);
-    }
-    for (int i=0; i<eeg_packet_len; i++) {
-        data.push_back(eeg_packet2[i]);
-    }
-    for (int i=0; i<eeg_packet_len; i++) {
-        data.push_back(eeg_packet3[i]);
-    }
-    emit receivedData(data);
 }
 
 void QThinkGear::onReadyRead()

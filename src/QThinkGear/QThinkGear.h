@@ -32,7 +32,6 @@ public:
     void setBaudRate(int baudRate){ _device.setBaudRate(baudRate); }
     void open();
     void close();
-    void test();
     void changeStatus(TGConnectionStatus status);
 public slots:
     void onReadyRead();
