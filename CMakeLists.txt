@@ -16,6 +16,7 @@ include_directories(
    ${PROJECT_SOURCE_DIR}/thirdparty/neurosky/lib/MinSet_Dev_tools/ThinkGear
    ${PROJECT_SOURCE_DIR}/src
    ${PROJECT_SOURCE_DIR}/src/QThinkGear
+   ${PROJECT_SOURCE_DIR}/src/OSCSender
    ${PROJECT_SOURCE_DIR}/src/GUI
    ${PROJECT_SOURCE_DIR}/src/GUI/SettingsWidget
    ${PROJECT_SOURCE_DIR}/src/GUI/MonitorWidget
@@ -29,13 +30,13 @@ option(FORCE_QT6 "Force qt6 install" OFF)
 
 if(FORCE_QT5)
     set(QT_VERSION_MAJOR 5)
-    find_package(Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort)
+    find_package(Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Network)
 elseif(FORCE_QT6)
     set(QT_VERSION_MAJOR 6)
-    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort)
+    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Network)
 else()
-    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts)
-    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts)
+    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts Network)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts Network)
 endif()
 
 if (${QT_VERSION_MAJOR} EQUAL 5)
@@ -106,6 +107,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Bluetooth)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::SerialPort)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Charts)
+target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
 target_link_libraries(${PROJECT_NAME} PUBLIC tgparser)
 
 if(WIN32)
