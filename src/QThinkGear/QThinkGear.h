@@ -33,6 +33,7 @@ public:
     void open();
     void close();
     void changeStatus(TGConnectionStatus status);
+    QSerialPort* device() { return &_device; }
 public slots:
     void onReadyRead();
 signals:
