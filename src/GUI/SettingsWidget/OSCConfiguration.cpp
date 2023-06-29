@@ -35,12 +35,11 @@ void OSCConfiguration::onEditingFinished()
 
 void OSCConfiguration::onAddressChanged(QString address)
 {
-    qDebug() << __PRETTY_FUNCTION__ << "";    
+
 }
 
 void OSCConfiguration::onPortChanged(int port)
 {
-    qDebug() << __PRETTY_FUNCTION__ << ":" << port;
     osc->setPort((short) port);
 }
 
