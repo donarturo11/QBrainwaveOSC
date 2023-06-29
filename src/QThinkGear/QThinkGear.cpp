@@ -29,6 +29,7 @@ void QThinkGear::open()
     bool opened = _device.open(QIODevice::ReadWrite);
 #endif
     if (opened) {
+        _device.flush();
         changeStatus(TGConnectionStatus::Success);
     } 
     else {
