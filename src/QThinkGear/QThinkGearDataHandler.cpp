@@ -1,5 +1,5 @@
 #include "QThinkGearDataHandler.h"
-
+#include "MainWindow.h"
 int QThinkGearDataHandler::dataCount=0;
 
 void QThinkGearDataHandle( unsigned char extendedCodeLevel,
@@ -55,6 +55,7 @@ QThinkGearDataHandler::~QThinkGearDataHandler()
 
 void QThinkGearDataHandler::pushData(TGData val)
 {
+    auto dev = MainWindow::mainWindow()->thinkGear()->device();
     switch (val.code()) {
         case(ParserCodes::PoorSignal): emit onPoorSignal(val.toUChar()); break;
         case(ParserCodes::Attention): emit onAttention(val.toUChar()); break;
@@ -62,6 +63,7 @@ void QThinkGearDataHandler::pushData(TGData val)
         case(ParserCodes::RawSignal): emit onRaw(val.toShort()); break;
         case(ParserCodes::Battery): emit onBattery(val.toUChar()); break;
         case(ParserCodes::AsicEegPowerInt): receiveEeg(val); break;
+        case(0xd4): dev->putChar(0xc2); break;
         default: qDebug() << "undefined code: " << val.code();
     }
 }
