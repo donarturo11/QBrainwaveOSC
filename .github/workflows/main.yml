@@ -235,13 +235,6 @@ jobs:
            cpack --config ${{env.WORKDIR}}/build/CPackConfig.cmake -G 7Z
            mv ${{env.pkgname}}*.7z ${PACKAGE_NAME}-Portable.7z
            rm -Rf _CPack_Packages/
-
-    - name: Test linux deploy qt
-      if: ${{runner.os == 'Linux'}}
-      env:
-          QTDIR: ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}
-      run:
-          find ${QTDIR} -name "qmake" -type f -executable -exec echo "Fount {}" \;
     
     - name: Create AppImage
       if: ${{runner.os == 'Linux'}}
