@@ -4,8 +4,8 @@
 int TGWaveWidget::_maxValuesToSave = 8;
 double TGWaveWidget::_maxGraphWidth = 8;
 
-TGWaveWidget::TGWaveWidget(QString label, QWidget *parent) 
-: TGWidget(label, parent)
+TGWaveWidget::TGWaveWidget(QWidget *parent) 
+: TGWidget(parent)
 {
     _cur_pos = 0;
     _series = new QSplineSeries;
@@ -18,30 +18,33 @@ TGWaveWidget::~TGWaveWidget()
 {
     delete _maxvals_label;
     delete _maxvals_spin;
-    delete _series;
 }
 
-void TGWaveWidget::init()
+void TGWaveWidget::setupAxes()
+{
+    setupDefaultAxes();
+    _axisX->setMax(_maxGraphWidth);
+    _axisX->setMin(0.0);
+    _axisY->setMax(1.0);
+    _axisY->setMin(-1.0);
+}
+
+void TGWaveWidget::setupGui()
 {
     _label->setGeometry(0, 10, 100, 20);
     _chartview->setGeometry(100,0,500,180);
-    _chart->addSeries(_series);
-    _chart->createDefaultAxes();
-    _chart->axes()[0]->setMax(_maxGraphWidth);
-    _chart->axes()[0]->setMin(0.0);
-    _chart->axes()[0]->hide();
-    _chart->axes()[1]->setMax(1.0);
-    _chart->axes()[1]->setMin(-1.0);
-    _chart->axes()[1]->hide();
-
+    _axisX->hide();
+    _axisY->hide();
+    
     _maxvals_label->setGeometry(0, 40, 80, 40);
     _maxvals_spin->setGeometry(0, 80, 50, 25);
     _maxvals_spin->setRange(2,16);
     _maxvals_spin->setValue(_maxValuesToSave);
     connect(_maxvals_spin, SIGNAL(valueChanged(int)), this, SLOT(setAccuracy(int)));
+}
 
-    //series()->setColor(0x00FF00);
-
+void TGWaveWidget::initValues()
+{
     while (_cur_pos/SAMPLERATE < _maxGraphWidth) {
         insertValue(0);
     }
@@ -76,6 +79,6 @@ void TGWaveWidget::update()
     double min = ((_cur_pos - _maxValuesToSave)/SAMPLERATE) - _maxGraphWidth;
     double max = min + _maxGraphWidth;
 
-    _chart->axes()[0]->setMin(min);
-    _chart->axes()[0]->setMax(max);
+    _axisX->setMin(min);
+    _axisX->setMax(max);
 }

@@ -11,9 +11,8 @@ class TGSimpleWidget : public TGWidget
 {
     Q_OBJECT
 public:
-    TGSimpleWidget(QString label, QWidget *parent = nullptr);
+    TGSimpleWidget(QWidget *parent = nullptr);
     ~TGSimpleWidget();
-    void init();
     void setValue(int val);
     QHorizontalBarSeries* series() { 
         return reinterpret_cast<QHorizontalBarSeries*>(_series);

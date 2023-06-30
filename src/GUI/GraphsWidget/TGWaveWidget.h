@@ -13,10 +13,9 @@ class TGWaveWidget : public TGWidget
 {
     Q_OBJECT
 public:
-    TGWaveWidget(QString label, QWidget *parent = nullptr);
+    TGWaveWidget(QWidget *parent = nullptr);
     ~TGWaveWidget();
     void insertValue(int val);
-    void init();
     QSplineSeries* series() { return reinterpret_cast<QSplineSeries*>(_series); }
 public slots:
     void setAccuracy(int i) {
@@ -24,6 +23,9 @@ public slots:
     }
 private:
     void update();
+    void setupAxes();
+    void setupGui();
+    void initValues();
 protected:
     QSpinBox *_maxvals_spin;
     QLabel *_maxvals_label;

@@ -13,21 +13,19 @@ class TGEegWidget : public TGWidget
 {
     Q_OBJECT
 public:
-    TGEegWidget(QString label, QWidget *parent = nullptr);
+    TGEegWidget(QWidget *parent = nullptr);
     ~TGEegWidget();
-    void init();
     void setValues(EegValues vals);
     QBarSeries* series() { return reinterpret_cast<QBarSeries*>(_series); }
 private:
-    void initAxes();
+    void setupAxes();
+    void setupGui();
     void initValues();
-    void setupLabels();
+    void update() { series()->append(_eegValues); }
     void setupFonts();
+    void setupLabels();
 protected:
     QBarSet* _eegValues;
-    QValueAxis *_axisY;
-    QBarCategoryAxis *_axisX;
-    
 };
 
 #endif // TGEEG_WIDGET_H

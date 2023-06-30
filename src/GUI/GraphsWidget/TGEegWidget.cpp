@@ -1,11 +1,11 @@
 #include "TGEegWidget.h"
 
-TGEegWidget::TGEegWidget(QString label, QWidget *parent) 
-: TGWidget(label, parent)
+TGEegWidget::TGEegWidget(QWidget *parent) 
+: TGWidget(parent)
 {
     _series = new QBarSeries();
     _eegValues = new QBarSet("Eeg");
-    _axisX = new QBarCategoryAxis();
+    _axisX = (QValueAxis*) new QBarCategoryAxis();
     _axisY = new QValueAxis();
     init();
 }
@@ -15,23 +15,9 @@ TGEegWidget::~TGEegWidget()
     delete _axisY;
     delete _axisX;
     delete _eegValues;
-    delete _series;
 }
 
-void TGEegWidget::init()
-{
-    _label->setGeometry(0, 40, 100, 40);
-    _chartview->setGeometry(100,0,500,180);
-    series()->setBarWidth(0.9);
-    _chart->addSeries(_series);
-
-    initAxes();
-    setupLabels();
-    setupFonts();
-    initValues();
-}
-
-void TGEegWidget::initAxes()
+void TGEegWidget::setupAxes()
 {
     _chart->addAxis(_axisX, Qt::AlignBottom);
     series()->attachAxis(_axisX);
@@ -39,6 +25,16 @@ void TGEegWidget::initAxes()
 
     _chart->addAxis(_axisY, Qt::AlignLeft);
     _series->attachAxis(_axisY);
+}
+
+
+void TGEegWidget::setupGui()
+{
+    _label->setGeometry(0, 40, 100, 40);
+    _chartview->setGeometry(100,0,500,180);
+    series()->setBarWidth(0.9);
+    setupLabels();
+    setupFonts();
 }
 
 void TGEegWidget::initValues()
@@ -60,7 +56,7 @@ void TGEegWidget::setupLabels()
                << QString::fromUtf8("Hi \u03b2")  /* high beta  */
                << QString::fromUtf8("Lo \u03b3")  /* low gamma  */
                << QString::fromUtf8("Hi \u03b3"); /* high gamma */
-    _axisX->append(categories);
+    reinterpret_cast<QBarCategoryAxis*>(_axisX)->append(categories);
 }
 
 void TGEegWidget::setupFonts()
@@ -74,9 +70,9 @@ void TGEegWidget::setupFonts()
 void TGEegWidget::setValues(EegValues vals)
 {
     for (int i=0; i<8; i++) {
-        _eegValues->replace(i, (((double)vals[i].value()/(double)vals.sum())*100)  );
+        _eegValues->replace(i, (((double)vals[i].value()/(double)vals.sum())*100));
     }
-    series()->append(_eegValues);
+    update();
 }
 
 
