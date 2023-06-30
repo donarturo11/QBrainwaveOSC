@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1001</width>
-    <height>508</height>
+    <height>497</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,23 +17,31 @@
    <widget class="GraphsWidget" name="graphs_widget" native="true">
     <property name="geometry">
      <rect>
-      <x>380</x>
-      <y>10</y>
+      <x>360</x>
+      <y>0</y>
       <width>611</width>
-      <height>491</height>
+      <height>462</height>
      </rect>
     </property>
    </widget>
    <widget class="SettingsWidget" name="settings_widget" native="true">
     <property name="geometry">
      <rect>
-      <x>21</x>
-      <y>11</y>
+      <x>0</x>
+      <y>0</y>
       <width>351</width>
-      <height>491</height>
+      <height>462</height>
      </rect>
     </property>
    </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">background: #b0b0b0</string>
+   </property>
   </widget>
  </widget>
  <customwidgets>

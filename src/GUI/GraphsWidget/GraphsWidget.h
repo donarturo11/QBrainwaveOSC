@@ -8,11 +8,11 @@
 #include "TGSimpleWidget.h"
 #include "TGWaveWidget.h"
 #include "TGEegWidget.h"
-/*
+
 namespace Ui {
 class GraphsWidget;
 }
-*/
+
 class GraphsWidget : public QWidget
 {
     Q_OBJECT
@@ -32,14 +32,16 @@ public slots:
     void onThinkGearError(unsigned char val);
     void onThinkGearBlinkStrength(unsigned char val);
 private:
+    Ui::GraphsWidget *ui;
+    /*
     QBoxLayout *_layout;
     TGSimpleWidget *_signal;
     TGSimpleWidget *_attention;
     TGSimpleWidget *_meditation;
     TGEegWidget *_eeggraph;
     TGWaveWidget *_rawgraph;
+     */ 
     QThinkGear *_tg;
-
 };
 
 #endif // MONITORWIDGET_H

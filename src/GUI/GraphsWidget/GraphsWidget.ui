@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>GraphsWidget</class>
- <widget class="QWidget" name="graphs">
+ <widget class="QWidget" name="GraphsWidget">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>651</width>
-    <height>608</height>
+    <width>622</width>
+    <height>462</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,92 @@
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
+  <widget class="TGSimpleWidget" name="signal" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>621</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="label" stdset="0">
+    <string>Signal</string>
+   </property>
+  </widget>
+  <widget class="TGSimpleWidget" name="attention" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>40</y>
+     <width>621</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="label" stdset="0">
+    <string>Attention</string>
+   </property>
+  </widget>
+  <widget class="TGSimpleWidget" name="meditation" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>80</y>
+     <width>621</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="label" stdset="0">
+    <string>Meditation</string>
+   </property>
+  </widget>
+  <widget class="TGEegWidget" name="eeg" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>130</y>
+     <width>621</width>
+     <height>161</height>
+    </rect>
+   </property>
+   <property name="label" stdset="0">
+    <string>Eeg</string>
+   </property>
+  </widget>
+  <widget class="TGWaveWidget" name="raw" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>290</y>
+     <width>621</width>
+     <height>171</height>
+    </rect>
+   </property>
+   <property name="label" stdset="0">
+    <string>Raw</string>
+   </property>
+  </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TGSimpleWidget</class>
+   <extends>QWidget</extends>
+   <header>TGSimpleWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TGEegWidget</class>
+   <extends>QWidget</extends>
+   <header>TGEegWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TGWaveWidget</class>
+   <extends>QWidget</extends>
+   <header>TGWaveWidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>
