@@ -7,7 +7,7 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::DeviceConfiguration),
     status(Status::NOT_READY),
-    tg(QThinkGear::qThinkGear())
+    tg(MainWindow::mainWindow()->thinkGear())
 {
     ui->setupUi(this);
     connect(ui->refresh_btn, SIGNAL(clicked()),
@@ -20,8 +20,8 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
             this, SLOT(chooseDevice(int)));
     connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)),
             this, SLOT(chooseBaudrate(int)));
-    connect(tg, SIGNAL(statusChanged(TGConnectionStatus)),
-            this, SLOT(onThinkGearStatusChanged(TGConnectionStatus)));
+    connect(tg, SIGNAL(statusChanged(ThinkGearStatus)),
+            this, SLOT(onThinkGearStatusChanged(ThinkGearStatus)));
 
     initBaudRates();
     refresh();
@@ -49,7 +49,6 @@ void DeviceConfiguration::chooseDevice(int id)
 void DeviceConfiguration::chooseBaudrate(int id)
 {
     int bRate = ui->baudrates_cb->currentData().toInt();
-    qDebug() << "[DeviceConfiguration] choosed baudrate" << bRate;
     tg->setBaudRate(bRate);
 }
 
@@ -57,7 +56,6 @@ void DeviceConfiguration::chooseBaudrate(int id)
 
 void DeviceConfiguration::refresh()
 {
-    qDebug() << "DeviceConfiguration::refresh()";
     auto ports = QSerialPortInfo::availablePorts();
     ui->devices_cb->clear();
     for (auto port : ports) {
@@ -66,13 +64,5 @@ void DeviceConfiguration::refresh()
     }
 }
 
-void DeviceConfiguration::onThinkGearStatusChanged(TGConnectionStatus status)
-{
-    QString status_str;
-    switch(status) {
-        case TGConnectionStatus::Idle: status_str = "Idle"; break;
-        case TGConnectionStatus::Success: status_str = "Success"; break;
-        case TGConnectionStatus::Fail: status_str = "FAIL"; break;
-    }
-    ui->connection_status->setText(status_str);
-}
+void DeviceConfiguration::onThinkGearStatusChanged(ThinkGearStatus status)
+{}

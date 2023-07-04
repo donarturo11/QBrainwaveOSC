@@ -10,7 +10,8 @@ QThinkGear::QThinkGear(QObject *parent) :
     _device.setReadBufferSize(512);
     QThinkGear::currentInstance = this;
     THINKGEAR_initParser(&_parser, PARSER_TYPE_PACKETS, QThinkGearDataHandle, &_handler);
-    _status = TGConnectionStatus::Idle;
+    _status = ThinkGearStatus::NoConnected;
+    _opened = false;
 }
 
 QThinkGear::~QThinkGear()
@@ -20,29 +21,26 @@ QThinkGear::~QThinkGear()
 
 void QThinkGear::open()
 {
-    qDebug() << "ThinkGear: connect to : "
-             << _device.portName() << "@" 
-             << _device.baudRate();
 #ifdef QT6
-    bool opened = _device.open(QIODeviceBase::ReadWrite);
+    _opened = _device.open(QIODeviceBase::ReadWrite);
 #else
-    bool opened = _device.open(QIODevice::ReadWrite);
+    _opened = _device.open(QIODevice::ReadWrite);
 #endif
-    if (opened) {
+    if (_opened) {
         _device.flush();
-        changeStatus(TGConnectionStatus::Success);
+        changeStatus(ThinkGearStatus::Idle);
     } 
     else {
-        changeStatus(TGConnectionStatus::Fail);
+        changeStatus(ThinkGearStatus::NoConnected);
     }
 }
 
 void QThinkGear::close()
 {
-    qDebug() << "ThinkGear::disconnect";
     _device.flush();
     _device.close();
-    changeStatus(TGConnectionStatus::Idle);
+    _opened = false;
+    changeStatus(ThinkGearStatus::NoConnected);
 }
 
 void QThinkGear::onReadyRead()
@@ -50,13 +48,27 @@ void QThinkGear::onReadyRead()
     int bufsize = _device.readBufferSize();
     char buffer[1024];
     int size = _device.bytesAvailable();
+    if (size) {
+        changeStatus(ThinkGearStatus::Reading);
+    }
+    int state = 0;
     _device.read(buffer, bufsize);
     for (int i=0; i<size; i++) {
-        THINKGEAR_parseByte(&_parser, buffer[i]);
+        state = THINKGEAR_parseByte(&_parser, buffer[i]);
+    }
+    emit receiveStatusChanged(state);
+    checkState();
+}
+
+void QThinkGear::checkState()
+{
+    if (!_device.waitForReadyRead(10)) {
+       changeStatus(ThinkGearStatus::Idle);
+       emit receiveStatusChanged(0);
     }
 }
 
-void QThinkGear::changeStatus(TGConnectionStatus status)
+void QThinkGear::changeStatus(ThinkGearStatus status)
 {
     _status = status;
     emit statusChanged(status);

@@ -24,7 +24,7 @@ public slots:
     void disconnectDevice() { tg->close(); }
     void refresh();
 public slots:
-    void onThinkGearStatusChanged(TGConnectionStatus status);
+    void onThinkGearStatusChanged(ThinkGearStatus status);
 private:
     Ui::DeviceConfiguration *ui;
     void initBaudRates();

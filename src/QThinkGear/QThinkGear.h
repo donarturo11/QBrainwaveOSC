@@ -12,9 +12,9 @@ const int ThinkgearBaudrates[] {
 };
 typedef enum {
     Idle,
-    Success,
-    Fail
-} TGConnectionStatus;
+    Reading,
+    NoConnected
+} ThinkGearStatus;
 class QThinkGear : public QObject
 {
     Q_OBJECT
@@ -30,22 +30,27 @@ public:
         }
     void setPortName(QString portName) { _device.setPortName(portName); }
     void setBaudRate(int baudRate){ _device.setBaudRate(baudRate); }
+    QString portName() { return _device.portName(); }
+    int baudRate() { return _device.baudRate(); }
+    bool opened() { return _opened; }
+    ThinkGearStatus status() { return _status; }
     void open();
     void close();
-    void changeStatus(TGConnectionStatus status);
+    void changeStatus(ThinkGearStatus status);
     QSerialPort* device() { return &_device; }
 public slots:
     void onReadyRead();
+    void checkState();
 signals:
-    void receivedData(QByteArray data);
-    void statusChanged(TGConnectionStatus status);
+    void receiveStatusChanged(int state);
+    void statusChanged(ThinkGearStatus status);
 private:
     static QThinkGear* currentInstance;
 protected:
     QSerialPort _device;
+    bool _opened;
     ThinkGearStreamParser _parser;
     QThinkGearDataHandler _handler;
-    TGConnectionStatus _status;
-    
+    ThinkGearStatus _status;
 };
 #endif // QTHINKGEAR_H

@@ -19,7 +19,12 @@ public:
     static MainWindow* mainWindow() { return mainwindow; }
     QThinkGear* thinkGear() { return tg; }
     OSCSender* oscSender() { return osc; }
+    QStatusBar* statusBar();
+    void msgToStatusBar(QString msg);
     void onDebugReceived(QString msg);
+    void updateStatusBar();
+public slots:
+    void onThinkGearStatusChanged(ThinkGearStatus status);
 signals:
     void debugReceived(QString msg);
 private:
@@ -27,6 +32,6 @@ private:
     QThinkGear *tg;
     OSCSender *osc;
     static MainWindow *mainwindow;
-
+    QString _additionalMsg;
 };
 #endif // MAINWINDOW_H

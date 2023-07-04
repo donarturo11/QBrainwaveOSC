@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>291</width>
-    <height>114</height>
+    <height>82</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -99,32 +99,6 @@
    </property>
    <property name="text">
     <string>Disconnect</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="conn_stat_lab">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>90</y>
-     <width>161</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Connection status:</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="connection_status">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>90</y>
-     <width>121</width>
-     <height>19</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Idle</string>
    </property>
   </widget>
  </widget>
