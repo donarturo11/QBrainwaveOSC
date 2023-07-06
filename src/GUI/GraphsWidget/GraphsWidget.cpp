@@ -27,7 +27,7 @@ void GraphsWidget::onThinkGearBattery(unsigned char val)
 
 void GraphsWidget::onThinkGearPoorSignal(unsigned char val)
 {
-    int value = 200-val;
+    int value = (200-val)/2;
     ui->signal->setValue(value);
 }
 
