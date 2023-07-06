@@ -66,8 +66,9 @@ void TGWaveWidget::update()
         idx++;
     }
     //average = sum / _maxValuesToSave;
+    if (_cur_pos/SAMPLERATE > _maxGraphWidth)
+        series()->remove(0);
     series()->append(QPointF(_cur_pos/SAMPLERATE, peak));
-
     double min = ((_cur_pos - _maxValuesToSave)/SAMPLERATE) - _maxGraphWidth;
     double max = min + _maxGraphWidth;
 
