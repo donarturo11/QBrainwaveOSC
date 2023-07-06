@@ -28,6 +28,7 @@ void TGWaveWidget::setupGui()
 {
     _label->setGeometry(0, 10, 100, 20);
     _chartview->setGeometry(100,0,500,180);
+    _chartview->setRenderHints(QPainter::Antialiasing | QPainter::SmoothPixmapTransform);
     _axisX->hide();
     _axisY->hide();
 }
