@@ -1,8 +1,8 @@
 #include "TGWaveWidget.h"
 #include <QPointF>
 
-int TGWaveWidget::_maxValuesToSave = 12;
-double TGWaveWidget::_maxGraphWidth = 8;
+int TGWaveWidget::_maxValuesToSave = 8;
+double TGWaveWidget::_maxGraphWidth = 16;
 
 TGWaveWidget::TGWaveWidget(QWidget *parent) 
 : TGWidget(parent)
