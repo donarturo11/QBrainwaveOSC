@@ -97,6 +97,7 @@ jobs:
                                    gstreamer1.0-plugins-good \
                                    gstreamer1.0-plugins-bad 
            sudo apt-get install -y libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 \
+                                   libxcb-cursor0 libxcb-cursor-dev \
                                    libxcb-keysyms1-dev libxcb-randr0 \
                                    libxcb-render-util0 libxcb-shape0
 
