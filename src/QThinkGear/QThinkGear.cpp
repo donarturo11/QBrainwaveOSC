@@ -46,7 +46,7 @@ void QThinkGear::close()
 void QThinkGear::onReadyRead()
 {
     int bufsize = _device.readBufferSize();
-    char buffer[1024];
+    char buffer[BUFFER_SIZE];
     int size = _device.bytesAvailable();
     if (size) {
         changeStatus(ThinkGearStatus::Reading);
@@ -64,6 +64,8 @@ void QThinkGear::checkState()
 {
     if (!_device.waitForReadyRead(10)) {
        changeStatus(ThinkGearStatus::Idle);
+       close();
+       open();
        emit receiveStatusChanged(0);
     }
 }
