@@ -8,7 +8,7 @@ TGWaveWidget::TGWaveWidget(QWidget *parent)
 : TGWidget(parent)
 {
     _cur_pos = 0;
-    _series = new QSplineSeries;
+    _series = new QLineSeries;
     init();
 }
 

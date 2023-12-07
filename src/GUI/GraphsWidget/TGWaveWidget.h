@@ -2,7 +2,7 @@
 #define TGWAVE_WIDGET_H
 #include "TGWidget.h"
 #include <QList>
-#include <QSplineSeries>
+#include <QLineSeries>
 
 #define MAXRAWVALUE 2048.0000
 #define SAMPLERATE 512.0000
@@ -14,7 +14,7 @@ public:
     TGWaveWidget(QWidget *parent = nullptr);
     ~TGWaveWidget();
     void insertValue(int val);
-    QSplineSeries* series() { return reinterpret_cast<QSplineSeries*>(_series); }
+    QLineSeries* series() { return reinterpret_cast<QLineSeries*>(_series); }
 private:
     void update();
     void setupAxes();
