@@ -7,7 +7,7 @@ QThinkGear::QThinkGear(QObject *parent) :
 {
     qDebug() << "QThinkGear c-tor";
     connect(&_device, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
-    _device.setReadBufferSize(512);
+    _device.setReadBufferSize(BUFFER_SIZE);
     QThinkGear::currentInstance = this;
     THINKGEAR_initParser(&_parser, PARSER_TYPE_PACKETS, QThinkGearDataHandle, &_handler);
     _status = ThinkGearStatus::NoConnected;
@@ -46,7 +46,11 @@ void QThinkGear::close()
 void QThinkGear::onReadyRead()
 {
     int bufsize = _device.readBufferSize();
+<<<<<<< HEAD
     char buffer[1024];
+=======
+    char buffer[bufsize];
+>>>>>>> e8ab589 (Set common serial buffer size)
     int size = _device.bytesAvailable();
     if (size) {
         changeStatus(ThinkGearStatus::Reading);
