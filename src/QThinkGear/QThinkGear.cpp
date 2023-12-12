@@ -64,6 +64,8 @@ void QThinkGear::checkState()
 {
     if (!_device.waitForReadyRead(10)) {
        changeStatus(ThinkGearStatus::Idle);
+       close();
+       open();
        emit receiveStatusChanged(0);
     }
 }
