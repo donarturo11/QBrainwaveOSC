@@ -46,11 +46,7 @@ void QThinkGear::close()
 void QThinkGear::onReadyRead()
 {
     int bufsize = _device.readBufferSize();
-<<<<<<< HEAD
-    char buffer[1024];
-=======
     char buffer[bufsize];
->>>>>>> e8ab589 (Set common serial buffer size)
     int size = _device.bytesAvailable();
     if (size) {
         changeStatus(ThinkGearStatus::Reading);
