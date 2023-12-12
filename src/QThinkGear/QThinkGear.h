@@ -7,6 +7,8 @@
 #include "ThinkGearStreamParser.h"
 #include "QThinkGearDataHandler.h"
 
+#define BUFFER_SIZE 2048
+
 const int ThinkgearBaudrates[] {
     57600, 9600
 };
