@@ -1,8 +1,8 @@
-#include "QThinkGear.h"
+#include "QBrainwaveInterface.h"
 
-QThinkGear* QThinkGear::currentInstance;
+QBrainwaveInterface* QBrainwaveInterface::currentInstance;
 
-QThinkGear::QThinkGear(QObject *parent) :
+QBrainwaveInterface::QBrainwaveInterface(QObject *parent) :
     QObject(parent)
 {
     qDebug() << "QThinkGear c-tor";
@@ -14,12 +14,12 @@ QThinkGear::QThinkGear(QObject *parent) :
     _opened = false;
 }
 
-QThinkGear::~QThinkGear()
+QBrainwaveInterface::~QBrainwaveInterface()
 {
     QThinkGear::currentInstance = nullptr;
 }
 
-void QThinkGear::open()
+void QBrainwaveInterface::open()
 {
 #ifdef QT6
     _opened = _device.open(QIODeviceBase::ReadWrite);
@@ -35,7 +35,7 @@ void QThinkGear::open()
     }
 }
 
-void QThinkGear::close()
+void QBrainwaveInterface::close()
 {
     _device.flush();
     _device.close();
@@ -43,7 +43,7 @@ void QThinkGear::close()
     changeStatus(ThinkGearStatus::NoConnected);
 }
 
-void QThinkGear::onReadyRead()
+void QBrainwaveInterface::onReadyRead()
 {
     int bufsize = _device.readBufferSize();
     char buffer[BUFFER_SIZE];
@@ -60,7 +60,7 @@ void QThinkGear::onReadyRead()
     checkState();
 }
 
-void QThinkGear::checkState()
+void QBrainwaveInterface::checkState()
 {
     if (!_device.waitForReadyRead(10)) {
        changeStatus(ThinkGearStatus::Idle);
@@ -70,7 +70,7 @@ void QThinkGear::checkState()
     }
 }
 
-void QThinkGear::changeStatus(ThinkGearStatus status)
+void QBrainwaveInterface::changeStatus(ThinkGearStatus status)
 {
     _status = status;
     emit statusChanged(status);

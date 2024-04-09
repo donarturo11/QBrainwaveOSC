@@ -16,14 +16,14 @@ typedef enum {
     Idle,
     Reading,
     NoConnected
-} ThinkGearStatus;
-class QThinkGear : public QObject
+} BrainwaveInterfaceStatus;
+class QBrainwaveInterface : public QObject
 {
     Q_OBJECT
 public:
     QThinkGear(QObject *parent = nullptr);
     ~QThinkGear();
-    static QThinkGear* qThinkGear() { return currentInstance; }
+    static QBrainwaveInterface* brainwaveInterface() { return currentInstance; }
     void addListener(QObject* listener) {
         _handler.addListener(listener); 
         }
@@ -35,24 +35,24 @@ public:
     QString portName() { return _device.portName(); }
     int baudRate() { return _device.baudRate(); }
     bool opened() { return _opened; }
-    ThinkGearStatus status() { return _status; }
+    BrainwaveInterfaceStatus status() { return _status; }
     void open();
     void close();
-    void changeStatus(ThinkGearStatus status);
+    void changeStatus(BrainwaveInterfaceStatus status);
     QSerialPort* device() { return &_device; }
 public slots:
     void onReadyRead();
     void checkState();
 signals:
     void receiveStatusChanged(int state);
-    void statusChanged(ThinkGearStatus status);
+    void statusChanged(BrainwaveInterfaceStatus status);
 private:
-    static QThinkGear* currentInstance;
+    static QBrainwaveInterface* currentInstance;
 protected:
     QSerialPort _device;
     bool _opened;
     ThinkGearStreamParser _parser;
     QThinkGearDataHandler _handler;
-    ThinkGearStatus _status;
+    BrainwaveInterfaceStatus _status;
 };
 #endif // QTHINKGEAR_H
