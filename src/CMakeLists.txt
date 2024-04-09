@@ -1,7 +1,7 @@
 #projectName(QBrainwaveOSC)
 
 add_subdirectory(GUI)
-add_subdirectory(QThinkGear)
+add_subdirectory(QBrainwaveInterface)
 add_subdirectory(OSCSender)
 set(PROJECT_SOURCES
     ${GUI_SOURCES}
