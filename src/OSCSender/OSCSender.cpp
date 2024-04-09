@@ -3,25 +3,25 @@
 
 OSCSender::OSCSender(QObject *parent) :
     QObject(parent),
-    _tg{MainWindow::mainWindow()->thinkGear()}
+    _interface{MainWindow::mainWindow()->brainwaveInterface()}
 {
     _socket = new QUdpSocket(this);
 }
 
 OSCSender::~OSCSender()
 {
-    if (_tg) disconnectListener();
+    if (_interface) disconnectListener();
     delete _socket;
 }
 
 void OSCSender::connectListener()
 {
-    _tg->addListener(this);
+    _interface->addListener(this);
 }
 
 void OSCSender::disconnectListener()
 {
-    _tg->removeListener(this);
+    _interface->removeListener(this);
 }
 
 void OSCSender::setAddress(const QString& address)

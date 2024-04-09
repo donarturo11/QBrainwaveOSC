@@ -3,13 +3,13 @@
 MainWindow *MainWindow::mainwindow;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , tg(new QThinkGear(this))
+    , _interface(new QBrainwaveInterface(this))
     , ui(new Ui::MainWindow)
 {
     MainWindow::mainwindow = this;
     osc = new OSCSender(this);
     ui->setupUi(this);
-    connect(tg, SIGNAL(statusChanged(ThinkGearStatus)), this, SLOT(onThinkGearStatusChanged(ThinkGearStatus)));
+    connect(_interface, SIGNAL(statusChanged(BrainwaveInterfaceStatus)), this, SLOT(onBrainwaveInterfaceStatusChanged(BrainwaveInterfaceStatus)));
     updateStatusBar();
     _additionalMsg="";
 }
@@ -18,7 +18,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete osc;
-    delete tg;
+    delete _interface;
 }
 
 void MainWindow::onDebugReceived(QString msg)
@@ -30,7 +30,7 @@ QStatusBar* MainWindow::statusBar()
 {
     return ui->statusBar;
 }
-void MainWindow::onThinkGearStatusChanged(ThinkGearStatus status)
+void MainWindow::onBrainwaveInterfaceStatusChanged(BrainwaveInterfaceStatus status)
 {
     updateStatusBar();
 }
@@ -43,17 +43,17 @@ void MainWindow::msgToStatusBar(QString msg)
 void MainWindow::updateStatusBar()
 {
     QString msg="";
-    if (tg->opened()) {
-        msg="Connection on " + tg->portName();
-        msg+="@" + QString::number(tg->baudRate());
+    if (_interface->opened()) {
+        msg="Connection on " + _interface->portName();
+        msg+="@" + QString::number(_interface->baudRate());
     } else {
         msg="No connected";
         goto finish;
     }
     msg+=" | Parser status: ";
-    switch (tg->status()) {
-        case ThinkGearStatus::Reading: msg+="Reading..."; break;
-        case ThinkGearStatus::Idle: msg+="Idle"; break;
+    switch (_interface->status()) {
+        case BrainwaveInterfaceStatus::Reading: msg+="Reading..."; break;
+        case BrainwaveInterfaceStatus::Idle: msg+="Idle"; break;
         default: msg+="undefined";
     }
     finish:
