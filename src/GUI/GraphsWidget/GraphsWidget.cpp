@@ -7,7 +7,7 @@ GraphsWidget::GraphsWidget(QWidget *parent) :
     ui(new Ui::GraphsWidget)
 {
     ui->setupUi(this);
-    MainWindow::mainWindow()->thinkGear()->addListener(this);
+    MainWindow::mainWindow()->brainwaveInterface()->addListener(this);
 }
 
 GraphsWidget::~GraphsWidget()

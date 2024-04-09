@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QBoxLayout>
 #include "GraphsWidget.h"
-#include "QThinkGear.h"
+#include "QBrainwaveInterface.h"
 #include "TGSimpleWidget.h"
 #include "TGWaveWidget.h"
 #include "TGEegWidget.h"
@@ -41,7 +41,7 @@ private:
     TGEegWidget *_eeggraph;
     TGWaveWidget *_rawgraph;
      */ 
-    QThinkGear *_tg;
+    QBrainwaveInterface *_interface;
 };
 
 #endif // MONITORWIDGET_H

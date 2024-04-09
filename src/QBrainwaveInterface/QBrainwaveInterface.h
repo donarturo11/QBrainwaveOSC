@@ -1,5 +1,5 @@
-#ifndef QTHINKGEAR_H
-#define QTHINKGEAR_H
+#ifndef QBRAINWAVEINTERFACE_H
+#define QBRAINWAVEINTERFACE_H
 #include <QObject>
 #include <QtCore>
 #include <QSerialPortInfo>
@@ -21,8 +21,8 @@ class QBrainwaveInterface : public QObject
 {
     Q_OBJECT
 public:
-    QThinkGear(QObject *parent = nullptr);
-    ~QThinkGear();
+    QBrainwaveInterface(QObject *parent = nullptr);
+    ~QBrainwaveInterface();
     static QBrainwaveInterface* brainwaveInterface() { return currentInstance; }
     void addListener(QObject* listener) {
         _handler.addListener(listener); 
@@ -55,4 +55,4 @@ protected:
     QThinkGearDataHandler _handler;
     BrainwaveInterfaceStatus _status;
 };
-#endif // QTHINKGEAR_H
+#endif // QBRAINWAVEINTERFACE_H
