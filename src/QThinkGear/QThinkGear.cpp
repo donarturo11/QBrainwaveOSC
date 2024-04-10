@@ -9,7 +9,6 @@ QThinkGear::QThinkGear(QObject *parent) :
     connect(&_device, SIGNAL(readyRead()), this, SLOT(onReadyRead()));
     _device.setReadBufferSize(BUFFER_SIZE);
     QThinkGear::currentInstance = this;
-    THINKGEAR_initParser(&_parser, PARSER_TYPE_PACKETS, QThinkGearDataHandle, &_handler);
     _status = ThinkGearStatus::NoConnected;
     _opened = false;
 }
@@ -74,4 +73,11 @@ void QThinkGear::changeStatus(ThinkGearStatus status)
 {
     _status = status;
     emit statusChanged(status);
+}
+
+
+void QThinkGear::setupDeviceType(int id)
+{
+    auto type = TGTypes[id];
+    THINKGEAR_initParser(&_parser, type.parsertype, type.dataHandle, &_handler);
 }

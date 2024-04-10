@@ -9,9 +9,22 @@
 
 #define BUFFER_SIZE 2048
 
-const int ThinkgearBaudrates[] {
-    57600, 9600
+typedef struct _ThinkgearDeviceType {
+    std::string name;
+    std::vector<int> baudrates;
+    unsigned char parsertype;
+    void (*dataHandle)(unsigned char extendedCodeLevel,
+                       unsigned char code,
+                       unsigned char numBytes,
+                       const unsigned char *value,
+                       void *customData );
+} ThinkgearDeviceType;
+
+const ThinkgearDeviceType TGTypes[] {
+    {"Neurosky ThinkGear", {57600, 9600}, PARSER_TYPE_PACKETS, QThinkGearDataHandle},
+    {"2-byte raw wave (unsigned)", {38400, 9600}, PARSER_TYPE_2BYTERAW, QTwoByteRawDataHandle }
 };
+
 typedef enum {
     Idle,
     Reading,
@@ -23,6 +36,7 @@ class QThinkGear : public QObject
 public:
     QThinkGear(QObject *parent = nullptr);
     ~QThinkGear();
+    void setupDeviceType(int id);
     static QThinkGear* qThinkGear() { return currentInstance; }
     void addListener(QObject* listener) {
         _handler.addListener(listener); 

@@ -19,11 +19,12 @@ DeviceConfiguration::DeviceConfiguration(QWidget *parent) :
     connect(ui->devices_cb, SIGNAL(currentIndexChanged(int)),
             this, SLOT(chooseDevice(int)));
     connect(ui->baudrates_cb, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(chooseBaudrate(int)));
+            this, SLOT(chooseBaudRate(int)));
+    connect(ui->types_cb, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(chooseType(int)));
     connect(tg, SIGNAL(statusChanged(ThinkGearStatus)),
             this, SLOT(onThinkGearStatusChanged(ThinkGearStatus)));
-
-    initBaudRates();
+    setupDeviceTypes();
     refresh();
 
 }
@@ -33,9 +34,11 @@ DeviceConfiguration::~DeviceConfiguration()
     delete ui;
 }
 
-void DeviceConfiguration::initBaudRates()
+void DeviceConfiguration::setupBaudRates()
 {
-    for (auto bRate : ThinkgearBaudrates) {
+    int idx = ui->types_cb->currentIndex();
+    ui->baudrates_cb->clear();
+    for (auto bRate : TGTypes[idx].baudrates) {
         ui->baudrates_cb->addItem(QString::number(bRate), bRate);
     }
 }
@@ -46,7 +49,7 @@ void DeviceConfiguration::chooseDevice(int id)
     tg->setPortName(portName);
 }
 
-void DeviceConfiguration::chooseBaudrate(int id)
+void DeviceConfiguration::chooseBaudRate(int id)
 {
     int bRate = ui->baudrates_cb->currentData().toInt();
     tg->setBaudRate(bRate);
@@ -64,5 +67,19 @@ void DeviceConfiguration::refresh()
     }
 }
 
+void DeviceConfiguration::setupDeviceTypes()
+{
+    for (auto dev : TGTypes) {
+        auto devName = QString(dev.name.c_str());
+        ui->types_cb->addItem(devName, devName);
+    }
+}
+
 void DeviceConfiguration::onThinkGearStatusChanged(ThinkGearStatus status)
 {}
+
+void DeviceConfiguration::chooseType(int id)
+{
+    tg->setupDeviceType(id);
+    setupBaudRates();
+}

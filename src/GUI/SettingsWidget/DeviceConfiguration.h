@@ -19,15 +19,17 @@ public:
     ~DeviceConfiguration();
 public slots:
     void chooseDevice(int id);
-    void chooseBaudrate(int id);
+    void chooseBaudRate(int id);
+    void chooseType(int id);
     void connectDevice() { tg->open(); }
     void disconnectDevice() { tg->close(); }
+    void setupDeviceTypes();
     void refresh();
 public slots:
     void onThinkGearStatusChanged(ThinkGearStatus status);
 private:
     Ui::DeviceConfiguration *ui;
-    void initBaudRates();
+    void setupBaudRates();
 protected:
     Status status;
     QThinkGear *tg;
