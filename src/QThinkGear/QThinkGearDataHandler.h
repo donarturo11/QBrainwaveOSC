@@ -40,6 +40,12 @@ void QThinkGearDataHandle( unsigned char extendedCodeLevel,
                             unsigned char numBytes,
                             const unsigned char *value,
                             void *customData );
+
+void QTwoByteRawDataHandle( unsigned char extendedCodeLevel,
+                            unsigned char code,
+                            unsigned char numBytes,
+                            const unsigned char *value,
+                            void *customData );
 class QThinkGearListener;                            
 class QThinkGearDataHandler : public QObject
 {

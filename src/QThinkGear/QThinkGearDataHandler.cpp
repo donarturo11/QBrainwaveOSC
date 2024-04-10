@@ -10,7 +10,21 @@ void QThinkGearDataHandle( unsigned char extendedCodeLevel,
 {
     auto handler = reinterpret_cast<QThinkGearDataHandler*>(customData);
     handler->pushData(TGData(code, numBytes, value));
-}                    
+}
+
+void QTwoByteRawDataHandle( unsigned char extendedCodeLevel,
+                            unsigned char code,
+                            unsigned char numBytes,
+                            const unsigned char *value,
+                            void *customData )
+{
+    auto handler = reinterpret_cast<QThinkGearDataHandler*>(customData);
+    short val = 0;
+    val |= (value[0]&0x3F)<<6;
+    val |= value[1]&0x3F;
+    val -= 2048;
+    emit handler->onRaw(val);
+}
 
 QThinkGearDataHandler::QThinkGearDataHandler(QObject *parent)
 : QObject(parent)
