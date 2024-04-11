@@ -22,7 +22,7 @@ typedef struct _ThinkgearDeviceType {
 
 const ThinkgearDeviceType TGTypes[] {
     {"Neurosky ThinkGear", {57600, 9600}, PARSER_TYPE_PACKETS, QThinkGearDataHandle},
-    {"2-byte raw wave (unsigned)", {38400, 9600}, PARSER_TYPE_2BYTERAW, QTwoByteRawDataHandle }
+    {"2-byte raw wave (unsigned)", {38400, 19200, 9600}, PARSER_TYPE_2BYTERAW, QTwoByteRawDataHandle }
 };
 
 typedef enum {
