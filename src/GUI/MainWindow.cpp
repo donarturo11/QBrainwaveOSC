@@ -3,13 +3,13 @@
 MainWindow *MainWindow::mainwindow;
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , tg(new QThinkGear(this))
+    , _brainwave(new Brainwave::QBrainwaveInterface(this))
     , ui(new Ui::MainWindow)
 {
     MainWindow::mainwindow = this;
-    osc = new OSCSender(this);
+    _osc = new OSCSender(this);
     ui->setupUi(this);
-    connect(tg, SIGNAL(statusChanged(ThinkGearStatus)), this, SLOT(onThinkGearStatusChanged(ThinkGearStatus)));
+    //connect(_brainwave, SIGNAL(statusChanged(BrainwaveStatus)), this, SLOT(onThinkGearStatusChanged(ThinkGearStatus)));
     updateStatusBar();
     _additionalMsg="";
 }
@@ -17,8 +17,8 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
-    delete osc;
-    delete tg;
+    delete _osc;
+    delete _brainwave;
 }
 
 void MainWindow::onDebugReceived(QString msg)
@@ -30,7 +30,8 @@ QStatusBar* MainWindow::statusBar()
 {
     return ui->statusBar;
 }
-void MainWindow::onThinkGearStatusChanged(ThinkGearStatus status)
+
+void MainWindow::onConnectionStatusChanged(Brainwave::ConnectionStatus status)
 {
     updateStatusBar();
 }
@@ -42,6 +43,7 @@ void MainWindow::msgToStatusBar(QString msg)
 
 void MainWindow::updateStatusBar()
 {
+/*
     QString msg="";
     if (tg->opened()) {
         msg="Connection on " + tg->portName();
@@ -60,4 +62,5 @@ void MainWindow::updateStatusBar()
     msg+=_additionalMsg;
     statusBar()->showMessage(msg);
     _additionalMsg="";
+*/
 }

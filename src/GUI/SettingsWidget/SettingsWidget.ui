@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>376</width>
-    <height>393</height>
+    <width>441</width>
+    <height>689</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,34 +16,11 @@
   <property name="autoFillBackground">
    <bool>true</bool>
   </property>
-  <widget class="QGroupBox" name="deviceGroup">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>0</y>
-     <width>331</width>
-     <height>171</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Serial Port</string>
-   </property>
-   <widget class="DeviceConfiguration" name="deviceconfiguration" native="true">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>30</y>
-      <width>301</width>
-      <height>131</height>
-     </rect>
-    </property>
-   </widget>
-  </widget>
   <widget class="QGroupBox" name="oscGroup">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>180</y>
+     <y>240</y>
      <width>331</width>
      <height>201</height>
     </rect>
@@ -54,26 +31,52 @@
    <widget class="OSCConfiguration" name="oscconfiguration" native="true">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>50</y>
+      <x>10</x>
+      <y>30</y>
       <width>301</width>
       <height>131</height>
      </rect>
     </property>
    </widget>
   </widget>
+  <widget class="DeviceSettingsWidget" name="device_settings" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>321</width>
+     <height>181</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="ConnectionWidget" name="connection" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>190</y>
+     <width>321</width>
+     <height>41</height>
+    </rect>
+   </property>
+  </widget>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>DeviceConfiguration</class>
-   <extends>QWidget</extends>
-   <header>DeviceConfiguration.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>OSCConfiguration</class>
    <extends>QWidget</extends>
    <header>OSCConfiguration.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ConnectionWidget</class>
+   <extends>QWidget</extends>
+   <header>ConnectionWidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>DeviceSettingsWidget</class>
+   <extends>QWidget</extends>
+   <header>DeviceSettingsWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

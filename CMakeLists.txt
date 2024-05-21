@@ -16,9 +16,11 @@ include_directories(
    ${PROJECT_SOURCE_DIR}/thirdparty/neurosky/lib/MinSet_Dev_tools/ThinkGear
    ${PROJECT_SOURCE_DIR}/src
    ${PROJECT_SOURCE_DIR}/src/QThinkGear
+   ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface
    ${PROJECT_SOURCE_DIR}/src/OSCSender
    ${PROJECT_SOURCE_DIR}/src/GUI
    ${PROJECT_SOURCE_DIR}/src/GUI/SettingsWidget
+   ${PROJECT_SOURCE_DIR}/src/GUI/SettingsWidget/DeviceSettings
    ${PROJECT_SOURCE_DIR}/src/GUI/MonitorWidget
    ${PROJECT_SOURCE_DIR}/src/GUI/GraphsWidget
 )

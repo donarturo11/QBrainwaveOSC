@@ -3,7 +3,7 @@
 #include <QObject>
 #include <QtCore>
 #include "MainWindow.h"
-#include "QThinkGear.h"
+#include "QBrainwaveInterface.h"
 #include "QThinkGearDataHandler.h"
 #include <QHostAddress>
 #include <QUdpSocket>
@@ -44,7 +44,7 @@ protected:
     QUdpSocket *_socket;
     short _port;
     int _flags;
-    QThinkGear *_tg;
+    Brainwave::QBrainwaveInterface *_brainwave;
     
 };
 #endif // OSCSENDER_H
