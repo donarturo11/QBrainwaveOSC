@@ -2,6 +2,8 @@
 #define QBRAINWAVEINTERFACE_H
 #include <QObject>
 #include <QtCore>
+#include "QBrainwaveNotifier.h"
+#include "RawWaveAnalyser.h"
 #include "DeviceConnection.h"
 namespace Brainwave {
 class QBrainwaveInterface : public QObject
@@ -10,6 +12,10 @@ class QBrainwaveInterface : public QObject
 public:
     QBrainwaveInterface(QObject *parent = nullptr);
     ~QBrainwaveInterface();
+    void setupConnection(QVariantMap);
+    void deleteConnection();
+    void setupParser(QString);
+    void deleteParser();
     void open();
     void close();
     void addListener(QObject* listener) {
@@ -21,14 +27,14 @@ public:
         qDebug() << "Remove listener";
         }
 public slots:
-    void onBytesReceived(const unsigned char *bytes, int len);
+    void onBytesReceived(const char *bytes, int len);
 signals:
     void connectionStatusChanged(Brainwave::ConnectionStatus status);
 protected:
     DeviceConnection *_connection;
     DataParser *_parser;
-    void *_notifier;
-    void *_analyser;
+    Brainwave::QBrainwaveNotifier _notifier;
+    RawWaveAnalyser _analyser;
 };
 }
 #endif // QTHINKGEAR_H

@@ -1,12 +1,15 @@
 #projectName(QBrainwaveOSC)
-
+add_subdirectory(DataParsers)
+add_subdirectory(WaveAnalyser)
 set(QBRAINWAVEINTERFACE_SOURCES
+   ${DATAPARSERS_SOURCES}
+   ${WAVEANALYSER_SOURCES}
    ${CMAKE_CURRENT_SOURCE_DIR}/QBrainwaveInterface.h
    ${CMAKE_CURRENT_SOURCE_DIR}/QBrainwaveInterface.cpp
+   ${CMAKE_CURRENT_SOURCE_DIR}/QBrainwaveNotifier.h
+   ${CMAKE_CURRENT_SOURCE_DIR}/QBrainwaveNotifier.cpp
    ${CMAKE_CURRENT_SOURCE_DIR}/DeviceConnection.h
    ${CMAKE_CURRENT_SOURCE_DIR}/SerialPortConnection.h
    ${CMAKE_CURRENT_SOURCE_DIR}/SerialPortConnection.cpp
    PARENT_SCOPE
    )
-
-

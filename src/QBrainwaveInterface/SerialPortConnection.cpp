@@ -11,16 +11,17 @@ SerialPortConnection::SerialPortConnection(QObject *parent)
 SerialPortConnection::~SerialPortConnection()
 {
     qDebug() << "SerialPortConnection d-tor";
+    if (_dev) delete _dev;
 }
 
-void SerialPortConnection::open()
+void SerialPortConnection::setupConnection(QVariantMap args)
 {
-    qDebug() << __FUNCTION__;
-}
-
-void SerialPortConnection::close()
-{
-    qDebug() << __FUNCTION__;
+    qDebug() << "SerialPortConnection:" << __FUNCTION__;
+    qDebug() << "args:";
+    device()->setPortName(QVariant(args["portname"]).toString());
+    device()->setBaudRate(QVariant(args["baudrate"]).toInt());
+    //device()->setFlowControl(QSerialPort::HardwareControl);
+    qDebug() << "Setup:" << device()->portName() << "@" << device()->baudRate();
 }
 
 }

@@ -18,19 +18,40 @@ typedef enum {
 
 class DeviceConnection : public QObject
 {
+    Q_OBJECT
 public:
     DeviceConnection(QObject *parent = nullptr) : QObject(parent)
     {
         _status = ConnectionStatus::NoConnected;
     }
-    virtual void open() = 0;
-    virtual void close() = 0;
-    virtual const std::type_index connection_type() = 0; // { return typeid(DeviceConnection); }
+    virtual void setupConnection(QVariantMap) = 0;
+    virtual void open() {
+        connect(_dev, SIGNAL(readyRead()),
+                this, SLOT(onReadyRead()));
+        _dev->open(QIODeviceBase::ReadWrite);
+    }
+    virtual void close() {
+        disconnect(_dev, SIGNAL(readyRead()),
+                this, SLOT(onReadyRead()));
+        _dev->close();
+        }
     const ConnectionStatus connectionStatus() {return _status;}
     ConnectionStatus _status;
     QIODevice *_dev; /* QSerialPort, QBuffer, QBluetoothSocket */
+public slots:
+    void onBytesReceived(qint64 numbytes) {
+        qDebug() << "Received" << numbytes << "bytes";
+        QByteArray d = _dev->read(numbytes);
+        emit bytesReceived(d.data(), numbytes);
+    }
+    void onReadyRead() {
+        int numbytes = _dev->bytesAvailable();
+        QByteArray d = _dev->read(numbytes);
+        emit bytesReceived(d.data(), numbytes);
+    }
 signals:
     void connectionStatusChanged(ConnectionStatus _status);
+    void bytesReceived(const char*, int);
 
 
 };

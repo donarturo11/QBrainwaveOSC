@@ -36,14 +36,15 @@ void ConnectionWidget::onParametersReceived(QVariantMap p)
 
 void ConnectionWidget::connectDevice()
 {
-    qDebug() << __FUNCTION__ << " not yet implemented";
     emit parametersQuery();
     while (!_ready);
-    qDebug() << "Connect with " << _parameters;
+    _brainwave->setupConnection(_parameters);
+    _brainwave->open();
 }
 
 void ConnectionWidget::disconnectDevice()
 {
-    qDebug() << __FUNCTION__ << " not yet implemented";
+    _brainwave->close();
+    _brainwave->deleteConnection();
     _ready = false;
 }

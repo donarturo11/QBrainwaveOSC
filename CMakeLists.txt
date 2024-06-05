@@ -17,6 +17,8 @@ include_directories(
    ${PROJECT_SOURCE_DIR}/src
    ${PROJECT_SOURCE_DIR}/src/QThinkGear
    ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface
+   ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface/DataParsers
+   ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface/WaveAnalyser
    ${PROJECT_SOURCE_DIR}/src/OSCSender
    ${PROJECT_SOURCE_DIR}/src/GUI
    ${PROJECT_SOURCE_DIR}/src/GUI/SettingsWidget
