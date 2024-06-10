@@ -10,7 +10,7 @@ public:
         _handler = nullptr;
         }
     virtual void parseByte(unsigned char c) = 0;
-    void parseBytes(unsigned char *buffer, unsigned int size) {
+    void parseBytes(const char *buffer, unsigned int size) {
         for (int i = 0; i<size; i++) {
             parseByte(buffer[i]);
         }
@@ -19,7 +19,6 @@ public:
     DataHandler *datahandler() { return _handler; }
 protected:
     DataHandler *_handler;
-    unsigned char _last_byte;
 };
 }
 #endif

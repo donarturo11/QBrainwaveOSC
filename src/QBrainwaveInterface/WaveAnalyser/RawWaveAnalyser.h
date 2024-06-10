@@ -13,9 +13,10 @@ public:
     int buffersize() const { return _buffersize; }
     void setSamplerate(int s) { _samplerate = s; }
     int samplerate() const { return _samplerate; }
+    void setDataHandler(DataHandler *h) { _handler = h; }
+    DataHandler *handler() const { return _handler; }
 private:
     void process();
-
     DataHandler *_handler;
     int _buffersize;
     int _samplerate;

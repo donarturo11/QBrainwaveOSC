@@ -2,6 +2,7 @@
 #include "SerialPortConnection.h"
 #include <QtCore>
 #include "parsers.h"
+#include <functional>
 namespace Brainwave {
 QBrainwaveInterface::QBrainwaveInterface(QObject *parent) :
     QObject(parent),
@@ -43,12 +44,18 @@ void QBrainwaveInterface::deleteConnection()
 void QBrainwaveInterface::setupParser(QString name)
 {
     qDebug() << "Setup parser: " << name;
+    if (name == "TwoByteRawParser") { 
+        _parser = new TwoByteRawParser(&_notifier);
+        connect(&_notifier, SIGNAL(onRaw(float)), this, SLOT(pushToAnalyser(float)));
+        //connect(&_notifier, &QBrainwaveNotifier::onRaw, [](float f){ qDebug() << "Raw: " << f; });
+    }
 }
     
 void QBrainwaveInterface::deleteParser()
 {
     if (_parser) delete _parser;
     _parser = nullptr;
+    disconnect(&_notifier, SIGNAL(onRaw(float)), this, SLOT(pushToAnalyser(float)));
 }
 
 void QBrainwaveInterface::open()
@@ -69,13 +76,14 @@ void QBrainwaveInterface::close()
     disconnect(_connection, SIGNAL(bytesReceived(const char*,int)),
             this, SLOT(onBytesReceived(const char*,int)));
     emit connectionStatusChanged(_connection->connectionStatus());
+    deleteConnection();
+    deleteParser();
 }
 
 void QBrainwaveInterface::onBytesReceived(const char *bytes, int len)
 {
-    qDebug() << "payload lenght: " << len;
-    qDebug() << QByteArray(bytes, len).toHex(' ');
-    //_parser->parseBytes(bytes, len);
+    if (_parser)
+        _parser->parseBytes(bytes, len);
 }
 
 }
