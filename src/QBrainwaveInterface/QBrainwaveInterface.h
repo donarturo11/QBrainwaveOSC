@@ -30,7 +30,7 @@ public slots:
     void onBytesReceived(const char *bytes, int len);
     void pushToAnalyser(float v) { _analyser.push_back(v); }
 signals:
-    void connectionStatusChanged(Brainwave::ConnectionStatus status);
+    void connectionStatusChanged(Brainwave::Device::ConnectionStatus status);
 protected:
     DeviceConnection *_connection;
     DataParser *_parser;

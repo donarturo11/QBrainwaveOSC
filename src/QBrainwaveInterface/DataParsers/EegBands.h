@@ -2,14 +2,14 @@
 #define BRAINWAVE_EEGBANDS
 namespace Brainwave {
 struct EegBands {
-    float eegDelta;
-    float eegTheta;
-    float eegLowAlpha;
-    float eegHighAlpha;
-    float eegLowBeta;
-    float eegHighBeta;
-    float eegLowGamma;
-    float eegHighGamma;
+    float delta;
+    float theta;
+    float lowAlpha;
+    float highAlpha;
+    float lowBeta;
+    float highBeta;
+    float lowGamma;
+    float highGamma;
 };
 }
 #endif

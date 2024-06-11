@@ -2,6 +2,28 @@
 #define BRAINWAVE_DATAPARSER
 #include "DataHandler.h"
 namespace Brainwave {
+
+typedef enum {
+    Null = 0x0,
+    Idle,
+    Sync,
+    PayloadLength,
+    Payload,
+    Checksum,
+    WaitHigh,
+    WaitLow
+} ParserStatus;
+
+typedef enum {
+    Unrecognized=-5,
+    InvalidWithSync,
+    PlenghtTooLarge,
+    ChecksumFailed,
+    ParserIsNotInitialized,
+    PacketIsNotComplete,
+    Success
+} ReceiveStatus;
+
 class DataParser
 {
 public:

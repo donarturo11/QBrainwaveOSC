@@ -1,7 +1,9 @@
 #projectName(QBrainwaveOSC)
 add_subdirectory(TwoByteRawParser)
+add_subdirectory(ThinkGearStreamParser)
 set(DATAPARSERS_SOURCES
    ${CMAKE_CURRENT_SOURCE_DIR}/DataParser.h
    ${TWOBYTERAWPARSER_SOURCES}
+   ${THINKGEARSTREAMPARSER_SOURCES}
    PARENT_SCOPE
    )

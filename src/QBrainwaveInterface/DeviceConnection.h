@@ -7,6 +7,7 @@
 #include "DataParser.h"
 
 namespace Brainwave {
+namespace Device {
 typedef enum {
     ConnectionFailed = -1,
     NoConnected,
@@ -15,14 +16,14 @@ typedef enum {
     Reading,
     Writing
 } ConnectionStatus;
-
+}
 class DeviceConnection : public QObject
 {
     Q_OBJECT
 public:
     DeviceConnection(QObject *parent = nullptr) : QObject(parent)
     {
-        _status = ConnectionStatus::NoConnected;
+        _status = Device::ConnectionStatus::NoConnected;
     }
     virtual void setupConnection(QVariantMap) = 0;
     virtual void open() {
@@ -35,8 +36,8 @@ public:
                 this, SLOT(onReadyRead()));
         _dev->close();
         }
-    const ConnectionStatus connectionStatus() {return _status;}
-    ConnectionStatus _status;
+    const Device::ConnectionStatus connectionStatus() {return _status;}
+    Device::ConnectionStatus _status;
     QIODevice *_dev; /* QSerialPort, QBuffer, QBluetoothSocket */
 public slots:
     void onBytesReceived(qint64 numbytes) {
@@ -50,7 +51,7 @@ public slots:
         emit bytesReceived(d.data(), numbytes);
     }
 signals:
-    void connectionStatusChanged(ConnectionStatus _status);
+    void connectionStatusChanged(Device::ConnectionStatus _status);
     void bytesReceived(const char*, int);
 
 

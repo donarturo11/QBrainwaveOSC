@@ -24,7 +24,7 @@ public:
     void onDebugReceived(QString msg);
     void updateStatusBar();
 public slots:
-    void onConnectionStatusChanged(Brainwave::ConnectionStatus status);
+    void onConnectionStatusChanged(Brainwave::Device::ConnectionStatus status);
 signals:
     void debugReceived(QString msg);
 private:

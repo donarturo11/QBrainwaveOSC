@@ -14,8 +14,8 @@ ConnectionWidget::ConnectionWidget(QWidget *parent) :
             this, SLOT(connectDevice()));
     connect(ui->disconnect_btn, SIGNAL(clicked()),
             this, SLOT(disconnectDevice()));
-    connect(_brainwave, SIGNAL(connectionStatusChanged(Brainwave::ConnectionStatus)),
-            this, SLOT(onConnectionStatusChanged(Brainwave::ConnectionStatus)));
+    connect(_brainwave, SIGNAL(connectionStatusChanged(Brainwave::Device::ConnectionStatus)),
+            this, SLOT(onConnectionStatusChanged(Brainwave::Device::ConnectionStatus)));
 }
 
 ConnectionWidget::~ConnectionWidget()
@@ -23,7 +23,7 @@ ConnectionWidget::~ConnectionWidget()
     delete ui;
 }
 
-void ConnectionWidget::onConnectionStatusChanged(Brainwave::ConnectionStatus status)
+void ConnectionWidget::onConnectionStatusChanged(Brainwave::Device::ConnectionStatus status)
 {
     qDebug() << __FUNCTION__ << " not yet implemented";
 }

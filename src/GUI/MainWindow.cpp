@@ -31,7 +31,7 @@ QStatusBar* MainWindow::statusBar()
     return ui->statusBar;
 }
 
-void MainWindow::onConnectionStatusChanged(Brainwave::ConnectionStatus status)
+void MainWindow::onConnectionStatusChanged(Brainwave::Device::ConnectionStatus status)
 {
     updateStatusBar();
 }

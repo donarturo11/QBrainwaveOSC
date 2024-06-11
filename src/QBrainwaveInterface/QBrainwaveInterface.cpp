@@ -2,7 +2,6 @@
 #include "SerialPortConnection.h"
 #include <QtCore>
 #include "parsers.h"
-#include <functional>
 namespace Brainwave {
 QBrainwaveInterface::QBrainwaveInterface(QObject *parent) :
     QObject(parent),
@@ -13,6 +12,25 @@ QBrainwaveInterface::QBrainwaveInterface(QObject *parent) :
 {
     qDebug() << "QBrainwaveInterface c-tor";
     _analyser.setSamplerate(512);
+    /* Temporary notifier debug */
+    //connect(&_notifier, &QBrainwaveNotifier::onRaw, [](float v){ qDebug() << "Raw: " << v ; });
+    connect(&_notifier, &QBrainwaveNotifier::onBattery, [](float v){ qDebug() << "Battery: " << v ; });
+    connect(&_notifier, &QBrainwaveNotifier::onPoorSignal, [](float v){ qDebug() << "PoorSignal: " << v ; });
+    connect(&_notifier, &QBrainwaveNotifier::onAttention, [](float v){ qDebug() << "Attention: " << v ; });
+    connect(&_notifier, &QBrainwaveNotifier::onMeditation, [](float v){ qDebug() << "Meditation: " << v ; });
+    connect(&_notifier, &QBrainwaveNotifier::onEeg, 
+            [](EegBands eeg){ 
+                qDebug() << "Eeg: " ;
+                qDebug() << "Delta\t\t" << eeg.delta;
+                qDebug() << "theta\t\t" << eeg.theta;
+                qDebug() << "Low Alpha\t" << eeg.lowAlpha;
+                qDebug() << "High Alpha\t" << eeg.highAlpha;
+                qDebug() << "Low Beta\t" << eeg.lowBeta;
+                qDebug() << "High Beta\t" << eeg.highBeta;
+                qDebug() << "Low Gamma\t" << eeg.lowGamma;
+                qDebug() << "High Gamma\t" << eeg.highGamma;
+                });
+    /* ************************* */
 }
 
 QBrainwaveInterface::~QBrainwaveInterface()
@@ -47,7 +65,9 @@ void QBrainwaveInterface::setupParser(QString name)
     if (name == "TwoByteRawParser") { 
         _parser = new TwoByteRawParser(&_notifier);
         connect(&_notifier, SIGNAL(onRaw(float)), this, SLOT(pushToAnalyser(float)));
-        //connect(&_notifier, &QBrainwaveNotifier::onRaw, [](float f){ qDebug() << "Raw: " << f; });
+    }
+    else if (name == "ThinkGearStreamParser") {
+        _parser = new ThinkGearStreamParser(&_notifier);
     }
 }
     

@@ -15,7 +15,7 @@ public:
     explicit ConnectionWidget(QWidget *parent = nullptr);
     ~ConnectionWidget();
 public slots:
-    void onConnectionStatusChanged(Brainwave::ConnectionStatus);
+    void onConnectionStatusChanged(Brainwave::Device::ConnectionStatus);
     void onParametersReceived(QVariantMap);
     void connectDevice();
     void disconnectDevice();
