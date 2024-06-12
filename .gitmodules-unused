@@ -1,0 +1,3 @@
+;[submodule "thirdparty/neurosky"]
+;	path = thirdparty/neurosky
+;	url = https://github.com/linkenneth/neurosky
