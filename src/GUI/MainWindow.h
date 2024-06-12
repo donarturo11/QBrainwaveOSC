@@ -22,7 +22,6 @@ public:
     QStatusBar* statusBar();
     void msgToStatusBar(QString msg);
     void onDebugReceived(QString msg);
-    void updateStatusBar();
 public slots:
     void onConnectionStatusChanged(Brainwave::Device::ConnectionStatus status);
 signals:
@@ -32,6 +31,5 @@ private:
     Brainwave::QBrainwaveInterface *_brainwave;
     OSCSender *_osc;
     static MainWindow *mainwindow;
-    QString _additionalMsg;
 };
 #endif // MAINWINDOW_H

@@ -2,21 +2,14 @@
 #define BRAINWAVE_DEVICECONNECTION_H
 #include <QObject>
 #include <QtCore>
+#include <QHash>
 #include <typeinfo>
 #include <typeindex>
 #include "DataParser.h"
+#include "ConnectionStatus.h"
 
 namespace Brainwave {
-namespace Device {
-typedef enum {
-    ConnectionFailed = -1,
-    NoConnected,
-    Idle,
-    Connected,
-    Reading,
-    Writing
-} ConnectionStatus;
-}
+
 class DeviceConnection : public QObject
 {
     Q_OBJECT
@@ -27,14 +20,22 @@ public:
     }
     virtual void setupConnection(QVariantMap) = 0;
     virtual void open() {
-        connect(_dev, SIGNAL(readyRead()),
+        if(_dev->open(QIODeviceBase::ReadWrite)) {
+            connect(_dev, SIGNAL(readyRead()),
                 this, SLOT(onReadyRead()));
-        _dev->open(QIODeviceBase::ReadWrite);
+            _status = Device::ConnectionStatus::Connected;
+            emit connectionStatusChanged(_status);
+        } else {
+            _status = Device::ConnectionStatus::ConnectionFailed;
+            emit connectionStatusChanged(_status);
+        }
     }
     virtual void close() {
         disconnect(_dev, SIGNAL(readyRead()),
                 this, SLOT(onReadyRead()));
         _dev->close();
+        _status = Device::ConnectionStatus::NoConnected;
+        emit connectionStatusChanged(_status);
         }
     const Device::ConnectionStatus connectionStatus() {return _status;}
     Device::ConnectionStatus _status;
@@ -45,9 +46,15 @@ public slots:
         emit bytesReceived(d.data(), numbytes);
     }
     void onReadyRead() {
+        _status = Device::ConnectionStatus::Reading;
+        emit connectionStatusChanged(_status);
         int numbytes = _dev->bytesAvailable();
         QByteArray d = _dev->read(numbytes);
         emit bytesReceived(d.data(), numbytes);
+        if (!_dev->waitForReadyRead(10)) {
+            _status = Device::ConnectionStatus::Idle;
+            emit connectionStatusChanged(_status);
+        }
     }
 signals:
     void connectionStatusChanged(Device::ConnectionStatus _status);

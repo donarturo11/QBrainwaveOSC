@@ -20,12 +20,12 @@ ConnectionWidget::ConnectionWidget(QWidget *parent) :
 
 ConnectionWidget::~ConnectionWidget()
 {
+    disconnectDevice();
     delete ui;
 }
 
 void ConnectionWidget::onConnectionStatusChanged(Brainwave::Device::ConnectionStatus status)
 {
-    qDebug() << __FUNCTION__ << " not yet implemented";
 }
 
 void ConnectionWidget::onParametersReceived(QVariantMap p)

@@ -16,8 +16,6 @@ QBrainwaveInterface::QBrainwaveInterface(QObject *parent) :
 QBrainwaveInterface::~QBrainwaveInterface()
 {
     close();
-    deleteConnection();
-    deleteParser();
 }
 
 void QBrainwaveInterface::setupConnection(QVariantMap args)
@@ -25,6 +23,11 @@ void QBrainwaveInterface::setupConnection(QVariantMap args)
     if (args["porttype"] == QVariant("serial")) _connection = new SerialPortConnection(this);
     else qDebug() << "Port" << args["porttype"] << "not implemented";
     if (_connection) {
+        connect(_connection,
+                SIGNAL(connectionStatusChanged(Brainwave::Device::ConnectionStatus)),
+                this,
+                SLOT(onConnectionStatusChanged(Brainwave::Device::ConnectionStatus))
+                );
         _connection->setupConnection(args);
         setupParser(args["type"].toString());
     }
@@ -32,7 +35,13 @@ void QBrainwaveInterface::setupConnection(QVariantMap args)
 
 void QBrainwaveInterface::deleteConnection()
 {
-    if (_connection) delete _connection;
+    if (!_connection) return;
+    disconnect(_connection,
+               SIGNAL(connectionStatusChanged(Brainwave::Device::ConnectionStatus)),
+               this,
+               SLOT(onConnectionStatusChanged(Brainwave::Device::ConnectionStatus))
+               );
+    delete _connection;
     _connection = nullptr;
 }
 
@@ -60,7 +69,7 @@ void QBrainwaveInterface::open()
     connect(_connection, SIGNAL(bytesReceived(const char*,int)),
             this, SLOT(onBytesReceived(const char*,int)));
     _connection->open();
-    emit connectionStatusChanged(_connection->connectionStatus());
+    //emit connectionStatusChanged(_connection->connectionStatus());
 }
 
 void QBrainwaveInterface::close()
@@ -69,7 +78,7 @@ void QBrainwaveInterface::close()
     _connection->close();
     disconnect(_connection, SIGNAL(bytesReceived(const char*,int)),
             this, SLOT(onBytesReceived(const char*,int)));
-    emit connectionStatusChanged(_connection->connectionStatus());
+    //emit connectionStatusChanged(_connection->connectionStatus());
     deleteConnection();
     deleteParser();
 }
