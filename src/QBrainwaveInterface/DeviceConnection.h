@@ -20,7 +20,12 @@ public:
     }
     virtual void setupConnection(QVariantMap) = 0;
     virtual void open() {
-        if(_dev->open(QIODeviceBase::ReadWrite)) {
+        #ifdef QT6
+            auto open_opt = QIODeviceBase::ReadWrite;
+        #else
+            auto open_opt = QIODevice::ReadWrite;
+        #endif
+        if(_dev->open(open_opt)) {
             connect(_dev, SIGNAL(readyRead()),
                 this, SLOT(onReadyRead()));
             _status = Device::ConnectionStatus::Connected;
