@@ -3,25 +3,25 @@
 
 OSCSender::OSCSender(QObject *parent) :
     QObject(parent),
-    _tg{MainWindow::mainWindow()->thinkGear()}
+    _brainwave{MainWindow::mainWindow()->brainwaveInterface()}
 {
     _socket = new QUdpSocket(this);
 }
 
 OSCSender::~OSCSender()
 {
-    if (_tg) disconnectListener();
+    if (_brainwave) disconnectListener();
     delete _socket;
 }
 
 void OSCSender::connectListener()
 {
-    _tg->addListener(this);
+    _brainwave->addListener(this);
 }
 
 void OSCSender::disconnectListener()
 {
-    _tg->removeListener(this);
+    _brainwave->removeListener(this);
 }
 
 void OSCSender::setAddress(const QString& address)
@@ -60,62 +60,66 @@ void OSCSender::sendIntDatagram(std::string path, int value)
     sendDatagram(path, ",i", value);
 }
 
-void OSCSender::onThinkGearRaw(short val)
+void OSCSender::onRaw(float val)
 {
     if (!(_flags&OSCSENDER_ENABLE_RAW)) return;
-    sendIntDatagram("/raw", val);
+    sendFloatDatagram("/raw", (int)(val*2048));
 }
 
-void OSCSender::onThinkGearBattery(unsigned char val)
+void OSCSender::onBattery(float val)
 {
-    
+    sendFloatDatagram("/battery", val);
 }
 
-void OSCSender::onThinkGearPoorSignal(unsigned char val)
+void OSCSender::onPoorSignal(float val)
 {
     if (!(_flags&OSCSENDER_ENABLE_SIGNAL)) return;
-    sendFloatDatagram("/signal", val/200.00);
+    sendFloatDatagram("/signal", val);
 }
 
-void OSCSender::onThinkGearAttention(unsigned char val)
+void OSCSender::onAttention(float val)
 {
     if (!(_flags&OSCSENDER_ENABLE_ATTENTION)) return;
-    sendFloatDatagram("/attention", val/100.00);
+    sendFloatDatagram("/attention", val);
 }
 
-void OSCSender::onThinkGearMeditation(unsigned char val)
+void OSCSender::onMeditation(float val)
 {
     if (!(_flags&OSCSENDER_ENABLE_ATTENTION)) return;
-    sendFloatDatagram("/meditation", val/100.00);
+    sendFloatDatagram("/meditation", val);
 }
 
-void OSCSender::onThinkGearEeg(EegValues val)
+void OSCSender::onEeg(Brainwave::EegBands eeg)
 {
     if (!(_flags&OSCSENDER_ENABLE_EEG)) return;
-    auto allValues = val.getAllValues();
-    for (auto v : allValues) {
-        std::string path = "/" + v.key();
-        float value = v.value()/(float) val.sum();
-        sendFloatDatagram(path, value);
-    }
+    sendFloatDatagram("/eegdelta", eeg.delta);
+    sendFloatDatagram("/eegtheta", eeg.theta);
+    sendFloatDatagram("/eeglowalpha", eeg.lowAlpha);
+    sendFloatDatagram("/eeghighalpha", eeg.highAlpha);
+    sendFloatDatagram("/eeglowbeta", eeg.lowBeta);
+    sendFloatDatagram("/eeghighbeta", eeg.highBeta);
+    sendFloatDatagram("/eeglowgamma", eeg.lowGamma);
+    sendFloatDatagram("/eeghighgamma", eeg.highGamma);
 }
 
-void OSCSender::onThinkGearConnecting(unsigned char val)
+void OSCSender::onBlinkStrength(float val)
+{
+    sendFloatDatagram("/blinkstrength", val);
+}
+
+/*
+void OSCSender::onConnecting(unsigned char val)
 {
     
 }
 
-void OSCSender::onThinkGearReady(unsigned char val)
+void OSCSender::onReady(unsigned char val)
 {
     
 }
 
-void OSCSender::onThinkGearError(unsigned char val)
+void OSCSender::onError(unsigned char val)
 {
     
 }
-
-void OSCSender::onThinkGearBlinkStrength(unsigned char val)
-{
-    
-}
+*/
