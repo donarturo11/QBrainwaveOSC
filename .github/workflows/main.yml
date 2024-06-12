@@ -82,6 +82,11 @@ jobs:
            echo "::notify:: Upgrading pip"
            python3 -m pip install -U pip
            echo "SETUPTOOLS_USE_DISTUTILS=stdlib" >> $GITHUB_ENV
+    
+    - name: Setup MacOS env
+      if: ${{runner.os == 'macOS'}}
+      run: |
+           brew install pipx
 
     - name: Install Linux Dependencies
       if: ${{runner.os == 'Linux'}}
