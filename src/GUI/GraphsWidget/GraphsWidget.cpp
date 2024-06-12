@@ -15,53 +15,56 @@ GraphsWidget::~GraphsWidget()
     delete ui;
 }
 
-void GraphsWidget::onThinkGearRaw(short val)
+void GraphsWidget::onRaw(float val)
 {
-    ui->raw->insertValue((int) val);
+    // TODO rewrite raw wave graph
+    ui->raw->insertValue((int) (val*2048));
 }
 
-void GraphsWidget::onThinkGearBattery(unsigned char val)
+void GraphsWidget::onBattery(float val)
 {
     
 }
 
-void GraphsWidget::onThinkGearPoorSignal(unsigned char val)
+void GraphsWidget::onPoorSignal(float val)
 {
-    int value = (200-val)/2;
+    int value = 100-(val*100);
     ui->signal->setValue(value);
 }
 
-void GraphsWidget::onThinkGearAttention(unsigned char val)
+void GraphsWidget::onAttention(float val)
 {
-    ui->attention->setValue(val);
+    ui->attention->setValue((int)(val*100));
 }
 
-void GraphsWidget::onThinkGearMeditation(unsigned char val)
+void GraphsWidget::onMeditation(float val)
 {
-    ui->meditation->setValue(val);
+    ui->meditation->setValue((int)(val*100));
 }
 
-void GraphsWidget::onThinkGearEeg(EegValues val)
+void GraphsWidget::onEeg(Brainwave::EegBands eeg)
 {
-    ui->eeg->setValues(val);
+    ui->eeg->setValues(&(eeg.delta));
 }
 
-void GraphsWidget::onThinkGearConnecting(unsigned char val)
+void GraphsWidget::onBlinkStrength(float val)
 {
     
 }
 
-void GraphsWidget::onThinkGearReady(unsigned char val)
+/*
+void GraphsWidget::onConnecting(unsigned char val)
 {
     
 }
 
-void GraphsWidget::onThinkGearError(unsigned char val)
+void GraphsWidget::onReady(unsigned char val)
 {
     
 }
 
-void GraphsWidget::onThinkGearBlinkStrength(unsigned char val)
+void GraphsWidget::onError(unsigned char val)
 {
     
 }
+*/

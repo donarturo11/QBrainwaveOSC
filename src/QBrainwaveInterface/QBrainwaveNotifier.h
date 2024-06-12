@@ -3,6 +3,8 @@
 #include <QObject>
 #include <QtCore>
 #include "DataHandler.h"
+#include "EegBands.h"
+
 namespace Brainwave {
 class QBrainwaveNotifier : public QObject, public Brainwave::DataHandler
 {
@@ -10,9 +12,11 @@ class QBrainwaveNotifier : public QObject, public Brainwave::DataHandler
 public:
     explicit QBrainwaveNotifier(QObject *parent = nullptr);
     ~QBrainwaveNotifier();
+    void addListener(QObject*);
+    void removeListener(QObject*);
 signals:
     void onRaw(float);
-    void onEeg(EegBands);
+    void onEeg(Brainwave::EegBands);
     void onAttention(float);
     void onMeditation(float);
     void onBlinkStrength(float);

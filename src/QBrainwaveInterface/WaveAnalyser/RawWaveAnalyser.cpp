@@ -3,14 +3,10 @@
 namespace Brainwave {
 RawWaveAnalyser::RawWaveAnalyser(int bufsize, DataHandler *handler) :
 _buffersize(bufsize), _handler(handler)
-{
-    std::cout << "RawWaveAnalyser c-tor" << std::endl;
-}
+{}
 
 RawWaveAnalyser::~RawWaveAnalyser()
-{
-    std::cout << "RawWaveAnalyser d-tor" << std::endl;
-}
+{}
 
 void RawWaveAnalyser::push_back(float value)
 {

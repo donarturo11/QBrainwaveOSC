@@ -1,5 +1,4 @@
 #include "ThinkGearPayload.h"
-#include <iostream>
 namespace Brainwave {
 namespace ThinkGear {
 

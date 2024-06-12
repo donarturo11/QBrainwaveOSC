@@ -19,12 +19,10 @@ public:
     void open();
     void close();
     void addListener(QObject* listener) {
-        //_notifier.addListener(listener);
-        qDebug() << "Add listener";
+        _notifier.addListener(listener);
         }
     void removeListener(QObject* listener) {
-        //_notifier.removeListener(listener);
-        qDebug() << "Remove listener";
+        _notifier.removeListener(listener);
         }
 public slots:
     void onBytesReceived(const char *bytes, int len);

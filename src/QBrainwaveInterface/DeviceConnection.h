@@ -41,7 +41,6 @@ public:
     QIODevice *_dev; /* QSerialPort, QBuffer, QBluetoothSocket */
 public slots:
     void onBytesReceived(qint64 numbytes) {
-        qDebug() << "Received" << numbytes << "bytes";
         QByteArray d = _dev->read(numbytes);
         emit bytesReceived(d.data(), numbytes);
     }
@@ -53,8 +52,6 @@ public slots:
 signals:
     void connectionStatusChanged(Device::ConnectionStatus _status);
     void bytesReceived(const char*, int);
-
-
 };
 
 }

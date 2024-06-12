@@ -56,19 +56,18 @@ void SerialPortSettings::refreshBauds()
     _bauds.clear();
     for (auto b : standardBaudrates) {
         _bauds.append(b);
-        qDebug() << "Found baudrate: " << b;
     }
     emit baudrateListChanged();
 }
 
 QStringList SerialPortSettings::getDevicesList() const
 {
-        qDebug() << "Refreshing serial ports";
         QStringList devs;
         auto ports = QSerialPortInfo::availablePorts();
         for (auto p : ports ) {
             devs << p.portName();
         }
+        devs.sort();
         return devs;        
 }
 

@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <memory>
-#include "TGData.h"
 namespace Brainwave {
 namespace ThinkGear {
 class ThinkGearPayload

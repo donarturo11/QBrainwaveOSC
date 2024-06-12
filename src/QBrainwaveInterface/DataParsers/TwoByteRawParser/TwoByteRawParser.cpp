@@ -3,14 +3,10 @@
 namespace Brainwave {
 TwoByteRawParser::TwoByteRawParser(DataHandler *handler)
     : DataParser(handler)
-{
-    std::cout << "TwoByteRawParser c-tor" << std::endl;
-}
+{}
 
 TwoByteRawParser::~TwoByteRawParser()
-{
-    std::cout << "TwoByteRawParser d-tor" << std::endl;
-}
+{}
 
 void TwoByteRawParser::parseByte(unsigned char c)
 {
@@ -22,5 +18,4 @@ void TwoByteRawParser::parseByte(unsigned char c)
         _handler->onRaw((float)((_value-2048)/2048.0000));
     }
 }
-    
 }

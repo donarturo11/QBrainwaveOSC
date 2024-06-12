@@ -15,7 +15,6 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 include_directories(
    ${PROJECT_SOURCE_DIR}/thirdparty/neurosky/lib/MinSet_Dev_tools/ThinkGear
    ${PROJECT_SOURCE_DIR}/src
-   ${PROJECT_SOURCE_DIR}/src/QThinkGear
    ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface
    ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface/DataParsers
    ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface/WaveAnalyser
@@ -26,8 +25,6 @@ include_directories(
    ${PROJECT_SOURCE_DIR}/src/GUI/MonitorWidget
    ${PROJECT_SOURCE_DIR}/src/GUI/GraphsWidget
 )
-
-add_library(tgparser STATIC ${PROJECT_SOURCE_DIR}/thirdparty/neurosky/lib/MinSet_Dev_tools/ThinkGear/ThinkGearStreamParser.c)
 
 option(FORCE_QT5 "Force qt5 install" OFF)
 option(FORCE_QT6 "Force qt6 install" OFF)
@@ -112,7 +109,6 @@ target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Bluetooth)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::SerialPort)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Charts)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
-target_link_libraries(${PROJECT_NAME} PUBLIC tgparser)
 
 if(WIN32)
     message("Installing for Windows")

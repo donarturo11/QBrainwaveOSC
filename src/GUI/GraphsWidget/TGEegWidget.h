@@ -1,8 +1,6 @@
 #ifndef TGEEG_WIDGET_H
 #define TGEEG_WIDGET_H
 #include "TGWidget.h"
-#include "EegValues.h"
-#include "TGValues.h"
 #include <QBarSeries>
 #include <QBarSet>
 #include <QStringList>
@@ -15,7 +13,7 @@ class TGEegWidget : public TGWidget
 public:
     TGEegWidget(QWidget *parent = nullptr);
     ~TGEegWidget();
-    void setValues(EegValues vals);
+    void setValues(float*);
     QBarSeries* series() { return reinterpret_cast<QBarSeries*>(_series); }
 private:
     void setupAxes();

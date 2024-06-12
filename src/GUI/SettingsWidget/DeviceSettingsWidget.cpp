@@ -9,7 +9,7 @@ struct PortInfo {
 };
 
 const PortInfo ports[] = {
-    {"Dummy", &DummyDeviceSettings::create},
+   // {"Dummy", &DummyDeviceSettings::create},
     {"Serial port", &SerialPortSettings::create}
 };
 

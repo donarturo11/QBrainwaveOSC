@@ -67,10 +67,10 @@ void TGEegWidget::setupFonts()
     _axisY->setLabelsFont(labelsFont);
 }
 
-void TGEegWidget::setValues(EegValues vals)
+void TGEegWidget::setValues(float* eeg)
 {
     for (int i=0; i<8; i++) {
-        _eegValues->replace(i, (((double)vals[i].value()/(double)vals.sum())*100));
+        _eegValues->replace(i, (double)(eeg[i])*100);
     }
     update();
 }

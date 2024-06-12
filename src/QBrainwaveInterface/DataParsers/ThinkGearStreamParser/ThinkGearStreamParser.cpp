@@ -1,20 +1,15 @@
 #include "ThinkGearStreamParser.h"
-#include <iostream>
-#include <iomanip>
 namespace Brainwave {
 using namespace Brainwave;    
 using namespace ThinkGear;
 ThinkGearStreamParser::ThinkGearStreamParser(DataHandler *handler)
     : DataParser(handler), handleDataValue(ThinkGearDataHandler(handler))
 {
-    std::cout << "ThinkGearStreamParser c-tor" << std::endl;
     _status = ParserStatus::Idle;
 }
 
 ThinkGearStreamParser::~ThinkGearStreamParser()
-{
-    std::cout << "ThinkGearStreamParser d-tor" << std::endl;
-}
+{}
 
 void ThinkGearStreamParser::parseByte(unsigned char c)
 {
@@ -32,7 +27,6 @@ void ThinkGearStreamParser::parseByte(unsigned char c)
 
 void ThinkGearStreamParser::receiveSyncByte()
 {
-    //using namespace Brainwave;
     if (_last_byte != ThinkGearCodes::SyncByte) {
         reset();
         return;
@@ -53,7 +47,6 @@ void ThinkGearStreamParser::reset()
 
 void ThinkGearStreamParser::initPayload()
 { 
-    //using namespace Brainwave;
     if (_last_byte > ThinkGearCodes::SyncByte) {
         _receive_status = ReceiveStatus::PlenghtTooLarge;
         reset();
@@ -107,5 +100,5 @@ void ThinkGearStreamParser::parsePayload()
     }
     reset();
 }
-   
+
 }

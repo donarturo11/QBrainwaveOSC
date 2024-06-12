@@ -4,7 +4,8 @@
 #include <QtCore>
 #include "MainWindow.h"
 #include "QBrainwaveInterface.h"
-#include "QThinkGearDataHandler.h"
+#include "EegBands.h"
+//#include "QThinkGearDataHandler.h"
 #include <QHostAddress>
 #include <QUdpSocket>
 
@@ -25,16 +26,18 @@ public:
     void connectListener();
     void disconnectListener();
 public slots:
-    void onThinkGearRaw(short val);
-    void onThinkGearBattery(unsigned char val);
-    void onThinkGearPoorSignal(unsigned char val);
-    void onThinkGearAttention(unsigned char val);
-    void onThinkGearMeditation(unsigned char val);
-    void onThinkGearEeg(EegValues val);
-    void onThinkGearConnecting(unsigned char val);
-    void onThinkGearReady(unsigned char val);
-    void onThinkGearError(unsigned char val);
-    void onThinkGearBlinkStrength(unsigned char val);
+    void onRaw(float val);
+    void onBattery(float val);
+    void onPoorSignal(float val);
+    void onAttention(float val);
+    void onMeditation(float val);
+    void onEeg(Brainwave::EegBands eeg);
+    void onBlinkStrength(float val);
+/*    
+    void onConnecting(unsigned char val);
+    void onReady(unsigned char val);
+    void onError(unsigned char val);
+*/    
 private:
     void sendDatagram(std::string path, std::string tag, uint32_t value);
     void sendFloatDatagram(std::string path, float value);
