@@ -80,7 +80,7 @@ void QBrainwaveInterface::close()
     disconnect(_connection, SIGNAL(bytesReceived(const char*,int)),
             this, SLOT(onBytesReceived(const char*,int)));
     //emit connectionStatusChanged(_connection->connectionStatus());
-    deleteConnection();
+    //deleteConnection();
 }
 
 void QBrainwaveInterface::onBytesReceived(const char *bytes, int len)
