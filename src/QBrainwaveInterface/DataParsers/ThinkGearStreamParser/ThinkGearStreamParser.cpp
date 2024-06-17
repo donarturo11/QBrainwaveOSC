@@ -9,7 +9,9 @@ ThinkGearStreamParser::ThinkGearStreamParser(DataHandler *handler)
 }
 
 ThinkGearStreamParser::~ThinkGearStreamParser()
-{}
+{
+    reset();
+}
 
 void ThinkGearStreamParser::parseByte(unsigned char c)
 {
