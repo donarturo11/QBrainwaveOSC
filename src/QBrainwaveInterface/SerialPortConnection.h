@@ -15,6 +15,8 @@ public:
     SerialPortConnection(QObject *parent = nullptr);
     ~SerialPortConnection();
     void setupConnection(QVariantMap);
+public slots:
+    void onDeviceIsClosing();
 private:
     QSerialPort* device() { return reinterpret_cast<QSerialPort*>(_dev); }
 protected:

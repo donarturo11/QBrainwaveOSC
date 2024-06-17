@@ -41,6 +41,7 @@ void QBrainwaveInterface::deleteConnection()
                this,
                SLOT(onConnectionStatusChanged(Brainwave::Device::ConnectionStatus))
                );
+    deleteParser();
     delete _connection;
     _connection = nullptr;
 }
@@ -80,7 +81,6 @@ void QBrainwaveInterface::close()
             this, SLOT(onBytesReceived(const char*,int)));
     //emit connectionStatusChanged(_connection->connectionStatus());
     deleteConnection();
-    deleteParser();
 }
 
 void QBrainwaveInterface::onBytesReceived(const char *bytes, int len)

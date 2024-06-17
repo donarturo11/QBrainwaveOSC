@@ -36,6 +36,7 @@ public:
         }
     }
     virtual void close() {
+        emit deviceIsClosing();
         disconnect(_dev, SIGNAL(readyRead()),
                 this, SLOT(onReadyRead()));
         _dev->close();
@@ -63,6 +64,7 @@ public slots:
     }
 signals:
     void connectionStatusChanged(Brainwave::Device::ConnectionStatus _status);
+    void deviceIsClosing();
     void bytesReceived(const char*, int);
 };
 
