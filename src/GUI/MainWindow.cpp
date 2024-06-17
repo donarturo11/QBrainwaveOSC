@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     disconnect(_brainwave, 0, 0, 0);
+    _brainwave->deleteConnection();
     delete ui;
     delete _osc;
     delete _brainwave;
