@@ -30,7 +30,7 @@ jobs:
         - { name: "windows-legacy", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "windows", aqt-arch: "win64_mingw81", aqt-prefix: "/opt/Qt", aqt-subdir: "mingw81_64", qt-version: '5.15.2', msystem: 'MINGW64' }
         - { name: "linux", os: ubuntu-latest, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "linux", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/Qt", aqt-subdir: "gcc_64", qt-version: '6.5.1'}
         - { name: "macos-universal", os: macos-latest, flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "macos", qt-version: '6.5.1'}
-        - { name: "macos-legacy", os: macos-12, flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "clang_64", qt-version: '5.15.2' }
+        - { name: "macos-legacy", os: macos-latest, flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "clang_64", qt-version: '5.15.2' }
     runs-on: ${{matrix.os}}
     defaults:
       run:
