@@ -4,12 +4,12 @@
 #include "DeviceTypes.h"
 #include "DeviceSettingsWidget.h"
 
-const SerialDeviceType serialTypes[] {
-    {"ThinkGearStreamParser", "ThinkGear Stream Parser", {9600, 57600}},
-    {"TwoByteRawParser", "2-byte raw wave parser (unsigned 12-bit)", {19200, 38400, 57600}},
+const DeviceType serialTypes[] {
+    {"ThinkGearStreamParser", "ThinkGear Stream Parser"},
+    {"TwoByteRawParser", "2-byte raw wave parser (unsigned 12-bit)"}
 };
 const QVector<qint32> standardBaudrates( {
-    57600, 38400, 19200, 9600
+    115200, 57600, 38400, 19200, 9600
 }
 );
 
@@ -48,11 +48,6 @@ DeviceSettings* SerialPortSettings::create(QWidget *w)
 
 void SerialPortSettings::refreshBauds()
 {
-    /*
-    QVector<qint32> bauds = (_type ?
-                            (reinterpret_cast<SerialDeviceType*>(_type)->supportedBaudrates) :
-                             standardBaudrates);
-    */
     _bauds.clear();
     for (auto b : standardBaudrates) {
         _bauds.append(b);

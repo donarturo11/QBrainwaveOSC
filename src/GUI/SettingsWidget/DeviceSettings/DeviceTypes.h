@@ -8,9 +8,5 @@ struct DeviceType
     QString displayedName;
 };
 
-struct SerialDeviceType : DeviceType
-{
-    QVector<qint32> supportedBaudrates;
-};
 
 #endif // DEVICETYPES_H
