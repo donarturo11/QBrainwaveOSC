@@ -20,7 +20,6 @@ ConnectionWidget::ConnectionWidget(QWidget *parent) :
 
 ConnectionWidget::~ConnectionWidget()
 {
-    disconnectDevice();
     delete ui;
 }
 

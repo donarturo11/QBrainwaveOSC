@@ -49,18 +49,14 @@ public:
 public slots:
     void onBytesReceived(qint64 numbytes) {
         QByteArray d = _dev->read(numbytes);
-        emit bytesReceived(d.data(), numbytes);
+        emit bytesReceived(d.data(), d.size());
     }
     void onReadyRead() {
         _status = Device::ConnectionStatus::Reading;
         emit connectionStatusChanged(_status);
         int numbytes = _dev->bytesAvailable();
         QByteArray d = _dev->read(numbytes);
-        emit bytesReceived(d.data(), numbytes);
-        if (!_dev->waitForReadyRead(10)) {
-            _status = Device::ConnectionStatus::Idle;
-            emit connectionStatusChanged(_status);
-        }
+        emit bytesReceived(d.data(), d.size());
     }
 signals:
     void connectionStatusChanged(Brainwave::Device::ConnectionStatus _status);
