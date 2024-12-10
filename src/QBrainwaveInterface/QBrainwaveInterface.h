@@ -26,10 +26,12 @@ public:
         }
 public slots:
     void onBytesReceived(const char *bytes, int len);
-    void pushToAnalyser(float v) { _analyser.push_back(v); }
+    void putToAnalyser(float v) { _analyser.put(v); }
     void onConnectionStatusChanged(Brainwave::Device::ConnectionStatus status) {
         emit connectionStatusChanged(status);
     }
+    void onRawWaveAnalyserEnabled();
+    void onRawWaveAnalyserDisabled();
 signals:
     void connectionStatusChanged(Brainwave::Device::ConnectionStatus status);
 protected:
