@@ -73,6 +73,9 @@ jobs:
                 ${MINGW_PACKAGE_PREFIX}-python-pip \
                 ${MINGW_PACKAGE_PREFIX}-python-distutils-extra \
                 ${MINGW_PACKAGE_PREFIX}-python-psutil \
+                ${MINGW_PACKAGE_PREFIX}-python-defusedxml \
+                ${MINGW_PACKAGE_PREFIX}-python-wheel \
+                ${MINGW_PACKAGE_PREFIX}-python-patch-ng \
                 ${MINGW_PACKAGE_PREFIX}-cmake \
                 ${MINGW_PACKAGE_PREFIX}-nsis
 
@@ -81,7 +84,6 @@ jobs:
       run: |
            echo "::notify:: Upgrading pip"
            python3 -m pip install -U pip
-           echo "SETUPTOOLS_USE_DISTUTILS=stdlib" >> $GITHUB_ENV
 
     - name: Install Linux Dependencies
       if: ${{runner.os == 'Linux'}}
@@ -107,10 +109,7 @@ jobs:
           
     - name: Install AQT
       run: |    
-           if [[ ${{matrix.os}} == "macos-latest" ]]; then
-               PIPFLAGS="--break-system-packages --user"
-           fi
-           python3 -m pip install ${PIPFLAGS} aqtinstall
+           python3 -m pip install --break-system-packages --user aqtinstall
 
     - name: Install Qt
       run: |
