@@ -4,7 +4,7 @@
 namespace Brainwave {
 SpectrumAnalyser::SpectrumAnalyser(float samplerate, float freq_resolution)
 : _samplerate(samplerate)
-, _freq_resolution(1)
+, _freq_resolution(2)
 , _fft_out(_samplerate/_freq_resolution)
 {}
 
