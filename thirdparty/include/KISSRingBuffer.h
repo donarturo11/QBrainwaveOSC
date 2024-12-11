@@ -71,9 +71,10 @@ public:
     
     std::vector<T> readAll()
     {
-        T values[m_capacity];
-        unsigned int n = read(values, m_capacity);
-        return std::vector<T>(values, values+n);
+        std::vector<T> v(m_capacity);
+        unsigned int n = read(v.data(), m_capacity);
+        v.resize(n);        
+        return v;
     }
     
     T get()
