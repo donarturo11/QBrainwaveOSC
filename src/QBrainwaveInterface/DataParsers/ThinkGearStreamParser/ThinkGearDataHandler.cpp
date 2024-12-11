@@ -41,21 +41,25 @@ void ThinkGearDataHandler::onBattery(unsigned char v)
 
 void ThinkGearDataHandler::onPoorSignal(unsigned char v)
 {
+    if (_handler->rawWaveAnalyserEnabled()) return;
     _handler->onPoorSignal( ((float) v / 255) );
 }
 
 void ThinkGearDataHandler::onAttention(unsigned char v)
 {
-     _handler->onAttention( ((float) v / 100) );
+    if (_handler->rawWaveAnalyserEnabled()) return;
+    _handler->onAttention( ((float) v / 100) );
 }
 
 void ThinkGearDataHandler::onMeditation(unsigned char v)
 {
+    if (_handler->rawWaveAnalyserEnabled()) return;
     _handler->onMeditation( ((float) v / 100) );
 }
 
 void ThinkGearDataHandler::onEeg(std::vector<unsigned char> bytes)
 {
+    if (_handler->rawWaveAnalyserEnabled()) return;
     int eegSum = 0;
     EegBands eeg;
     std::vector<int> eegValues;

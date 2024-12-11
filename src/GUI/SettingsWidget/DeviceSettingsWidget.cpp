@@ -1,3 +1,4 @@
+#include "MainWindow.h"
 #include "DeviceSettingsWidget.h"
 #include "ui_DeviceSettingsWidget.h"
 #include "SerialPortSettings.h"
@@ -40,6 +41,8 @@ void DeviceSettingsWidget::init()
             this, SLOT(chooseType(int)));
     connect(ui->baudrate_cb, SIGNAL(currentIndexChanged(int)),
             this, SLOT(chooseBaudrate(int)));
+    connect(ui->enable_rawwave_analyser, SIGNAL(stateChanged(int)),
+            this, SLOT(onRawWaveStateChanged(int)));
     initPorts();
 }
 
@@ -123,6 +126,15 @@ void DeviceSettingsWidget::chooseBaudrate(int id)
 {
     if (!_settings) return;
     emit baudrateChanged(ui->baudrate_cb->itemData(id).toInt());
+}
+
+void DeviceSettingsWidget::onRawWaveStateChanged(int state)
+{
+    auto brainwave = MainWindow::mainWindow()->brainwaveInterface();
+    if (state) 
+        brainwave->onRawWaveAnalyserEnabled();
+    else
+        brainwave->onRawWaveAnalyserDisabled();
 }
 
 void DeviceSettingsWidget::onParametersQuery()

@@ -24,6 +24,7 @@ public slots:
     void chooseDevice(int id);
     void chooseType(int id);
     void chooseBaudrate(int id);
+    void onRawWaveStateChanged(int state);
     void onParametersQuery();
 signals:
     void baudrateChanged(qint32 baudrate);

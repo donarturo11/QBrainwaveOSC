@@ -6,12 +6,10 @@ namespace Brainwave {
 QBrainwaveInterface::QBrainwaveInterface(QObject *parent) :
     QObject(parent),
     _notifier(QBrainwaveNotifier(this)),
-    _analyser(Brainwave::RawWaveAnalyser(512, &_notifier)),
+    _analyser(Brainwave::RawWaveAnalyser(512, 512, &_notifier)),
     _parser(nullptr),
     _connection(nullptr)
-{
-    _analyser.setSamplerate(512);
-}
+{}
 
 QBrainwaveInterface::~QBrainwaveInterface()
 {
@@ -50,7 +48,6 @@ void QBrainwaveInterface::setupParser(QString name)
 {
     if (name == "TwoByteRawParser") { 
         _parser = new TwoByteRawParser(&_notifier);
-        connect(&_notifier, SIGNAL(onRaw(float)), this, SLOT(pushToAnalyser(float)));
     }
     else if (name == "ThinkGearStreamParser") {
         _parser = new ThinkGearStreamParser(&_notifier);
@@ -61,7 +58,18 @@ void QBrainwaveInterface::deleteParser()
 {
     if (_parser) delete _parser;
     _parser = nullptr;
-    disconnect(&_notifier, SIGNAL(onRaw(float)), this, SLOT(pushToAnalyser(float)));
+}
+
+void QBrainwaveInterface::onRawWaveAnalyserEnabled()
+{
+    _notifier.enableRawWaveAnalyser();
+    connect(&_notifier, SIGNAL(onRaw(float)), this, SLOT(putToAnalyser(float)));
+}
+
+void QBrainwaveInterface::onRawWaveAnalyserDisabled()
+{
+    _notifier.disableRawWaveAnalyser();
+    disconnect(&_notifier, SIGNAL(onRaw(float)), this, SLOT(putToAnalyser(float)));
 }
 
 void QBrainwaveInterface::open()

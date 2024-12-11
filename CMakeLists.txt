@@ -13,7 +13,8 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include_directories(
-   ${PROJECT_SOURCE_DIR}/thirdparty/neurosky/lib/MinSet_Dev_tools/ThinkGear
+   ${PROJECT_SOURCE_DIR}/thirdparty/kissfft
+   ${PROJECT_SOURCE_DIR}/thirdparty/include
    ${PROJECT_SOURCE_DIR}/src
    ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface
    ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface/DataParsers

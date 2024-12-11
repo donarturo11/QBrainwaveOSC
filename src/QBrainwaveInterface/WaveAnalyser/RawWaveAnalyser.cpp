@@ -1,26 +1,48 @@
 #include "RawWaveAnalyser.h"
+#include "SpectrumAnalyser.h"
 #include <iostream>
 namespace Brainwave {
-RawWaveAnalyser::RawWaveAnalyser(int bufsize, DataHandler *handler) :
-_buffersize(bufsize), _handler(handler)
+RawWaveAnalyser::RawWaveAnalyser(int bufsize, float samplerate, DataHandler *handler) :
+_handler(handler), _wave_buf(bufsize), _samplerate(samplerate)
 {}
 
 RawWaveAnalyser::~RawWaveAnalyser()
 {}
 
-void RawWaveAnalyser::push_back(float value)
+void RawWaveAnalyser::put(float& value)
 {
-    _wave.push_back(value);
-    if (_wave.size() == _buffersize) process();
+    _wave_buf.put(value);
+    if (_wave_buf.full()) process();
 }
 
 void RawWaveAnalyser::process()
 {
-    std::cout << "RawWaveAnalyser:" << std::endl;
-    std::cout << "Wave num elements: ";
-    std::cout << _wave.size();
-    std::cout << std::endl;
-    _wave.clear();
+    auto input = _wave_buf.readAll();
+    auto eeg   = doSpectrumAnalysis(input);
+    
+    // compute band powers sums
+    float theta = eeg.theta;
+    float alpha = eeg.lowAlpha + eeg.highAlpha;
+    float beta = eeg.lowBeta + eeg.highBeta;
+    
+    float norm_total = theta + alpha + beta;
+    alpha /= norm_total;
+    beta  /= norm_total;
+    theta /= norm_total;
+    
+    // notify eeg, meditation, attention
+    _handler->onEeg(eeg);
+    
+    // see: https://doi.org/10.1016/j.ijpsycho.2024.112465
+    _handler->onMeditation(theta + alpha);
+    _handler->onAttention(beta);
+}
+
+EegBands RawWaveAnalyser::doSpectrumAnalysis(std::vector<float>& in)
+{
+    SpectrumAnalyser sp(samplerate(), 0.5);
+    sp.analyse(in);
+    return sp.getEegPowers();
 }
 
 }

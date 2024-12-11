@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>323</width>
-    <height>160</height>
+    <height>168</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -53,8 +53,8 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>110</y>
-     <width>141</width>
+     <y>115</y>
+     <width>111</width>
      <height>19</height>
     </rect>
    </property>
@@ -66,7 +66,7 @@
    <property name="geometry">
     <rect>
      <x>0</x>
-     <y>130</y>
+     <y>140</y>
      <width>321</width>
      <height>27</height>
     </rect>
@@ -95,14 +95,27 @@
   <widget class="QLabel" name="baudrate_label">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>110</x>
      <y>88</y>
-     <width>70</width>
+     <width>80</width>
      <height>17</height>
     </rect>
    </property>
    <property name="text">
     <string>Baudrate:</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="enable_rawwave_analyser">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>106</y>
+     <width>211</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Use Raw Wave Analyser</string>
    </property>
   </widget>
  </widget>
