@@ -374,8 +374,8 @@ jobs:
           generate_release_notes: true
           prerelease: false
           files: |
-            ${{github.workspace}}/${{env.pkgname}}-macos-universal*
-            ${{github.workspace}}/${{env.pkgname}}-macos-legacy*
-            ${{github.workspace}}/${{env.pkgname}}-windows*
-            ${{github.workspace}}/${{env.pkgname}}-linux*
-            ${{github.workspace}}/${{env.pkgname}}-windows-legacy*
+            ${{github.workspace}}/${{env.pkgname}}-macos-universal/*
+            ${{github.workspace}}/${{env.pkgname}}-macos-legacy/*
+            ${{github.workspace}}/${{env.pkgname}}-windows/*
+            ${{github.workspace}}/${{env.pkgname}}-linux/*
+            ${{github.workspace}}/${{env.pkgname}}-windows-legacy/*
