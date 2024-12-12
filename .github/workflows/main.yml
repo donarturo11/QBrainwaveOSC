@@ -342,7 +342,7 @@ jobs:
 
       - if: github.event_name == 'push' # this is a snapshot build. create a release and upload binaries
         name: Create Snapshot Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           name: ${{ steps.get_tag.outputs.BUILD_TAG }}
           tag_name: ${{ steps.get_tag.outputs.BUILD_TAG }}
@@ -367,7 +367,7 @@ jobs:
 
       - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload macOS binary
         name: Update Tagged Release (macOS universal)
-        uses: actions/upload-release-asset@v1.0.2
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -378,7 +378,7 @@ jobs:
 
       - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload macOS binary
         name: Update Tagged Release (macOS legacy)
-        uses: actions/upload-release-asset@v1.0.2
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -389,7 +389,7 @@ jobs:
 
       - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload Linux binary
         name: Update Tagged Release (Linux)
-        uses: actions/upload-release-asset@v1.0.2
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -400,7 +400,7 @@ jobs:
 
       - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload Windows binary
         name: Update Tagged Release (Windows)
-        uses: actions/upload-release-asset@v1.0.2
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
@@ -411,7 +411,7 @@ jobs:
 
       - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload Windows binary
         name: Update Tagged Release (Windows legacy)
-        uses: actions/upload-release-asset@v1.0.2
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
