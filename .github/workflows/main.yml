@@ -365,62 +365,7 @@ jobs:
           doNotFailIfNotFound: true
           tag: ${{ github.ref_name }}
 
-      - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload macOS binary
-        name: Update Tagged Release (macOS universal)
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.find_release.outputs.upload_url }}
-          asset_path: ${{github.workspace}}/${{env.pkgname}}-macos-universal
-          asset_name: ${{env.pkgname}}-macos-universal
-          asset_content_type: application/octet-stream
-
-      - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload macOS binary
-        name: Update Tagged Release (macOS legacy)
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.find_release.outputs.upload_url }}
-          asset_path: ${{github.workspace}}/${{env.pkgname}}-macos-legacy
-          asset_name: ${{env.pkgname}}-macos-legacy
-          asset_content_type: application/octet-stream
-
-      - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload Linux binary
-        name: Update Tagged Release (Linux)
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.find_release.outputs.upload_url }}
-          asset_path: ${{github.workspace}}/${{env.pkgname}}-linux
-          asset_name: ${{env.pkgname}}-linux-x86_64
-          asset_content_type: application/octet-stream
-
-      - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload Windows binary
-        name: Update Tagged Release (Windows)
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.find_release.outputs.upload_url }}
-          asset_path: ${{github.workspace}}/${{env.pkgname}}-windows
-          asset_name: ${{env.pkgname}}-win-x86_64
-          asset_content_type: application/octet-stream
-
-      - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # release exists - upload Windows binary
-        name: Update Tagged Release (Windows legacy)
-        uses: softprops/action-gh-release@v2
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        with:
-          upload_url: ${{ steps.find_release.outputs.upload_url }}
-          asset_path: ${{github.workspace}}/${{env.pkgname}}-windows-legacy
-          asset_name: ${{env.pkgname}}-win7-x86_64
-          asset_content_type: application/octet-stream
-
-      - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id == 0 # otherwise release does not exist, create one and upload binaries
+      - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') && steps.find_release.outputs.id != 0 # otherwise release does not exist, create one and upload binaries
         name: Create Tagged Release
         uses: softprops/action-gh-release@v1
         with:
