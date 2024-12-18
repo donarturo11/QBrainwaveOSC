@@ -29,16 +29,16 @@ include_directories(
 option(FORCE_QT5 "Force qt5 install" OFF)
 option(FORCE_QT6 "Force qt6 install" OFF)
 
-option(USE_KISSFFT "Use kissfft instead fftw" ON)
+option(USE_FFTW "Use FFTW" ON)
 
-if(USE_KISSFFT)
+if(USE_FFTW)
+message("Using fftw3")
+add_compile_definitions(USE_FFTW)
+find_package(FFTW3 REQUIRED)
+else()
 message("Using kissfft")
 add_compile_definitions(USE_KISSFFT)
 include_directories(${PROJECT_SOURCE_DIR}/thirdparty/kissfft)
-else()
-message("Using fftw3")
-add_compile_definitions(USE_FFTW3)
-find_package(FFTW3 REQUIRED)
 endif()
 
 if(FORCE_QT5)
@@ -116,7 +116,7 @@ ELSEIF(APPLE)
     )
 ENDIF()
 
-if(NOT USE_KISSFFT)
+if(USE_FFTW)
 target_link_libraries(${PROJECT_NAME} PRIVATE fftw3)
 endif()
 
