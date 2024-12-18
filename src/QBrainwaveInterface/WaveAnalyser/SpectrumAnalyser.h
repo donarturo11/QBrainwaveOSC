@@ -1,10 +1,12 @@
 #ifndef BRAINWAVE_SPECTRUMANALYSER
 #define BRAINWAVE_SPECTRUMANALYSER
 #include "EegBands.h"
-#ifdef USE_KISSFFT
+#if defined(USE_FFTW)
+#include <fftw3.h>
+#elif defined(USE_KISSFFT)
 #include "kissfft.hh"
 #else
-#include <fftw3.h>
+
 #endif
 #include <algorithm>
 #include <complex>
