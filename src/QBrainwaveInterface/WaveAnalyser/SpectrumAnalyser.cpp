@@ -1,21 +1,48 @@
 #include "SpectrumAnalyser.h"
-#include <iostream>
-#include <iomanip>
+#include <cmath>
+
 namespace Brainwave {
 SpectrumAnalyser::SpectrumAnalyser(float samplerate, float freq_resolution)
 : _samplerate(samplerate)
-, _freq_resolution(2)
-, _fft_out(_samplerate/_freq_resolution)
-{}
+, _freq_resolution(freq_resolution)
+, _nfft(samplerate/freq_resolution)
+#ifdef USE_KISSFFT
+, _fft(_nfft, false)
+#endif
+{
+    _fft_out.resize(_nfft+1);
+    _input.resize(_nfft);
+#ifdef USE_FFTW
+    auto in = _input.data();
+    auto out = reinterpret_cast<fftw_complex*>(_fft_out.data());
+    _fftw_plan = fftw_plan_dft_r2c_1d(_nfft,
+                                   in,
+                                   out,
+                                   FFTW_MEASURE);
+#endif
+}
 
 SpectrumAnalyser::~SpectrumAnalyser()
-{}
+{
+    #ifdef USE_FFTW
+    fftw_destroy_plan(_fftw_plan);
+    #endif
+}
 
 void SpectrumAnalyser::analyse(std::vector<float>& signal)
 {
-    size_t nfft = _fft_out.size();
-    kissfft<float> fft(nfft, false);
-    fft.transform_real(signal.data(), _fft_out.data());
+    if(signal.size() < _nfft) signal.resize(_nfft);
+    auto hanning = [&](size_t n) -> double {
+        return 0.5 * (1.0 - std::cos(2.0 * M_PI * n / (_nfft - 1)));
+    };
+    for (int i=0; i<_nfft; i++) {
+        _input[i] = signal[i] * hanning(i);
+    }
+    #ifdef USE_FFTW
+    fftw_execute(_fftw_plan);
+    #else
+    fft.transform_real(_input.data(), _fft_out.data());
+    #endif
 }
 
 EegBands SpectrumAnalyser::getEegPowers()
@@ -41,7 +68,7 @@ float SpectrumAnalyser::getBandPower(float low_freq, float high_freq)
 {
     float power = 0.00f;
     size_t nPowers = 0;
-    for (size_t i = 0; i < _fft_out.size(); ++i) {
+    for (size_t i = 0; i < _nfft; ++i) {
         float freq = i * _freq_resolution;
         if (freq >= low_freq && freq <= high_freq) {
             power += std::norm(_fft_out[i]);

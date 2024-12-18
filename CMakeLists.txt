@@ -11,9 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-
 include_directories(
-   ${PROJECT_SOURCE_DIR}/thirdparty/kissfft
    ${PROJECT_SOURCE_DIR}/thirdparty/include
    ${PROJECT_SOURCE_DIR}/src
    ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface
@@ -30,6 +28,18 @@ include_directories(
 option(FORCE_QT5 "Force qt5 install" OFF)
 option(FORCE_QT6 "Force qt6 install" OFF)
 
+option(USE_FFTW "Use FFTW" ON)
+
+if(USE_FFTW)
+message("Using fftw3")
+add_compile_definitions(USE_FFTW)
+find_package(FFTW REQUIRED)
+else()
+message("Using kissfft")
+add_compile_definitions(USE_KISSFFT)
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/kissfft)
+endif()
+
 if(FORCE_QT5)
     set(QT_VERSION_MAJOR 5)
     find_package(Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts Network)
@@ -45,6 +55,10 @@ if (${QT_VERSION_MAJOR} EQUAL 5)
 add_compile_definitions(QT5)
 elseif (${QT_VERSION_MAJOR} EQUAL 6)
 add_compile_definitions(QT6)
+endif()
+
+if(WIN32)
+add_compile_definitions(_USE_MATH_DEFINES)
 endif()
 
 add_subdirectory(src)
@@ -104,6 +118,10 @@ ELSEIF(APPLE)
     INSTALL_RPATH @executable_path/../Frameworks
     )
 ENDIF()
+
+if(USE_FFTW)
+target_link_libraries(${PROJECT_NAME} PRIVATE fftw3)
+endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Bluetooth)

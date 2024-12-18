@@ -2,6 +2,7 @@
 #define BRAINWAVE_RAWWAVEANALYSER
 #include "DataHandler.h"
 #include "KISSRingBuffer.h"
+#include "SpectrumAnalyser.h"
 #include <vector>
 namespace Brainwave {
 class RawWaveAnalyser
@@ -21,6 +22,7 @@ private:
     EegBands doSpectrumAnalysis(std::vector<float>&);
     DataHandler *_handler;
     int _samplerate;
+    SpectrumAnalyser _sp;
     KISSRingBuffer<float> _wave_buf;
 };
 }

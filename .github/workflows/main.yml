@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
        include:
-        - { name: "windows", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "/opt/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64' }
+        - { name: "windows", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "/opt/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64' }
         - { name: "windows-legacy", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "windows", aqt-arch: "win64_mingw81", aqt-prefix: "/opt/Qt", aqt-subdir: "mingw81_64", qt-version: '5.15.2', msystem: 'MINGW64' }
         - { name: "linux", os: ubuntu-latest, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "linux", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/Qt", aqt-subdir: "gcc_64", qt-version: '6.5.1'}
         - { name: "macos-universal", os: macos-latest, flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "macos", qt-version: '6.5.1'}
@@ -107,31 +107,6 @@ jobs:
       run: |
           mkdir -p ${{ matrix.deps-prefix }}
           
-    - name: Install AQT
-      run: |    
-           python3 -m pip install --break-system-packages --user aqtinstall
-
-    - name: Install Qt
-      run: |
-           AQT_INSTALL="python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} ${{matrix.aqt-os}} desktop ${{matrix.qt-version}} ${{matrix.aqt-arch}}"
-           QT6_MODULES=(qtconnectivity qtserialport qtcharts)
-           QT5_MODULES=(qtcharts)
-           ${AQT_INSTALL}
-           if [[ ${{matrix.qt-version}} == 6.* ]]; then
-               for i in ${QT6_MODULES[@]}; do
-                   ${AQT_INSTALL} -m $i
-               done
-           else
-               for i in ${QT5_MODULES[@]}; do
-                   ${AQT_INSTALL} -m $i
-               done
-           fi
-
-    - name: Checkout Repo
-      uses: actions/checkout@v3
-      with:
-          submodules: 'true'
-
     - name: Prepare Packages names
       run: |
           PACKAGE_NAME=${{env.pkgname}}-${{matrix.name}}
@@ -160,13 +135,14 @@ jobs:
     - name: Prepare macOS temp disk
       if: ${{runner.os == 'macOS'}}
       run: |
-          export TEMP_DMGFILE=temp.dmg
+          export TEMP_DMGFILE=${HOME}/temp.dmg
           hdiutil create -size 700m -fs HFS+ -volname "${PACKAGE_NAME}" "${TEMP_DMGFILE}"
           hdiutil attach "${TEMP_DMGFILE}"
           TEMP_DMGPOINT="/Volumes/${PACKAGE_NAME}"
           echo "TEMP_DMGNAME=\"${TEMP_DMGNAME}\"" >> $GITHUB_ENV
           echo "TEMP_DMGFILE=\"${TEMP_DMGFILE}\"" >> $GITHUB_ENV
           echo "TEMP_DMGPOINT=\"${TEMP_DMGPOINT}\"" >> $GITHUB_ENV
+          ls -lah ${PWD}
 
     - name: Setup install prefix
       run: |
@@ -179,13 +155,65 @@ jobs:
            fi
            echo "INSTALL_PREFIX=$INSTALL_PREFIX" >> $GITHUB_ENV
 
+    - name: Install AQT
+      run: |    
+           python3 -m pip install --break-system-packages --user aqtinstall
+
+    - name: Install Qt
+      run: |
+           AQT_INSTALL="python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} ${{matrix.aqt-os}} desktop ${{matrix.qt-version}} ${{matrix.aqt-arch}}"
+           QT6_MODULES=(qtconnectivity qtserialport qtcharts)
+           QT5_MODULES=(qtcharts)
+           ${AQT_INSTALL}
+           if [[ ${{matrix.qt-version}} == 6.* ]]; then
+               for i in ${QT6_MODULES[@]}; do
+                   ${AQT_INSTALL} -m $i
+               done
+           else
+               for i in ${QT5_MODULES[@]}; do
+                   ${AQT_INSTALL} -m $i
+               done
+           fi
+
+    - name: FETCH FFTW3
+      run: |
+          wget https://www.fftw.org/fftw-3.3.10.tar.gz
+          tar -vxzf fftw-3.3.10.tar.gz
+          export FFTW_BUILD_DIR=${{env.WORKDIR}}/fftw-build
+          if [ ${{ runner.os }} == "Windows" ]; then
+              echo "FFTW_BUILD_DIR=$(cygpath -m "${FFTW_BUILD_DIR}")" >> $GITHUB_ENV
+          else
+              echo "FFTW_BUILD_DIR="${FFTW_BUILD_DIR}"" >> $GITHUB_ENV
+          fi
+    
+    - name: Compile FFTW3 (WINDOWS)
+      if: ${{matrix.name == 'windows'}}
+      shell: pwsh
+      run: |
+          cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
+          cmake --build ${{env.FFTW_BUILD_DIR}} --config Release
+    
+    - name: Compile FFTW3 (POSIX)
+      if: ${{matrix.name != 'windows'}}
+      run: |
+          cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
+          cmake --build ${{env.FFTW_BUILD_DIR}}
+    
+    - name: Install FFTW3
+      run: cmake --install ${{env.FFTW_BUILD_DIR}}
+
+    - name: Checkout Repo
+      uses: actions/checkout@v3
+      with:
+          submodules: 'true'
+
     - name: Run Configure
       run: |
            cmake -S "${{env.WORKDIR}}" \
                  -B "${{env.WORKDIR}}/build" ${{matrix.flags}} \
                  -DCMAKE_BUILD_TYPE=Release \
                  -DCMAKE_INSTALL_PREFIX="${{env.INSTALL_PREFIX}}" \
-                 -DCMAKE_PREFIX_PATH="${{env.AQTPATH}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}};${{env.DEPSPATH}}" 
+                 -DCMAKE_PREFIX_PATH="${{env.AQTPATH}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}};${{env.DEPSPATH}}"
 
     - name: Compile Code (POSIX)
       if: ${{matrix.name != 'windows'}}
@@ -212,8 +240,8 @@ jobs:
     - name: Create MacOS Package
       if: ${{runner.os == 'macOS'}}
       run: |
-           DESTINATION_DIR=${PACKAGE_NAME}
-           DIST_DMG=${PACKAGE_NAME}.dmg
+           DESTINATION_DIR=${{env.PACKAGE_NAME}}
+           DIST_DMG=${{env.PACKAGE_NAME}}.dmg
            mkdir ${DESTINATION_DIR}  || echo "::warning:: ${DESTINATION_DIR} already exists"
            ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/macdeployqt \
                               "${{env.APPDIR}}"
@@ -221,7 +249,7 @@ jobs:
            codesign --verbose --strict --continue --timestamp --force --deep -s ${IDENTITY_NAME} "${{env.APPDIR}}"
            ln -s /Applications/ "${{ env.TEMP_DMGPOINT }}"/Applications           
            hdiutil detach "${{ env.TEMP_DMGPOINT }}"
-           hdiutil convert "${{ env.TEMP_DMGFILE }}" -format UDBZ \
+           hdiutil convert ${{ env.TEMP_DMGFILE }} -format UDBZ \
                     -o ${DESTINATION_DIR}/${DIST_DMG}
            shasum -a 256 ${DESTINATION_DIR}/${DIST_DMG}
            
