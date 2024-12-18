@@ -40,7 +40,7 @@ void RawWaveAnalyser::process()
 
 EegBands RawWaveAnalyser::doSpectrumAnalysis(std::vector<float>& in)
 {
-    SpectrumAnalyser sp(samplerate(), 0.5);
+    SpectrumAnalyser sp(samplerate(), 1);
     sp.analyse(in);
     return sp.getEegPowers();
 }

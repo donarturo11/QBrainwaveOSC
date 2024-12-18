@@ -1,14 +1,13 @@
 #ifndef BRAINWAVE_SPECTRUMANALYSER
 #define BRAINWAVE_SPECTRUMANALYSER
 #include "EegBands.h"
-#include <cmath>
-#include <kissfft.hh>
+#include <vector>
 namespace Brainwave {
 class SpectrumAnalyser
 {
     float _freq_resolution;
     float _samplerate;
-    std::vector<std::complex<float>> _fft_out;
+    std::vector<float> _spectrogram;
     unsigned int _nSamples;
 public:
     SpectrumAnalyser(float, float freq_resolution = 1.0);
