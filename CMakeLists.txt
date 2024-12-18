@@ -13,7 +13,6 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
 
 include_directories(
-   ${PROJECT_SOURCE_DIR}/thirdparty/kissfft
    ${PROJECT_SOURCE_DIR}/thirdparty/include
    ${PROJECT_SOURCE_DIR}/src
    ${PROJECT_SOURCE_DIR}/src/QBrainwaveInterface
@@ -29,6 +28,18 @@ include_directories(
 
 option(FORCE_QT5 "Force qt5 install" OFF)
 option(FORCE_QT6 "Force qt6 install" OFF)
+
+option(USE_KISSFFT "Use kissfft instead fftw" ON)
+
+if(USE_KISSFFT)
+message("Using kissfft")
+add_compile_definitions(USE_KISSFFT)
+include_directories(${PROJECT_SOURCE_DIR}/thirdparty/kissfft)
+else()
+message("Using fftw3")
+add_compile_definitions(USE_FFTW3)
+find_package(FFTW3 REQUIRED)
+endif()
 
 if(FORCE_QT5)
     set(QT_VERSION_MAJOR 5)
@@ -104,6 +115,10 @@ ELSEIF(APPLE)
     INSTALL_RPATH @executable_path/../Frameworks
     )
 ENDIF()
+
+if(NOT USE_KISSFFT)
+target_link_libraries(${PROJECT_NAME} PRIVATE fftw3)
+endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Bluetooth)
