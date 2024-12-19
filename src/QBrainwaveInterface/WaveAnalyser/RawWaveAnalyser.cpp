@@ -1,9 +1,11 @@
 #include "RawWaveAnalyser.h"
-#include "SpectrumAnalyser.h"
 #include <iostream>
 namespace Brainwave {
-RawWaveAnalyser::RawWaveAnalyser(int bufsize, float samplerate, DataHandler *handler) :
-_handler(handler), _wave_buf(bufsize), _samplerate(samplerate)
+RawWaveAnalyser::RawWaveAnalyser(int bufsize, float samplerate, DataHandler *handler)
+: _handler(handler)
+, _wave_buf(bufsize)
+, _samplerate(samplerate)
+, _sp(samplerate)
 {}
 
 RawWaveAnalyser::~RawWaveAnalyser()
@@ -40,9 +42,8 @@ void RawWaveAnalyser::process()
 
 EegBands RawWaveAnalyser::doSpectrumAnalysis(std::vector<float>& in)
 {
-    SpectrumAnalyser sp(samplerate(), 0.5);
-    sp.analyse(in);
-    return sp.getEegPowers();
+    _sp.analyse(in);
+    return _sp.getEegPowers();
 }
 
 }
