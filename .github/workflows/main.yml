@@ -26,11 +26,11 @@ jobs:
     strategy:
       matrix:
        include:
-        - { name: "windows", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "/opt/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64' }
-        - { name: "windows-legacy", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "windows", aqt-arch: "win64_mingw81", aqt-prefix: "/opt/Qt", aqt-subdir: "mingw81_64", qt-version: '5.15.2', msystem: 'MINGW64' }
+        - { name: "windows-qt6-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "/opt/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64' }
+        - { name: "windows-qt5-mingw", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "windows", aqt-arch: "win64_mingw81", aqt-prefix: "/opt/Qt", aqt-subdir: "mingw81_64", qt-version: '5.15.2', msystem: 'MINGW64' }
         - { name: "linux", os: ubuntu-latest, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "linux", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/Qt", aqt-subdir: "gcc_64", qt-version: '6.5.1'}
-        - { name: "macos-universal", os: macos-latest, flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "macos", qt-version: '6.5.1'}
-        - { name: "macos-legacy", os: macos-latest, flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "clang_64", qt-version: '5.15.2' }
+        - { name: "macos-qt6-universal", os: macos-latest, flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "macos", qt-version: '6.5.1'}
+        - { name: "macos-qt5-legacy", os: macos-latest, flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "clang_64", qt-version: '5.15.2' }
     runs-on: ${{matrix.os}}
     defaults:
       run:
@@ -187,14 +187,14 @@ jobs:
           fi
     
     - name: Compile FFTW3 (WINDOWS)
-      if: ${{matrix.name == 'windows'}}
+      if: ${{matrix.name == 'windows-qt6-msvc'}}
       shell: pwsh
       run: |
           cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
           cmake --build ${{env.FFTW_BUILD_DIR}} --config Release
     
     - name: Compile FFTW3 (POSIX)
-      if: ${{matrix.name != 'windows'}}
+      if: ${{matrix.name != 'windows-qt6-msvc'}}
       run: |
           cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
           cmake --build ${{env.FFTW_BUILD_DIR}}
@@ -216,11 +216,11 @@ jobs:
                  -DCMAKE_PREFIX_PATH="${{env.AQTPATH}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}};${{env.DEPSPATH}}"
 
     - name: Compile Code (POSIX)
-      if: ${{matrix.name != 'windows'}}
+      if: ${{matrix.name != 'windows-qt6-msvc'}}
       run: cmake --build ${{env.WORKDIR}}/build
 
     - name: Compile Code (WINDOWS)
-      if: ${{matrix.name == 'windows'}}
+      if: ${{matrix.name == 'windows-qt6-msvc'}}
       shell: pwsh
       run: cmake --build ${{github.workspace}}/build --config Release  
 
@@ -342,13 +342,13 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{env.pkgname}}-macos-universal
-          path: ${{github.workspace}}/${{env.pkgname}}-macos-universal
+          path: ${{github.workspace}}/${{env.pkgname}}-macos-qt6-universal
 
       - name: Get macOS legacy binary
         uses: actions/download-artifact@v3
         with:
           name: ${{env.pkgname}}-macos-legacy
-          path: ${{github.workspace}}/${{env.pkgname}}-macos-legacy
+          path: ${{github.workspace}}/${{env.pkgname}}-macos-qt5-legacy
 
       - name: Get Linux binary
         uses: actions/download-artifact@v3
@@ -356,17 +356,17 @@ jobs:
           name: ${{env.pkgname}}-linux
           path: ${{github.workspace}}/${{env.pkgname}}-linux
 
-      - name: Get Windows binary
+      - name: Get Windows binary (Qt6 MSVC)
         uses: actions/download-artifact@v3
         with:
-          name: ${{env.pkgname}}-windows
-          path: ${{github.workspace}}/${{env.pkgname}}-windows
+          name: ${{env.pkgname}}-windows-qt6-msvc
+          path: ${{github.workspace}}/${{env.pkgname}}-windows-qt6-msvc
 
-      - name: Get Windows legacy binary
+      - name: Get Windows (Qt5 MinGW)
         uses: actions/download-artifact@v3
         with:
-          name: ${{env.pkgname}}-windows-legacy
-          path: ${{github.workspace}}/${{env.pkgname}}-windows-legacy
+          name: ${{env.pkgname}}-windows-qt5-mingw
+          path: ${{github.workspace}}/${{env.pkgname}}-windows-qt5-mingw
 
       - if: github.event_name == 'push' # this is a snapshot build. create a release and upload binaries
         name: Create Snapshot Release
@@ -377,11 +377,11 @@ jobs:
           generate_release_notes: true
           prerelease: true
           files: |
-            ${{github.workspace}}/${{env.pkgname}}-macos-universal/*
-            ${{github.workspace}}/${{env.pkgname}}-macos-legacy/*
+            ${{github.workspace}}/${{env.pkgname}}-macos-qt6-universal/*
+            ${{github.workspace}}/${{env.pkgname}}-macos-qt5-legacy/*
             ${{github.workspace}}/${{env.pkgname}}-linux/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-legacy/*
-            ${{github.workspace}}/${{env.pkgname}}-windows/*
+            ${{github.workspace}}/${{env.pkgname}}-windows-qt5-mingw/*
+            ${{github.workspace}}/${{env.pkgname}}-windows-qt6-msvc/*
 
       - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') # this is a versioned build. check if release already exists
         name: Find Existing Release
@@ -402,8 +402,8 @@ jobs:
           generate_release_notes: true
           prerelease: false
           files: |
-            ${{github.workspace}}/${{env.pkgname}}-macos-universal/*
-            ${{github.workspace}}/${{env.pkgname}}-macos-legacy/*
-            ${{github.workspace}}/${{env.pkgname}}-windows/*
+            ${{github.workspace}}/${{env.pkgname}}-macos-qt6-universal/*
+            ${{github.workspace}}/${{env.pkgname}}-macos-qt5-legacy/*
             ${{github.workspace}}/${{env.pkgname}}-linux/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-legacy/*
+            ${{github.workspace}}/${{env.pkgname}}-windows-qt5-mingw/*
+            ${{github.workspace}}/${{env.pkgname}}-windows-qt6-msvc/*
