@@ -341,13 +341,13 @@ jobs:
       - name: Get macOS universal binary
         uses: actions/download-artifact@v3
         with:
-          name: ${{env.pkgname}}-macos-universal
+          name: ${{env.pkgname}}-macos-qt6-universal
           path: ${{github.workspace}}/${{env.pkgname}}-macos-qt6-universal
 
       - name: Get macOS legacy binary
         uses: actions/download-artifact@v3
         with:
-          name: ${{env.pkgname}}-macos-legacy
+          name: ${{env.pkgname}}-macos-qt5-legacy
           path: ${{github.workspace}}/${{env.pkgname}}-macos-qt5-legacy
 
       - name: Get Linux binary
