@@ -276,7 +276,7 @@ jobs:
                ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/windeployqt.exe ${{env.APPDIR}}/
            fi
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
-            for i in $(ldd QBrainwaveOSC.exe | cut -f 3 -d " " | grep "/bin/")
+            for i in $(ldd ${{env.APPDIR}}/QBrainwaveOSC.exe | cut -f 3 -d " " | grep "/bin/")
              do cp -v $i ${{env.APPDIR}}/
             done
            fi
