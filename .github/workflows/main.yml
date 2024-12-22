@@ -178,7 +178,7 @@ jobs:
            fi
     
     - name: Install QT (mingw)
-      if: ${{matrix.aqt-os == 'none'}} && ${{runner.os == 'Windows'}}
+      if: ${{matrix.aqt-os == 'none' && runner.os == 'Windows'}}
       run: |
           pacman -S --noconfirm \
                 ${MINGW_PACKAGE_PREFIX}-qt5 \
@@ -205,7 +205,7 @@ jobs:
           cmake --build ${{env.FFTW_BUILD_DIR}} --config Release
     
     - name: Compile FFTW3 (POSIX)
-      if: ${{matrix.name != 'windows-qt6-msvc'}} && ${{matrix.aqt-os == 'none'}}
+      if: ${{matrix.name != 'windows-qt6-msvc' && matrix.aqt-os == 'none'}}
       run: |
           cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
           cmake --build ${{env.FFTW_BUILD_DIR}}
