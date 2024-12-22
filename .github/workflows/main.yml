@@ -270,7 +270,11 @@ jobs:
       run: |
            export ARTIFACT_DIR=${{env.WORKDIR}}/${PACKAGE_NAME}
            find "${{env.DEPSPATH}}" -name "*.dll"  -exec cp {} ${{env.APPDIR}}/ \;
-           ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/windeployqt.exe ${{env.APPDIR}}/
+           if [[ ${{matrix.aqt-os }} == 'none' ]]; then
+               windeployqt ${{env.APPDIR}}/
+           else
+               ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/windeployqt.exe ${{env.APPDIR}}/
+           fi
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
             for i in $(ldd QBrainwaveOSC.exe | cut -f 3 -d " " | grep "/bin/")
              do cp -v $i ${{env.APPDIR}}/
