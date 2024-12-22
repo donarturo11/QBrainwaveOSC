@@ -26,11 +26,11 @@ jobs:
     strategy:
       matrix:
        include:
-        - { name: "windows-qt6-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "/opt/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64' }
-        - { name: "windows-qt5-mingw", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "none", aqt-arch: "win64_mingw81", aqt-prefix: "/opt/Qt", aqt-subdir: "mingw81_64", qt-version: '5.15.2', msystem: 'MINGW64' }
-        - { name: "linux", os: ubuntu-latest, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "linux", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/Qt", aqt-subdir: "gcc_64", qt-version: '6.5.1'}
-        - { name: "macos-qt6-universal", os: macos-latest, flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "macos", qt-version: '6.5.1'}
-        - { name: "macos-qt5-legacy", os: macos-latest, flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "clang_64", qt-version: '5.15.2' }
+        - { name: "windows-qt6-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "/opt/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64', build-fftw: true }
+        - { name: "windows-qt5-mingw", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "/opt/deps", aqt-os: "none", aqt-arch: "win64_mingw81", aqt-prefix: "/opt/Qt", aqt-subdir: "mingw81_64", qt-version: '5.15.2', msystem: 'MINGW64', build-fftw: false }
+        - { name: "linux", os: ubuntu-latest, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "linux", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/Qt", aqt-subdir: "gcc_64", qt-version: '6.5.1', build-fftw: true}
+        - { name: "macos-qt6-universal", os: macos-latest, flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "macos", qt-version: '6.5.1', build-fftw: true}
+        - { name: "macos-qt5-legacy", os: macos-latest, flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "clang_64", qt-version: '5.15.2', build-fftw: true }
     runs-on: ${{matrix.os}}
     defaults:
       run:
@@ -186,7 +186,7 @@ jobs:
                 
       
     - name: FETCH FFTW3
-      if: ${{matrix.aqt-os == 'none'}}
+      if: ${{matrix.build-fftw}}
       run: |
           wget https://www.fftw.org/fftw-3.3.10.tar.gz
           tar -vxzf fftw-3.3.10.tar.gz
@@ -198,20 +198,20 @@ jobs:
           fi
     
     - name: Compile FFTW3 (WINDOWS)
-      if: ${{matrix.name == 'windows-qt6-msvc'}}
+      if: ${{matrix.name == 'windows-qt6-msvc' && matrix.build-fftw}}
       shell: pwsh
       run: |
           cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
           cmake --build ${{env.FFTW_BUILD_DIR}} --config Release
     
     - name: Compile FFTW3 (POSIX)
-      if: ${{matrix.name != 'windows-qt6-msvc' && matrix.aqt-os == 'none'}}
+      if: ${{matrix.name != 'windows-qt6-msvc' && matrix.build-fftw}}
       run: |
           cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
           cmake --build ${{env.FFTW_BUILD_DIR}}
     
     - name: Install FFTW3
-      if: ${{matrix.aqt-os == 'none'}}
+      if: ${{matrix.build-fftw}}
       run: cmake --install ${{env.FFTW_BUILD_DIR}}
 
     - name: Checkout Repo
