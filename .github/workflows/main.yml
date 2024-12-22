@@ -77,6 +77,9 @@ jobs:
                 ${MINGW_PACKAGE_PREFIX}-python-wheel \
                 ${MINGW_PACKAGE_PREFIX}-python-patch-ng \
                 ${MINGW_PACKAGE_PREFIX}-cmake \
+                ${MINGW_PACKAGE_PREFIX}-gles-headers \
+                ${MINGW_PACKAGE_PREFIX}-glew \
+                ${MINGW_PACKAGE_PREFIX}-glfw \
                 ${MINGW_PACKAGE_PREFIX}-nsis
 
     - name: Setup windows env
