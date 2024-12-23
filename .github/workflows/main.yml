@@ -185,6 +185,7 @@ jobs:
       run: |
           pacman -S --noconfirm \
                 ${MINGW_PACKAGE_PREFIX}-qt5 \
+                ${MINGW_PACKAGE_PREFIX}-qt5-translations \
                 ${MINGW_PACKAGE_PREFIX}-fftw
                 
       
