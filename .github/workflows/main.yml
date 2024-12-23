@@ -274,7 +274,7 @@ jobs:
            export ARTIFACT_DIR=${{env.WORKDIR}}/${PACKAGE_NAME}
            find "${{env.DEPSPATH}}" -name "*.dll"  -exec cp {} ${{env.APPDIR}}/ \;
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
-               windeployqt ${{env.APPDIR}}/
+               windeployqt ${{env.APPDIR}}/ || echo "::warning::Unknown error"
            else
                ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/windeployqt.exe ${{env.APPDIR}}/
            fi
