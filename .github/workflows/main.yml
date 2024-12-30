@@ -316,9 +316,9 @@ jobs:
            export ARTIFACT_DIR=${{env.WORKDIR}}/${PACKAGE_NAME}
            find "${{env.DEPSPATH}}" -name "*.dll"  -exec cp {} ${{env.APPDIR}}/ \;
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
-               windeployqt --release ${{env.APPDIR}}/ || echo "::warning::Unknown error"
+               windeployqt ${{env.APPDIR}}/ || echo "::warning::Unknown error"
            else
-               ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/windeployqt.exe --release ${{env.APPDIR}}/
+               ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/windeployqt.exe ${{env.APPDIR}}/
            fi
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
             echo "::notice:: Deploying additional libs"
