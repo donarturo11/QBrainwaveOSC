@@ -56,7 +56,7 @@ public slots:
     void onReadyRead() {
         setConnectionStatus(Device::ConnectionStatus::Reading);
         int numbytes = _dev->bytesAvailable();
-        QByteArray d = _dev->read(numBytes);
+        QByteArray d = _dev->read(numbytes);
         emit bytesReceived(d.data(), d.size());
         //setConnectionStatus(Device::ConnectionStatus::Idle);
     }
