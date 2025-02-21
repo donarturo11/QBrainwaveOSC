@@ -20,28 +20,30 @@ public:
     }
     virtual void setupConnection(QVariantMap) = 0;
     virtual void open() {
+        if (_dev->isOpen()) {
+            qDebug() << "Device is already open";
+            return;
+        }
         #ifdef QT6
             auto open_opt = QIODeviceBase::ReadWrite;
         #else
             auto open_opt = QIODevice::ReadWrite;
         #endif
+        setConnectionStatus(Device::ConnectionStatus::Connecting);
         if(_dev->open(open_opt)) {
             connect(_dev, SIGNAL(readyRead()),
                 this, SLOT(onReadyRead()));
-            _status = Device::ConnectionStatus::Connected;
-            emit connectionStatusChanged(_status);
+        setConnectionStatus(Device::ConnectionStatus::Connected);
         } else {
-            _status = Device::ConnectionStatus::ConnectionFailed;
-            emit connectionStatusChanged(_status);
+            setConnectionStatus(Device::ConnectionStatus::ConnectionFailed);
         }
     }
     virtual void close() {
-        emit deviceIsClosing();
+        setConnectionStatus(Device::ConnectionStatus::Disconnecting);
         disconnect(_dev, SIGNAL(readyRead()),
                 this, SLOT(onReadyRead()));
         _dev->close();
-        _status = Device::ConnectionStatus::NoConnected;
-        emit connectionStatusChanged(_status);
+        setConnectionStatus(Device::ConnectionStatus::NoConnected);
         }
     const Device::ConnectionStatus connectionStatus() {return _status;}
     Device::ConnectionStatus _status;
@@ -52,16 +54,20 @@ public slots:
         emit bytesReceived(d.data(), d.size());
     }
     void onReadyRead() {
-        _status = Device::ConnectionStatus::Reading;
-        emit connectionStatusChanged(_status);
+        setConnectionStatus(Device::ConnectionStatus::Reading);
         int numbytes = _dev->bytesAvailable();
-        QByteArray d = _dev->read(numbytes);
+        QByteArray d = _dev->read(numBytes);
         emit bytesReceived(d.data(), d.size());
+        //setConnectionStatus(Device::ConnectionStatus::Idle);
     }
 signals:
-    void connectionStatusChanged(Brainwave::Device::ConnectionStatus _status);
-    void deviceIsClosing();
+    void connectionStatusChanged(Brainwave::Device::ConnectionStatus);
     void bytesReceived(const char*, int);
+private:
+    void setConnectionStatus(Brainwave::Device::ConnectionStatus status) {
+        _status = status;
+        emit connectionStatusChanged(_status);
+    }
 };
 
 }

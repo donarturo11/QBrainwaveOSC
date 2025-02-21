@@ -46,11 +46,15 @@ void QBrainwaveInterface::deleteConnection()
 
 void QBrainwaveInterface::setupParser(QString name)
 {
+    // TODO: move all EEG devices to one registry
     if (name == "TwoByteRawParser") { 
         _parser = new TwoByteRawParser(&_notifier);
     }
     else if (name == "ThinkGearStreamParser") {
         _parser = new ThinkGearStreamParser(&_notifier);
+    }
+    else {
+        qDebug() << "NoneParser";
     }
 }
     
