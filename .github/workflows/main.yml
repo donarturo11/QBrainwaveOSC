@@ -384,7 +384,7 @@ jobs:
 #          timeout-minutes: 60
     
     - name: Upload All Binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: ${{env.pkgname}}-${{matrix.name}}
         path: ${{github.workspace}}/${{env.pkgname}}-${{matrix.name}}
@@ -406,49 +406,49 @@ jobs:
              echo DATE=$DATE >> $GITHUB_ENV
 
       - name: Get macOS universal binary
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{env.pkgname}}-macos-qt6-universal
           path: ${{github.workspace}}/${{env.pkgname}}-macos-qt6-universal
 
       - name: Get macOS legacy binary
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{env.pkgname}}-macos-qt5-legacy
           path: ${{github.workspace}}/${{env.pkgname}}-macos-qt5-legacy
 
       - name: Get Linux binary (QT6)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{env.pkgname}}-linux-qt6
           path: ${{github.workspace}}/${{env.pkgname}}-linux-qt6
 
       - name: Get Linux binary (QT5)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{env.pkgname}}-linux-qt5
           path: ${{github.workspace}}/${{env.pkgname}}-linux-qt5
 
       - name: Get Windows binary (Qt6 MSVC)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{env.pkgname}}-windows-qt6-msvc
           path: ${{github.workspace}}/${{env.pkgname}}-windows-qt6-msvc
 
       - name: Get Windows binary (Qt5 MSVC)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{env.pkgname}}-windows-qt5-msvc
           path: ${{github.workspace}}/${{env.pkgname}}-windows-qt5-msvc
 
       - name: Get Windows binary (Qt6 MINGW)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{env.pkgname}}-windows-qt6-mingw
           path: ${{github.workspace}}/${{env.pkgname}}-windows-qt6-mingw
 
       - name: Get Windows (Qt5 MinGW)
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ${{env.pkgname}}-windows-qt5-mingw
           path: ${{github.workspace}}/${{env.pkgname}}-windows-qt5-mingw
