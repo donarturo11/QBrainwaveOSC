@@ -25,7 +25,10 @@ void ThinkGearDataHandler::operator()
         case(ThinkGearCodes::RawSignal): onRaw((value[0] << 8) | value[1]); break;
         case(ThinkGearCodes::Battery): onBattery(value[0]); break;
         case(ThinkGearCodes::AsicEegPowerInt): onEeg(value); break;
-        default: std::cout << "undefined code: " << std::hex << std::setw(2) << std::setfill('0') << (int) code;
+        default: std::cerr << "undefined code: "
+                 << std::hex << std::setw(2) << std::setfill('0')
+                 << (int) code
+                 << std::endl;
     }
 }                
 

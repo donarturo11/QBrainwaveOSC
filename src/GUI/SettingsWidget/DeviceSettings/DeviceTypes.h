@@ -5,13 +5,13 @@
 struct DeviceType
 {
     QString porttype;
-    QString parser;
+    QString name;
     QString displayedName;
 };
 
 inline QVector<DeviceType> deviceTypes {
     {"serial", "ThinkGearStreamParser", "ThinkGear Stream Parser"},
-    {"serial", "TwoByteRawWaveParser", "2-byte raw wave parser (unsigned 12-bit)"}
+    {"serial", "TwoByteRawParser", "2-byte raw wave parser (unsigned 12-bit)"}
 };
 
 #endif // DEVICETYPES_H

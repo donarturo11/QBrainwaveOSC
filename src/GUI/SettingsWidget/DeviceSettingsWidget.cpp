@@ -43,6 +43,7 @@ void DeviceSettingsWidget::init()
             this, SLOT(chooseBaudrate(int)));
     connect(ui->enable_rawwave_analyser, SIGNAL(stateChanged(int)),
             this, SLOT(onRawWaveStateChanged(int)));
+    onRawWaveStateChanged(ui->enable_rawwave_analyser->checkState());
     initPorts();
 }
 
@@ -120,6 +121,7 @@ void DeviceSettingsWidget::chooseType(int id)
     if (!_settings) return;
     auto data = ui->type_cb->itemData(id);
     _settings->chooseType(data.toString());
+    refreshBaudrateCombobox();
 }
 
 void DeviceSettingsWidget::chooseBaudrate(int id)

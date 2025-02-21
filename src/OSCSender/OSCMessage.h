@@ -15,20 +15,21 @@ public:
     
 private:
     void align() {
-        int space = 4 - _data.size()%4;
-        for (int i=0; i<space; i++) {
-            _data += (unsigned char) 0x0;
-        }
+        size_t space = 4 - _data.size()%4;
+        _data.append(space, (const char) 0x0);
     }
-    void append(std::string s) {
-        _data += s;
+    void append(std::string &s) {
+        _data.append(s);
         align();
     }
     void append(uint32_t val) {
-        _data += (unsigned char) ((val >> 24) & 0xFF);
-        _data += (unsigned char) ((val >> 16) & 0xFF);
-        _data += (unsigned char) ((val >> 8) & 0xFF);
-        _data += (unsigned char) ((val) & 0xFF);
+        const char d[] = {
+            (char)((val >> 24) & 0xFF),
+            (char)((val >> 16) & 0xFF),
+            (char)((val >> 8) & 0xFF),
+            (char)((val) & 0xFF) 
+        };
+        _data.append(d, d+4);
     }
 protected:
     std::string _data;

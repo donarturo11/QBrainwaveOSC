@@ -35,6 +35,7 @@ public:
             if (t.name == typestr) {
                 _type = &t;
                 emit parameterChanged("type", _type->name);
+                emit typeChanged();
                 return;
             }
         }

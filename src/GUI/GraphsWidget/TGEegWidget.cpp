@@ -48,8 +48,8 @@ void TGEegWidget::initValues()
 void TGEegWidget::setupLabels()
 {
     QStringList categories;
-    categories << QString::fromUtf8("\u03b8")     /* theta      */
-               << QString::fromUtf8("\u03b4")     /* delta      */
+    categories << QString::fromUtf8("\u03b4")     /* delta      */
+               << QString::fromUtf8("\u03b8")     /* theta      */
                << QString::fromUtf8("Lo \u03b1")  /* low alpha  */
                << QString::fromUtf8("Hi \u03b1")  /* high alpha */
                << QString::fromUtf8("Lo \u03b2")  /* low beta   */
