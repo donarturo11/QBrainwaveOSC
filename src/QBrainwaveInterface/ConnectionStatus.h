@@ -11,6 +11,8 @@ typedef enum {
     ConnectionFailed = -1,
     NoConnected,
     Idle,
+    Connecting,
+    Disconnecting,
     Connected,
     Reading,
     Writing
@@ -22,6 +24,8 @@ const inline QHash<ConnectionStatus,QString> ConnectionStatusMsg =
     {ConnectionStatus::NoConnected, "No connected"},
     {ConnectionStatus::Idle, "Idle"},
     {ConnectionStatus::Connected, "Connected"},
+    {ConnectionStatus::Connecting, "Connecting"},
+    {ConnectionStatus::Disconnecting, "Disconnecting"},
     {ConnectionStatus::Reading, "Reading"},
     {ConnectionStatus::Writing, "Writing"}
 };
