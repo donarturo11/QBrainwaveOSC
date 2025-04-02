@@ -48,14 +48,14 @@ void TGEegWidget::initValues()
 void TGEegWidget::setupLabels()
 {
     QStringList categories;
-    categories << QString::fromUtf8("\u03b4")     /* delta      */
-               << QString::fromUtf8("\u03b8")     /* theta      */
-               << QString::fromUtf8("Lo \u03b1")  /* low alpha  */
-               << QString::fromUtf8("Hi \u03b1")  /* high alpha */
-               << QString::fromUtf8("Lo \u03b2")  /* low beta   */
-               << QString::fromUtf8("Hi \u03b2")  /* high beta  */
-               << QString::fromUtf8("Lo \u03b3")  /* low gamma  */
-               << QString::fromUtf8("Hi \u03b3"); /* high gamma */
+    categories << QString::fromUtf8("&delta")
+               << QString::fromUtf8("&theta")
+               << QString::fromUtf8("Lo &alpha")
+               << QString::fromUtf8("Hi &alpha")
+               << QString::fromUtf8("Lo &beta")
+               << QString::fromUtf8("Hi &beta")
+               << QString::fromUtf8("Lo &gamma")
+               << QString::fromUtf8("Hi &gamma");
     reinterpret_cast<QBarCategoryAxis*>(_axisX)->append(categories);
 }
 
