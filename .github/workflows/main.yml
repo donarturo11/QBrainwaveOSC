@@ -314,6 +314,7 @@ jobs:
               export QT_ROOT_DIR="$(qmake6 -query QT_INSTALL_PREFIX)"
           else
               export QT_ROOT_DIR="$(qmake -query QT_INSTALL_PREFIX)"
+          fi
           echo QT_ROOT_DIR="${QT_ROOT_DIR}" >> $GITHUB_ENV
 
     - name: Install QT (linux)
