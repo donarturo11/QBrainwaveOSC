@@ -194,6 +194,8 @@ jobs:
                 ${MINGW_PACKAGE_PREFIX}-glfw \
                 ${MINGW_PACKAGE_PREFIX}-angleproject \
                 ${MINGW_PACKAGE_PREFIX}-nsis
+            cygpath -w $MINGW_PREFIX    >> $GITHUB_PATH
+            cygpath -w $MINGW_PREFIX/.. >> $GITHUB_PATH
 
     - name: Setup environment
       shell: bash
@@ -308,13 +310,17 @@ jobs:
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-serialport \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-tools \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-charts
+          if [[ ${QTVER} == 6 ]]; then
+              echo QT_ROOT_DIR="$(qmake6 -query QT_INSTALL_PREFIX)" >> ${GITHUB_ENV}
+          else
+              echo QT_ROOT_DIR="$(qmake -query QT_INSTALL_PREFIX)" >> ${GITHUB_ENV}
 
     - name: Install QT (linux)
       if: ${{matrix.aqt-os == 'none' && runner.os == 'Linux'}}
       run: |
           QTVER=${{matrix.qt-version}}
           QTVER=${QTVER:0:1}
-          if [[ ${{matrix.qt-version}} == 6.* ]]; then
+          if [[ ${QTVER} == 6 ]]; then
               sudo apt-get install -y qt6-base-dev \
                                       qt6-base-dev-tools \
                                       qt6-serialport-dev \
