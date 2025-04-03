@@ -95,7 +95,8 @@ jobs:
           flags: ""
           shell: 'bash'
           deps-prefix: "/home/runner/deps"
-          aqt-os: "none", aqt-arch: "gcc_64"
+          aqt-os: "none"
+          aqt-arch: "gcc_64"
           aqt-prefix: "/home/runner/"
           aqt-subdir: "gcc_64"
           qt-version: '6.5.1'
@@ -120,7 +121,8 @@ jobs:
             cc: 'clang'
             cxx: 'clang++'
           flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\""
-          shell: 'bash', deps-prefix: "/Users/runner/deps"
+          shell: 'bash'
+          deps-prefix: "/Users/runner/deps"
           aqt-os: "mac"
           aqt-arch: ""
           aqt-prefix: "/Users/runner/"
