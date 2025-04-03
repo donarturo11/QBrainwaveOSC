@@ -65,7 +65,7 @@ jobs:
           flags: ""
           shell: 'msys2 {0}'
           deps-prefix: "D:/deps"
-          aqt-os: "none"
+          aqt-os: "windows"
           aqt-arch: "win64_msvc2019_64"
           aqt-prefix: "D:/"
           aqt-subdir: "msvc2019_64"
@@ -80,7 +80,7 @@ jobs:
           flags: ""
           shell: 'msys2 {0}'
           deps-prefix: "D:/deps"
-          aqt-os: "none"
+          aqt-os: "windows"
           aqt-arch: "win64_mingw73"
           aqt-prefix: "D:/"
           aqt-subdir: "mingw73_64"
@@ -146,7 +146,7 @@ jobs:
     runs-on: ${{matrix.os}}
     defaults:
       run:
-        shell: ${{matrix.shell}}
+        shell: bash
 
     steps:
     - name: Install the Apple certificate and provisioning profile
@@ -179,7 +179,6 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ matrix.msystem }}
-        location: C:\msys64
         update: true
         cache: true
         install: |
@@ -187,6 +186,7 @@ jobs:
 
     - if: ${{runner.os == 'Windows'}}
       name: Prepare MinGW
+      shell: 'msys2 {0}'
       run: |
             pacman -S --noconfirm \
                 ${MINGW_PACKAGE_PREFIX}-toolchain \
@@ -307,6 +307,7 @@ jobs:
            
     - name: Install QT (mingw)
       if: ${{matrix.aqt-os == 'none' && runner.os == 'Windows'}}
+      shell: 'msys2 {0}'
       run: |
           QTVER=${{matrix.qt-version}}
           QTVER=${QTVER:0:1}
@@ -314,6 +315,7 @@ jobs:
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-connectivity \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-serialport \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-charts
+          echo QT_ROOT_DIR=$(cygpath -m ${MINGW_PREFIX}) >> ${GITHUB_ENV}
 
     - name: Install QT (linux)
       if: ${{matrix.aqt-os == 'none' && runner.os == 'Linux'}}
@@ -340,21 +342,13 @@ jobs:
     - name: FETCH FFTW3
       if: ${{matrix.build-fftw}}
       run: |
-          wget https://www.fftw.org/fftw-3.3.10.tar.gz
-          tar -vxzf fftw-3.3.10.tar.gz
-          export FFTW_BUILD_DIR=${{env.WORKDIR}}/fftw-build
-          if [ ${{ runner.os }} == "Windows" ]; then
-              echo "FFTW_BUILD_DIR=$(cygpath -m "${FFTW_BUILD_DIR}")" >> $GITHUB_ENV
-          else
-              echo "FFTW_BUILD_DIR="${FFTW_BUILD_DIR}"" >> $GITHUB_ENV
-          fi
-
-    - name: Compile FFTW3
-      if: ${{matrix.build-fftw}}
-      run: |
-          cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
-          cmake --build ${{env.FFTW_BUILD_DIR}}
-          cmake --install ${{env.FFTW_BUILD_DIR}}
+          export FFTW_DIR=${DEPSPATH}
+          mkdir fftw-src
+          curl -L https://www.fftw.org/fftw-3.3.10.tar.gz | tar -xz --strip-components=1 -C fftw-src
+          cmake -S fftw-src -B fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${FFTW_DIR}
+          cmake --build fftw-build
+          cmake --install fftw-build
+          echo "FFTW_DIR=$FFTW_DIR" >> $GITHUB_ENV
 
     - name: Install FFTW3 (MinGW)
       if: ${{!(matrix.build-fftw) && (runner.os == 'Windows')}}
@@ -362,6 +356,7 @@ jobs:
       run: |
           pacman -S --noconfirm \
                 ${MINGW_PACKAGE_PREFIX}-fftw
+          echo "FFTW_DIR=$(cygpath -m ${MINGW_PREFIX})" >> ${GITHUB_ENV}
 
     - name: Install FFTW3 (Linux)
       if: ${{!(matrix.build-fftw) && (runner.os == 'Linux')}}
@@ -378,8 +373,8 @@ jobs:
            cmake -S "${{env.WORKDIR}}" \
                  -B "${{env.WORKDIR}}/build" ${{matrix.flags}} \
                  -DCMAKE_BUILD_TYPE=Release \
-                 -DCMAKE_INSTALL_PREFIX="${{env.INSTALL_PREFIX}}" \
-                 -DCMAKE_PREFIX_PATH="${QT_ROOT_DIR};${{env.DEPSPATH}}"
+                 -DCMAKE_INSTALL_PREFIX="${{INSTALL_PREFIX}}" \
+                 -DCMAKE_PREFIX_PATH="${QT_ROOT_DIR};${FFTW_DIR}"
 
     - name: Compile Code
       run: cmake --build ${{env.WORKDIR}}/build
