@@ -27,7 +27,7 @@ jobs:
       matrix:
        include:
         - { name: "windows-qt6-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "D:/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64', build-fftw: true }
-        - { name: "windows-qt5-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2017_64", aqt-prefix: "D:/Qt", aqt-subdir: "msvc2017_64", qt-version: '5.15.2', msystem: 'UCRT64', build-fftw: true }
+        - { name: "windows-qt5-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "D:/Qt", aqt-subdir: "msvc2017_64", qt-version: '5.15.2', msystem: 'UCRT64', build-fftw: true }
         - { name: "windows-qt6-mingw", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "none", aqt-arch: "win64_msvc2019_64", aqt-prefix: "D:/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64', build-fftw: false }
         - { name: "windows-qt5-mingw", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "none", aqt-arch: "win64_mingw73", aqt-prefix: "D:/Qt", aqt-subdir: "mingw73_64", qt-version: '5.12.12', msystem: 'MINGW64', build-fftw: false }
         - { name: "linux-qt6", os: ubuntu-latest, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "none", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/Qt", aqt-subdir: "gcc_64", qt-version: '6.5.1', build-fftw: false }
