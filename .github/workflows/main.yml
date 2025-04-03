@@ -38,7 +38,6 @@ jobs:
           aqt-os: "windows"
           aqt-arch: "win64_msvc2019_64"
           aqt-prefix: "D:/"
-          aqt-subdir: "msvc2019_64"
           qt-version: '6.5.1'
           msystem: 'UCRT64'
           build-fftw: true
@@ -53,7 +52,6 @@ jobs:
           aqt-os: "windows"
           aqt-arch: "win64_msvc2019_64"
           aqt-prefix: "D:/"
-          aqt-subdir: "msvc2019_64"
           qt-version: '5.15.2'
           msystem: 'UCRT64'
           build-fftw: true
@@ -66,9 +64,8 @@ jobs:
           shell: 'msys2 {0}'
           deps-prefix: "D:/deps"
           aqt-os: "none"
-          aqt-arch: "win64_msvc2019_64"
+          aqt-arch: "win64_mingw"
           aqt-prefix: "D:/"
-          aqt-subdir: "msvc2019_64"
           qt-version: '6.5.1'
           msystem: 'UCRT64'
           build-fftw: false
@@ -81,10 +78,9 @@ jobs:
           shell: 'msys2 {0}'
           deps-prefix: "D:/deps"
           aqt-os: "none"
-          aqt-arch: "win64_mingw73"
+          aqt-arch: "win64_mingw81"
           aqt-prefix: "D:/"
-          aqt-subdir: "mingw73_64"
-          qt-version: '5.12.12'
+          qt-version: '5.15.2'
           msystem: 'MINGW64'
           build-fftw: false
         - name: "linux-qt6"
@@ -98,7 +94,6 @@ jobs:
           aqt-os: "none"
           aqt-arch: "gcc_64"
           aqt-prefix: "/home/runner/"
-          aqt-subdir: "gcc_64"
           qt-version: '6.5.1'
           build-fftw: false
         - name: "linux-qt5"
@@ -112,7 +107,6 @@ jobs:
           aqt-os: "none"
           aqt-arch: "gcc_64"
           aqt-prefix: "/home/runner/"
-          aqt-subdir: "gcc_64"
           qt-version: '5.15.2'
           build-fftw: false
         - name: "macos-qt6-universal"
@@ -126,7 +120,6 @@ jobs:
           aqt-os: "mac"
           aqt-arch: ""
           aqt-prefix: "/Users/runner/"
-          aqt-subdir: "macos"
           qt-version: '6.5.1'
           build-fftw: true
         - name: "macos-qt5-legacy"
@@ -140,7 +133,6 @@ jobs:
           aqt-os: "mac"
           aqt-arch: ""
           aqt-prefix: "/Users/runner/"
-          aqt-subdir: "clang_64"
           qt-version: '5.15.2'
           build-fftw: true
     runs-on: ${{matrix.os}}
@@ -314,8 +306,8 @@ jobs:
           pacman -S --noconfirm \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-connectivity \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-serialport \
+                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-tools \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-charts
-          echo QT_ROOT_DIR=$(cygpath -m ${MINGW_PREFIX}) >> ${GITHUB_ENV}
 
     - name: Install QT (linux)
       if: ${{matrix.aqt-os == 'none' && runner.os == 'Linux'}}
