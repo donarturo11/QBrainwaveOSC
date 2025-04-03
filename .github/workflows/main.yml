@@ -162,28 +162,43 @@ jobs:
            fi
            echo "INSTALL_PREFIX=$INSTALL_PREFIX" >> $GITHUB_ENV
 
-    - name: Install AQT
-      shell: 'bash'
-      if: ${{matrix.aqt-os != 'none'}}
-      run: |    
-           python3 -m pip install --break-system-packages --user aqtinstall
+#    - name: Install AQT
+#      shell: 'bash'
+#      if: ${{matrix.aqt-os != 'none'}}
+#      run: |    
+#           python3 -m pip install --break-system-packages --user aqtinstall
+#
+#    - name: Install Qt (with AQT)
+#      shell: 'bash'
+#      if: ${{matrix.aqt-os != 'none'}}
+#      run: |
+#           if [[ ${{matrix.qt-version}} == 6.* ]]; then
+#           python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} \
+#                    ${{matrix.aqt-os}} desktop \
+#                    ${{matrix.qt-version}} ${{matrix.aqt-arch}} \
+#                   -m qtconnectivity qtserialport qtcharts
+#           else
+#           python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} \
+#                    ${{matrix.aqt-os}} desktop \
+#                    ${{matrix.qt-version}} ${{matrix.aqt-arch}} \
+#                   -m qtcharts
+#           fi
 
-    - name: Install Qt (with AQT)
-      shell: 'bash'
+    - name: Install Qt (jurplel)
+      uses: jurplel/install-qt-action@v4
       if: ${{matrix.aqt-os != 'none'}}
-      run: |
-           if [[ ${{matrix.qt-version}} == 6.* ]]; then
-           python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} \
-                    ${{matrix.aqt-os}} desktop \
-                    ${{matrix.qt-version}} ${{matrix.aqt-arch}} \
-                   -m qtconnectivity qtserialport qtcharts
-           else
-           python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} \
-                    ${{matrix.aqt-os}} desktop \
-                    ${{matrix.qt-version}} ${{matrix.aqt-arch}} \
-                   -m qtcharts
-           fi
-           
+      with:
+        version: ${{matrix.qt-version}}
+        host: ${{matrix.aqt-os}}
+        target: 'desktop'
+        arch: ${{matrix.aqt-arch}}
+        dir: ${{matrix.aqt-prefix}}
+        install-deps: 'true'
+        modules: ${{ startsWith(matrix.qt-version, '6') && 'qtcharts qtserialport qtconnectivity' || 'qtcharts' }}
+        cache: 'true'
+        cache-key-prefix: 'install-qt-action'
+        setup-python: 'true'
+        set-env: 'true'
            
     - name: Install QT (mingw)
       if: ${{matrix.aqt-os == 'none' && runner.os == 'Windows'}}
