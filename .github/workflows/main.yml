@@ -65,7 +65,7 @@ jobs:
           flags: ""
           shell: 'msys2 {0}'
           deps-prefix: "D:/deps"
-          aqt-os: "windows"
+          aqt-os: "none"
           aqt-arch: "win64_msvc2019_64"
           aqt-prefix: "D:/"
           aqt-subdir: "msvc2019_64"
@@ -80,7 +80,7 @@ jobs:
           flags: ""
           shell: 'msys2 {0}'
           deps-prefix: "D:/deps"
-          aqt-os: "windows"
+          aqt-os: "none"
           aqt-arch: "win64_mingw73"
           aqt-prefix: "D:/"
           aqt-subdir: "mingw73_64"
