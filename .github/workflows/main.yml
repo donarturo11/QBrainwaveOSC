@@ -20,26 +20,143 @@ on:
 env:
   pkgname: QBrainwaveOSC
   IDENTITY_NAME: ${{ secrets.IDENTITY_NAME }}
+  CMAKE_POLICY_VERSION_MINIMUM: 3.5
 
 jobs:
   build:
     strategy:
       matrix:
        include:
-        - { name: "windows-qt6-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "D:/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64', build-fftw: true }
-        - { name: "windows-qt5-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "D:/Qt", aqt-subdir: "msvc2019_64", qt-version: '5.15.2', msystem: 'UCRT64', build-fftw: true }
-        - { name: "windows-qt6-mingw", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "none", aqt-arch: "win64_msvc2019_64", aqt-prefix: "D:/Qt", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64', build-fftw: false }
-        - { name: "windows-qt5-mingw", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "none", aqt-arch: "win64_mingw73", aqt-prefix: "D:/Qt", aqt-subdir: "mingw73_64", qt-version: '5.12.12', msystem: 'MINGW64', build-fftw: false }
-        - { name: "linux-qt6", os: ubuntu-latest, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "none", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/Qt", aqt-subdir: "gcc_64", qt-version: '6.5.1', build-fftw: false }
-        - { name: "linux-qt5", os: ubuntu-22.04, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "none", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/Qt", aqt-subdir: "gcc_64", qt-version: '5.15.2', build-fftw: false }
-        - { name: "macos-qt6-universal", os: macos-latest, flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "macos", qt-version: '6.5.1', build-fftw: true }
-        - { name: "macos-qt5-legacy", os: macos-latest, flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/Qt", aqt-subdir: "clang_64", qt-version: '5.15.2', build-fftw: true }
+        - name: "windows-qt6-msvc"
+          os: windows-latest
+          toolchain:
+            cc: 'cl'
+            cxx: 'cl'
+          flags: ''
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "windows"
+          aqt-arch: "win64_msvc2019_64"
+          aqt-prefix: "D:/"
+          qt-version: '6.5.1'
+          msystem: 'UCRT64'
+          build-fftw: true
+        - name: "windows-qt5-msvc"
+          os: windows-latest
+          toolchain:
+            cc: 'cl'
+            cxx: 'cl'
+          flags: ''
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "windows"
+          aqt-arch: "win64_msvc2019_64"
+          aqt-prefix: "D:/"
+          qt-version: '5.15.2'
+          msystem: 'UCRT64'
+          build-fftw: true
+        - name: "windows-qt6-mingw"
+          os: windows-latest
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "none"
+          aqt-arch: "win64_mingw"
+          aqt-prefix: "D:/"
+          qt-version: '6.5.1'
+          msystem: 'UCRT64'
+          build-fftw: false
+        - name: "windows-qt5-mingw"
+          os: windows-latest
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "none"
+          aqt-arch: "win64_mingw81"
+          aqt-prefix: "D:/"
+          qt-version: '5.15.2'
+          msystem: 'MINGW64'
+          build-fftw: false
+        - name: "linux-qt6"
+          os: ubuntu-latest
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'bash'
+          deps-prefix: "/home/runner/deps"
+          aqt-os: "none"
+          aqt-arch: "gcc_64"
+          aqt-prefix: "/home/runner/"
+          qt-version: '6.5.1'
+          build-fftw: false
+        - name: "linux-qt5"
+          os: ubuntu-22.04
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'bash'
+          deps-prefix: "/home/runner/deps"
+          aqt-os: "none"
+          aqt-arch: "gcc_64"
+          aqt-prefix: "/home/runner/"
+          qt-version: '5.15.2'
+          build-fftw: false
+        - name: "macos-qt6-universal"
+          os: macos-latest
+          toolchain:
+            cc: 'clang'
+            cxx: 'clang++'
+          flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\""
+          shell: 'bash'
+          deps-prefix: "/Users/runner/deps"
+          aqt-os: "mac"
+          aqt-arch: ""
+          aqt-prefix: "/Users/runner/"
+          qt-version: '6.5.1'
+          build-fftw: true
+        - name: "macos-qt5-legacy"
+          os: macos-latest
+          toolchain:
+            cc: 'clang'
+            cxx: 'clang++'
+          flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\""
+          shell: 'bash'
+          deps-prefix: "/Users/runner/deps"
+          aqt-os: "mac"
+          aqt-arch: ""
+          aqt-prefix: "/Users/runner/"
+          qt-version: '5.15.2'
+          build-fftw: true
     runs-on: ${{matrix.os}}
     defaults:
       run:
-        shell: ${{matrix.shell}}
+        shell: bash
 
     steps:
+    - name: Set up Visual Studio shell
+      if: ${{ runner.os == 'Windows' }}
+      uses: egor-tensin/vs-shell@v2
+      with:
+        arch: x64
+        
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Debug submodule paths
+      run: |
+        git submodule status
+        ls -al .git/modules/thirdparty/kissfft/config
+        
     - name: Install the Apple certificate and provisioning profile
       if: ${{runner.os == 'macOS'}}
       env:
@@ -58,40 +175,36 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -s -k $KEYCHAIN_PASSWORD $KEYCHAIN_PATH
           security find-identity
-
+    
     - if: ${{runner.os == 'Windows'}}
       name: Install MinGW
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ matrix.msystem }}
         update: true
+        cache: true
         install: |
             base base-devel p7zip zip git
 
     - if: ${{runner.os == 'Windows'}}
       name: Prepare MinGW
+      shell: 'msys2 {0}'
       run: |
             pacman -S --noconfirm \
-                ${MINGW_PACKAGE_PREFIX}-toolchain \
-                ${MINGW_PACKAGE_PREFIX}-python-pip \
-                ${MINGW_PACKAGE_PREFIX}-python-distutils-extra \
-                ${MINGW_PACKAGE_PREFIX}-python-psutil \
-                ${MINGW_PACKAGE_PREFIX}-python-defusedxml \
-                ${MINGW_PACKAGE_PREFIX}-python-wheel \
-                ${MINGW_PACKAGE_PREFIX}-python-patch-ng \
-                ${MINGW_PACKAGE_PREFIX}-cmake \
-                ${MINGW_PACKAGE_PREFIX}-gles-headers \
-                ${MINGW_PACKAGE_PREFIX}-glew \
-                ${MINGW_PACKAGE_PREFIX}-glfw \
-                ${MINGW_PACKAGE_PREFIX}-angleproject \
-                ${MINGW_PACKAGE_PREFIX}-nsis
+                ${MINGW_PACKAGE_PREFIX}-toolchain
+            cygpath -w $MINGW_PREFIX/bin    >> $GITHUB_PATH
+            cygpath -w $MINGW_PREFIX/../bin >> $GITHUB_PATH
 
-    - name: Setup windows env
-      if: ${{runner.os == 'Windows'}}
+    - name: Setup environment
+      shell: bash
       run: |
-           echo "::notify:: Upgrading pip"
-           python3 -m pip install -U pip
-
+        [[ $RUNNER_OS == 'Linux' ]] && sudo apt-get update && sudo apt-get install ninja-build -y
+        echo "CC=${{ matrix.toolchain.cc }}" >> $GITHUB_ENV
+        echo "CXX=${{ matrix.toolchain.cxx }}" >> $GITHUB_ENV
+        echo 'CMAKE_GENERATOR=Ninja' >> $GITHUB_ENV
+        echo "CMAKE_C_COMPILER=${CC}" >> $GITHUB_ENV
+        echo "CMAKE_CXX_COMPILER=${CXX}" >> $GITHUB_ENV
+    
     - name: Install Linux Dependencies
       if: ${{runner.os == 'Linux'}}
       run: |
@@ -162,46 +275,50 @@ jobs:
            fi
            echo "INSTALL_PREFIX=$INSTALL_PREFIX" >> $GITHUB_ENV
 
-    - name: Install AQT
-      shell: 'bash'
+    - name: Install Qt (jurplel)
+      uses: jurplel/install-qt-action@v4
       if: ${{matrix.aqt-os != 'none'}}
-      run: |    
-           python3 -m pip install --break-system-packages --user aqtinstall
-
-    - name: Install Qt (with AQT)
-      shell: 'bash'
-      if: ${{matrix.aqt-os != 'none'}}
-      run: |
-           AQT_INSTALL="python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} ${{matrix.aqt-os}} desktop ${{matrix.qt-version}} ${{matrix.aqt-arch}}"
-           QT6_MODULES=(qtconnectivity qtserialport qtcharts)
-           QT5_MODULES=(qtcharts)
-           ${AQT_INSTALL}
-           if [[ ${{matrix.qt-version}} == 6.* ]]; then
-               for i in ${QT6_MODULES[@]}; do
-                   ${AQT_INSTALL} -m $i
-               done
-           else
-               for i in ${QT5_MODULES[@]}; do
-                   ${AQT_INSTALL} -m $i
-               done
-           fi
-    
+      with:
+        version: ${{matrix.qt-version}}
+        host: ${{matrix.aqt-os}}
+        target: 'desktop'
+        arch: ${{matrix.aqt-arch}}
+        dir: ${{matrix.aqt-prefix}}
+        install-deps: 'true'
+        modules: ${{ startsWith(matrix.qt-version, '6') && 'qtcharts qtserialport qtconnectivity' || 'qtcharts' }}
+        cache: 'true'
+        cache-key-prefix: 'install-qt-action'
+        setup-python: 'true'
+        set-env: 'true'
+           
     - name: Install QT (mingw)
       if: ${{matrix.aqt-os == 'none' && runner.os == 'Windows'}}
+      shell: 'msys2 {0}'
       run: |
           QTVER=${{matrix.qt-version}}
           QTVER=${QTVER:0:1}
           pacman -S --noconfirm \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-connectivity \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-serialport \
-                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-charts
+                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-tools \
+                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-charts \
+                ${MINGW_PACKAGE_PREFIX}-gles-headers \
+                ${MINGW_PACKAGE_PREFIX}-glew \
+                ${MINGW_PACKAGE_PREFIX}-glfw \
+                ${MINGW_PACKAGE_PREFIX}-angleproject
+          if [[ ${QTVER} == 6 ]]; then
+              export QT_ROOT_DIR="$(qmake6 -query QT_INSTALL_PREFIX)"
+          else
+              export QT_ROOT_DIR="$(qmake -query QT_INSTALL_PREFIX)"
+          fi
+          echo QT_ROOT_DIR="${QT_ROOT_DIR}" >> $GITHUB_ENV
 
     - name: Install QT (linux)
       if: ${{matrix.aqt-os == 'none' && runner.os == 'Linux'}}
       run: |
           QTVER=${{matrix.qt-version}}
           QTVER=${QTVER:0:1}
-          if [[ ${{matrix.qt-version}} == 6.* ]]; then
+          if [[ ${QTVER} == 6 ]]; then
               sudo apt-get install -y qt6-base-dev \
                                       qt6-base-dev-tools \
                                       qt6-serialport-dev \
@@ -217,69 +334,53 @@ jobs:
                                       qtconnectivity5-dev \
                                       qt5-qmake
           fi
-      
-    - name: FETCH FFTW3
+    
+    - name: Build FFTW3
       if: ${{matrix.build-fftw}}
       run: |
-          wget https://www.fftw.org/fftw-3.3.10.tar.gz
-          tar -vxzf fftw-3.3.10.tar.gz
-          export FFTW_BUILD_DIR=${{env.WORKDIR}}/fftw-build
-          if [ ${{ runner.os }} == "Windows" ]; then
-              echo "FFTW_BUILD_DIR=$(cygpath -m "${FFTW_BUILD_DIR}")" >> $GITHUB_ENV
-          else
-              echo "FFTW_BUILD_DIR="${FFTW_BUILD_DIR}"" >> $GITHUB_ENV
-          fi
-
-    - name: Compile FFTW3 (WINDOWS)
-      if: ${{( (matrix.name == 'windows-qt6-msvc') || (matrix.name == 'windows-qt5-msvc') ) && matrix.build-fftw}}
-      shell: pwsh
-      run: |
-          cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
-          cmake --build ${{env.FFTW_BUILD_DIR}} --config Release
-
-    - name: Compile FFTW3 (POSIX)
-      if: ${{( (matrix.name != 'windows-qt6-msvc') && (matrix.name != 'windows-qt5-msvc') ) && matrix.build-fftw}}
-      run: |
-          cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
-          cmake --build ${{env.FFTW_BUILD_DIR}}
-
-    - name: Install FFTW3
-      if: ${{matrix.build-fftw}}
-      run: cmake --install ${{env.FFTW_BUILD_DIR}}
+          export OLDPWD=${PWD}
+          export FFTW_WORK=${HOME}/fftw-work
+          mkdir -v $FFTW_WORK || echo "${FFTW_WORK} already exists"
+          cd $FFTW_WORK
+          export FFTW_DIR=${DEPSPATH}
+          mkdir fftw-src
+          curl -L https://www.fftw.org/fftw-3.3.10.tar.gz | tar -xz --strip-components=1 -C fftw-src
+          cmake -S fftw-src -B fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${FFTW_DIR}
+          cmake --build fftw-build
+          cmake --install fftw-build
+          echo "FFTW_DIR=${FFTW_DIR}" >> $GITHUB_ENV
 
     - name: Install FFTW3 (MinGW)
       if: ${{!(matrix.build-fftw) && (runner.os == 'Windows')}}
       shell: 'msys2 {0}'
       run: |
+          export FFTW_DIR=$(cygpath -m ${MINGW_PREFIX})
           pacman -S --noconfirm \
                 ${MINGW_PACKAGE_PREFIX}-fftw
+          echo "FFTW_DIR=${FFTW_DIR}" >> ${GITHUB_ENV}
 
     - name: Install FFTW3 (Linux)
       if: ${{!(matrix.build-fftw) && (runner.os == 'Linux')}}
       run: |
           sudo apt-get install -y libfftw3-dev
 
-    - name: Checkout Repo
-      uses: actions/checkout@v3
-      with:
-          submodules: 'true'
+#    - name: Checkout Repo
+#      uses: actions/checkout@v4
+#      with:
+#          submodules: 'recursive'
 
     - name: Run Configure
       run: |
+           echo "::notice::QT_ROOT_DIR=${QT_ROOT_DIR}"
+           echo "::notice::FFTW_DIR=${FFTW_DIR}"
            cmake -S "${{env.WORKDIR}}" \
                  -B "${{env.WORKDIR}}/build" ${{matrix.flags}} \
                  -DCMAKE_BUILD_TYPE=Release \
-                 -DCMAKE_INSTALL_PREFIX="${{env.INSTALL_PREFIX}}" \
-                 -DCMAKE_PREFIX_PATH="${{env.AQTPATH}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}};${{env.DEPSPATH}}"
+                 -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
+                 -DCMAKE_PREFIX_PATH="${QT_ROOT_DIR};${FFTW_DIR}"
 
-    - name: Compile Code (POSIX)
-      if: ${{(matrix.name != 'windows-qt6-msvc') && (matrix.name != 'windows-qt5-msvc')}}
+    - name: Compile Code
       run: cmake --build ${{env.WORKDIR}}/build
-
-    - name: Compile Code (WINDOWS)
-      if: ${{(matrix.name == 'windows-qt6-msvc') || (matrix.name == 'windows-qt5-msvc')}}
-      shell: pwsh
-      run: cmake --build ${{github.workspace}}/build --config Release  
 
     - name: Prepare appdir
       run: |
@@ -300,7 +401,7 @@ jobs:
            DESTINATION_DIR=${{env.PACKAGE_NAME}}
            DIST_DMG=${{env.PACKAGE_NAME}}.dmg
            mkdir ${DESTINATION_DIR}  || echo "::warning:: ${DESTINATION_DIR} already exists"
-           ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/macdeployqt \
+           ${QT_ROOT_DIR}/bin/macdeployqt \
                               "${{env.APPDIR}}"
            find ${{env.DEPSPATH}} -name "*.dylib" -exec cp {} "${{env.APPDIR}}"/Contents/Frameworks \;
            codesign --verbose --strict --continue --timestamp --force --deep -s ${IDENTITY_NAME} "${{env.APPDIR}}"
@@ -318,7 +419,7 @@ jobs:
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
                windeployqt ${{env.APPDIR}}/ || echo "::warning::Unknown error"
            else
-               ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/windeployqt.exe ${{env.APPDIR}}/
+               ${QT_ROOT_DIR}/bin/windeployqt.exe ${{env.APPDIR}}/
            fi
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
             echo "::notice:: Deploying additional libs"
