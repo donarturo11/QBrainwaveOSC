@@ -314,7 +314,7 @@ jobs:
            DESTINATION_DIR=${{env.PACKAGE_NAME}}
            DIST_DMG=${{env.PACKAGE_NAME}}.dmg
            mkdir ${DESTINATION_DIR}  || echo "::warning:: ${DESTINATION_DIR} already exists"
-           ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/macdeployqt \
+           ${QT_ROOT_DIR}/bin/macdeployqt \
                               "${{env.APPDIR}}"
            find ${{env.DEPSPATH}} -name "*.dylib" -exec cp {} "${{env.APPDIR}}"/Contents/Frameworks \;
            codesign --verbose --strict --continue --timestamp --force --deep -s ${IDENTITY_NAME} "${{env.APPDIR}}"
@@ -332,7 +332,7 @@ jobs:
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
                windeployqt ${{env.APPDIR}}/ || echo "::warning::Unknown error"
            else
-               ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/bin/windeployqt.exe ${{env.APPDIR}}/
+               ${QT_ROOT_DIR}/bin/windeployqt.exe ${{env.APPDIR}}/
            fi
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
             echo "::notice:: Deploying additional libs"
