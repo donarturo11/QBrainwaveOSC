@@ -348,7 +348,7 @@ jobs:
           fi
 
     - name: Compile FFTW3
-      if: matrix.build-fftw}}
+      if: ${{matrix.build-fftw}}
       run: |
           cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
           cmake --build ${{env.FFTW_BUILD_DIR}}
