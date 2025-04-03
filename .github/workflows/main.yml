@@ -194,8 +194,8 @@ jobs:
                 ${MINGW_PACKAGE_PREFIX}-glfw \
                 ${MINGW_PACKAGE_PREFIX}-angleproject \
                 ${MINGW_PACKAGE_PREFIX}-nsis
-            cygpath -w $MINGW_PREFIX    >> $GITHUB_PATH
-            cygpath -w $MINGW_PREFIX/.. >> $GITHUB_PATH
+            cygpath -w $MINGW_PREFIX/bin    >> $GITHUB_PATH
+            cygpath -w $MINGW_PREFIX/../bin >> $GITHUB_PATH
 
     - name: Setup environment
       shell: bash
@@ -311,9 +311,10 @@ jobs:
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-tools \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-charts
           if [[ ${QTVER} == 6 ]]; then
-              echo QT_ROOT_DIR="$(qmake6 -query QT_INSTALL_PREFIX)" >> ${GITHUB_ENV}
+              export QT_ROOT_DIR="$(qmake6 -query QT_INSTALL_PREFIX)"
           else
-              echo QT_ROOT_DIR="$(qmake -query QT_INSTALL_PREFIX)" >> ${GITHUB_ENV}
+              export QT_ROOT_DIR="$(qmake -query QT_INSTALL_PREFIX)"
+          echo QT_ROOT_DIR="${QT_ROOT_DIR}" >> $GITHUB_ENV
 
     - name: Install QT (linux)
       if: ${{matrix.aqt-os == 'none' && runner.os == 'Linux'}}
@@ -337,7 +338,7 @@ jobs:
                                       qt5-qmake
           fi
       
-    - name: FETCH FFTW3
+    - name: Build FFTW3
       if: ${{matrix.build-fftw}}
       run: |
           export FFTW_DIR=${DEPSPATH}
@@ -352,9 +353,10 @@ jobs:
       if: ${{!(matrix.build-fftw) && (runner.os == 'Windows')}}
       shell: 'msys2 {0}'
       run: |
+          export FFTW_DIR=$(cygpath -m ${MINGW_PREFIX})
           pacman -S --noconfirm \
                 ${MINGW_PACKAGE_PREFIX}-fftw
-          echo "FFTW_DIR=$(cygpath -m ${MINGW_PREFIX})" >> ${GITHUB_ENV}
+          echo "FFTW_DIR=${FFTW_DIR}" >> ${GITHUB_ENV}
 
     - name: Install FFTW3 (Linux)
       if: ${{!(matrix.build-fftw) && (runner.os == 'Linux')}}
