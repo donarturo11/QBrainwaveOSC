@@ -179,7 +179,7 @@ jobs:
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ matrix.msystem }}
-        location: C:\
+        location: C:\msys64
         update: true
         cache: true
         install: |
