@@ -285,7 +285,7 @@ jobs:
                  -B "${{env.WORKDIR}}/build" ${{matrix.flags}} \
                  -DCMAKE_BUILD_TYPE=Release \
                  -DCMAKE_INSTALL_PREFIX="${{env.INSTALL_PREFIX}}" \
-                 -DCMAKE_PREFIX_PATH="${{env.AQTPATH}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}};${{env.DEPSPATH}}"
+                 -DCMAKE_PREFIX_PATH="${QT_ROOT_DIR};${{env.DEPSPATH}}"
 
     - name: Compile Code (POSIX)
       if: ${{(matrix.name != 'windows-qt6-msvc') && (matrix.name != 'windows-qt5-msvc')}}
