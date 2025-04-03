@@ -373,7 +373,7 @@ jobs:
            cmake -S "${{env.WORKDIR}}" \
                  -B "${{env.WORKDIR}}/build" ${{matrix.flags}} \
                  -DCMAKE_BUILD_TYPE=Release \
-                 -DCMAKE_INSTALL_PREFIX="${{INSTALL_PREFIX}}" \
+                 -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
                  -DCMAKE_PREFIX_PATH="${QT_ROOT_DIR};${FFTW_DIR}"
 
     - name: Compile Code
