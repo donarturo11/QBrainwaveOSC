@@ -172,17 +172,18 @@ jobs:
       shell: 'bash'
       if: ${{matrix.aqt-os != 'none'}}
       run: |
-           QT_MODULES=()
            if [[ ${{matrix.qt-version}} == 6.* ]]; then
-               QT_MODULES=(qtconnectivity qtserialport qtcharts)
-           else
-               QT_MODULES=(qtcharts)
-           fi
            python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} \
                     ${{matrix.aqt-os}} desktop \
-                    ${{matrix.qt-version}} \
-                    ${{matrix.aqt-arch}} \
-                   -m ${QT_MODULES[@]}
+                    ${{matrix.qt-version}} ${{matrix.aqt-arch}} \
+                   -m qtconnectivity qtserialport qtcharts
+           else
+           python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} \
+                    ${{matrix.aqt-os}} desktop \
+                    ${{matrix.qt-version}} ${{matrix.aqt-arch}} \
+                   -m qtcharts
+           fi
+           
            
     - name: Install QT (mingw)
       if: ${{matrix.aqt-os == 'none' && runner.os == 'Windows'}}
