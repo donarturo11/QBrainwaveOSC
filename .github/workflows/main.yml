@@ -20,6 +20,7 @@ on:
 env:
   pkgname: QBrainwaveOSC
   IDENTITY_NAME: ${{ secrets.IDENTITY_NAME }}
+  CMAKE_POLICY_VERSION_MINIMUM: 3.5
 
 jobs:
   build:
