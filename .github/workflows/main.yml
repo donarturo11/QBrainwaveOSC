@@ -27,14 +27,120 @@ jobs:
     strategy:
       matrix:
        include:
-        - { name: "windows-qt6-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "D:/", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64', build-fftw: true }
-        - { name: "windows-qt5-msvc", os: windows-latest, flags: '-G"Visual Studio 17 2022"', shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "windows", aqt-arch: "win64_msvc2019_64", aqt-prefix: "D:/", aqt-subdir: "msvc2019_64", qt-version: '5.15.2', msystem: 'UCRT64', build-fftw: true }
-        - { name: "windows-qt6-mingw", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "none", aqt-arch: "win64_msvc2019_64", aqt-prefix: "D:/", aqt-subdir: "msvc2019_64", qt-version: '6.5.1', msystem: 'UCRT64', build-fftw: false }
-        - { name: "windows-qt5-mingw", os: windows-latest, flags: "", shell: 'msys2 {0}', deps-prefix: "D:/deps", aqt-os: "none", aqt-arch: "win64_mingw73", aqt-prefix: "D:/", aqt-subdir: "mingw73_64", qt-version: '5.12.12', msystem: 'MINGW64', build-fftw: false }
-        - { name: "linux-qt6", os: ubuntu-latest, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "none", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/", aqt-subdir: "gcc_64", qt-version: '6.5.1', build-fftw: false }
-        - { name: "linux-qt5", os: ubuntu-22.04, flags: "", shell: 'bash', deps-prefix: "/home/runner/deps", aqt-os: "none", aqt-arch: "gcc_64", aqt-prefix: "/home/runner/", aqt-subdir: "gcc_64", qt-version: '5.15.2', build-fftw: false }
-        - { name: "macos-qt6-universal", os: macos-latest, flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/", aqt-subdir: "macos", qt-version: '6.5.1', build-fftw: true }
-        - { name: "macos-qt5-legacy", os: macos-latest, flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\"", shell: 'bash', deps-prefix: "/Users/runner/deps", aqt-os: "mac", aqt-arch: "", aqt-prefix: "/Users/runner/", aqt-subdir: "clang_64", qt-version: '5.15.2', build-fftw: true }
+        - name: "windows-qt6-msvc"
+          os: windows-latest
+          toolchain:
+            cc: 'cl'
+            cxx: 'cl'
+          flags: ''
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "windows"
+          aqt-arch: "win64_msvc2019_64"
+          aqt-prefix: "D:/"
+          aqt-subdir: "msvc2019_64"
+          qt-version: '6.5.1'
+          msystem: 'UCRT64'
+          build-fftw: true
+        - name: "windows-qt5-msvc"
+          os: windows-latest
+          toolchain:
+            cc: 'cl'
+            cxx: 'cl'
+          flags: ''
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "windows"
+          aqt-arch: "win64_msvc2019_64"
+          aqt-prefix: "D:/"
+          aqt-subdir: "msvc2019_64"
+          qt-version: '5.15.2'
+          msystem: 'UCRT64'
+          build-fftw: true
+        - name: "windows-qt6-mingw"
+          os: windows-latest
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "none"
+          aqt-arch: "win64_msvc2019_64"
+          aqt-prefix: "D:/"
+          aqt-subdir: "msvc2019_64"
+          qt-version: '6.5.1'
+          msystem: 'UCRT64'
+          build-fftw: false
+        - name: "windows-qt5-mingw"
+          os: windows-latest
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "none"
+          aqt-arch: "win64_mingw73"
+          aqt-prefix: "D:/"
+          aqt-subdir: "mingw73_64"
+          qt-version: '5.12.12'
+          msystem: 'MINGW64'
+          build-fftw: false
+        - name: "linux-qt6"
+          os: ubuntu-latest
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'bash'
+          deps-prefix: "/home/runner/deps"
+          aqt-os: "none", aqt-arch: "gcc_64"
+          aqt-prefix: "/home/runner/"
+          aqt-subdir: "gcc_64"
+          qt-version: '6.5.1'
+          build-fftw: false
+        - name: "linux-qt5"
+          os: ubuntu-22.04
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'bash'
+          deps-prefix: "/home/runner/deps"
+          aqt-os: "none"
+          aqt-arch: "gcc_64"
+          aqt-prefix: "/home/runner/"
+          aqt-subdir: "gcc_64"
+          qt-version: '5.15.2'
+          build-fftw: false
+        - name: "macos-qt6-universal"
+          os: macos-latest
+          toolchain:
+            cc: 'clang'
+            cxx: 'clang++'
+          flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\""
+          shell: 'bash', deps-prefix: "/Users/runner/deps"
+          aqt-os: "mac"
+          aqt-arch: ""
+          aqt-prefix: "/Users/runner/"
+          aqt-subdir: "macos"
+          qt-version: '6.5.1'
+          build-fftw: true
+        - name: "macos-qt5-legacy"
+          os: macos-latest
+          toolchain:
+            cc: 'clang'
+            cxx: 'clang++'
+          flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\""
+          shell: 'bash'
+          deps-prefix: "/Users/runner/deps"
+          aqt-os: "mac"
+          aqt-arch: ""
+          aqt-prefix: "/Users/runner/"
+          aqt-subdir: "clang_64"
+          qt-version: '5.15.2'
+          build-fftw: true
     runs-on: ${{matrix.os}}
     defaults:
       run:
@@ -60,12 +166,20 @@ jobs:
           security set-key-partition-list -S apple-tool:,apple: -s -k $KEYCHAIN_PASSWORD $KEYCHAIN_PATH
           security find-identity
 
+    - name: Set up Visual Studio shell
+      if: ${{ runner.os == 'Windows' }}
+      uses: egor-tensin/vs-shell@v2
+      with:
+        arch: x64
+    
     - if: ${{runner.os == 'Windows'}}
       name: Install MinGW
       uses: msys2/setup-msys2@v2
       with:
         msystem: ${{ matrix.msystem }}
+        location: C:\
         update: true
+        cache: true
         install: |
             base base-devel p7zip zip git
 
@@ -87,6 +201,14 @@ jobs:
                 ${MINGW_PACKAGE_PREFIX}-angleproject \
                 ${MINGW_PACKAGE_PREFIX}-nsis
 
+    - name: Setup environment
+      shell: bash
+      run: |
+        [[ $RUNNER_OS == 'Linux' ]] && sudo apt-get update && sudo apt-get install ninja-build -y
+        echo 'CMAKE_GENERATOR=Ninja' >> $GITHUB_ENV
+        echo "CC=${{ matrix.toolchain.cc }}" >> $GITHUB_ENV
+        echo "CXX=${{ matrix.toolchain.cxx }}" >> $GITHUB_ENV
+    
     - name: Setup windows env
       if: ${{runner.os == 'Windows'}}
       run: |
@@ -163,28 +285,6 @@ jobs:
            fi
            echo "INSTALL_PREFIX=$INSTALL_PREFIX" >> $GITHUB_ENV
 
-#    - name: Install AQT
-#      shell: 'bash'
-#      if: ${{matrix.aqt-os != 'none'}}
-#      run: |    
-#           python3 -m pip install --break-system-packages --user aqtinstall
-#
-#    - name: Install Qt (with AQT)
-#      shell: 'bash'
-#      if: ${{matrix.aqt-os != 'none'}}
-#      run: |
-#           if [[ ${{matrix.qt-version}} == 6.* ]]; then
-#           python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} \
-#                    ${{matrix.aqt-os}} desktop \
-#                    ${{matrix.qt-version}} ${{matrix.aqt-arch}} \
-#                   -m qtconnectivity qtserialport qtcharts
-#           else
-#           python3 -m aqt install-qt -O ${{matrix.aqt-prefix}} \
-#                    ${{matrix.aqt-os}} desktop \
-#                    ${{matrix.qt-version}} ${{matrix.aqt-arch}} \
-#                   -m qtcharts
-#           fi
-
     - name: Install Qt (jurplel)
       uses: jurplel/install-qt-action@v4
       if: ${{matrix.aqt-os != 'none'}}
@@ -245,22 +345,12 @@ jobs:
               echo "FFTW_BUILD_DIR="${FFTW_BUILD_DIR}"" >> $GITHUB_ENV
           fi
 
-    - name: Compile FFTW3 (WINDOWS)
-      if: ${{( (matrix.name == 'windows-qt6-msvc') || (matrix.name == 'windows-qt5-msvc') ) && matrix.build-fftw}}
-      shell: pwsh
-      run: |
-          cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
-          cmake --build ${{env.FFTW_BUILD_DIR}} --config Release
-
-    - name: Compile FFTW3 (POSIX)
-      if: ${{( (matrix.name != 'windows-qt6-msvc') && (matrix.name != 'windows-qt5-msvc') ) && matrix.build-fftw}}
+    - name: Compile FFTW3
+      if: matrix.build-fftw}}
       run: |
           cmake -S fftw-3.3.10 -B ${{env.WORKDIR}}/fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${{env.DEPSPATH}}
           cmake --build ${{env.FFTW_BUILD_DIR}}
-
-    - name: Install FFTW3
-      if: ${{matrix.build-fftw}}
-      run: cmake --install ${{env.FFTW_BUILD_DIR}}
+          cmake --install ${{env.FFTW_BUILD_DIR}}
 
     - name: Install FFTW3 (MinGW)
       if: ${{!(matrix.build-fftw) && (runner.os == 'Windows')}}
@@ -287,14 +377,8 @@ jobs:
                  -DCMAKE_INSTALL_PREFIX="${{env.INSTALL_PREFIX}}" \
                  -DCMAKE_PREFIX_PATH="${QT_ROOT_DIR};${{env.DEPSPATH}}"
 
-    - name: Compile Code (POSIX)
-      if: ${{(matrix.name != 'windows-qt6-msvc') && (matrix.name != 'windows-qt5-msvc')}}
+    - name: Compile Code
       run: cmake --build ${{env.WORKDIR}}/build
-
-    - name: Compile Code (WINDOWS)
-      if: ${{(matrix.name == 'windows-qt6-msvc') || (matrix.name == 'windows-qt5-msvc')}}
-      shell: pwsh
-      run: cmake --build ${{github.workspace}}/build --config Release  
 
     - name: Prepare appdir
       run: |
