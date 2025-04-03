@@ -346,7 +346,7 @@ jobs:
           cmake -S fftw-src -B fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${FFTW_DIR}
           cmake --build fftw-build
           cmake --install fftw-build
-          echo "FFTW_DIR=$FFTW_DIR" >> $GITHUB_ENV
+          echo "FFTW_DIR=${FFTW_DIR}" >> $GITHUB_ENV
 
     - name: Install FFTW3 (MinGW)
       if: ${{!(matrix.build-fftw) && (runner.os == 'Windows')}}
@@ -368,6 +368,8 @@ jobs:
 
     - name: Run Configure
       run: |
+           echo "::notice::QT_ROOT_DIR=${QT_ROOT_DIR}"
+           echo "::notice::FFTW_DIR=${FFTW_DIR}"
            cmake -S "${{env.WORKDIR}}" \
                  -B "${{env.WORKDIR}}/build" ${{matrix.flags}} \
                  -DCMAKE_BUILD_TYPE=Release \
