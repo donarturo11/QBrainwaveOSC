@@ -172,9 +172,11 @@ jobs:
       shell: 'bash'
       if: ${{matrix.aqt-os != 'none'}}
       run: |
-           [[ ${{matrix.qt-version}} == 6.* ]] \
-               && QT_MODULES=(qtconnectivity qtserialport qtcharts) \
-               || QT_MODULES=(qtcharts)
+           if [[ ${{matrix.qt-version}} == 6.* ]]; then
+               QT_MODULES=(qtconnectivity qtserialport qtcharts)
+           else
+               QT_MODULES=(qtcharts)
+           fi
            python3 -m aqt install-qt \
                    -O ${{matrix.aqt-prefix}} \
                    ${{matrix.aqt-os}} desktop \
