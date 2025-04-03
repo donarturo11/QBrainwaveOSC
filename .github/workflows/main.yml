@@ -182,7 +182,7 @@ jobs:
                    ${{matrix.aqt-os}} desktop \
                    ${{matrix.qt-version}} \
                    ${{matrix.aqt-arch}} \
-                   -m QT_MODULES[@]
+                   -m ${QT_MODULES[@]}
 
     
     - name: Install QT (mingw)
