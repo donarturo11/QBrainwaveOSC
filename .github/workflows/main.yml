@@ -205,12 +205,6 @@ jobs:
         echo "CMAKE_C_COMPILER=${CC}" >> $GITHUB_ENV
         echo "CMAKE_CXX_COMPILER=${CXX}" >> $GITHUB_ENV
     
-    - name: Setup windows env
-      if: ${{runner.os == 'Windows'}}
-      run: |
-           echo "::notify:: Upgrading pip"
-           python3 -m pip install -U pip
-
     - name: Install Linux Dependencies
       if: ${{runner.os == 'Linux'}}
       run: |
