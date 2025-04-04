@@ -191,7 +191,7 @@ jobs:
       shell: 'msys2 {0}'
       run: |
             pacman -S --noconfirm \
-                ${MINGW_PACKAGE_PREFIX}-toolchain \
+                ${MINGW_PACKAGE_PREFIX}-toolchain
             cygpath -w $MINGW_PREFIX/bin    >> $GITHUB_PATH
             cygpath -w $MINGW_PREFIX/../bin >> $GITHUB_PATH
 
