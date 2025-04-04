@@ -141,6 +141,12 @@ jobs:
         shell: bash
 
     steps:
+    - name: Set up Visual Studio shell
+      if: ${{ runner.os == 'Windows' }}
+      uses: egor-tensin/vs-shell@v2
+      with:
+        arch: x64
+        
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
@@ -186,18 +192,6 @@ jobs:
       run: |
             pacman -S --noconfirm \
                 ${MINGW_PACKAGE_PREFIX}-toolchain \
-                ${MINGW_PACKAGE_PREFIX}-python-pip \
-                ${MINGW_PACKAGE_PREFIX}-python-distutils-extra \
-                ${MINGW_PACKAGE_PREFIX}-python-psutil \
-                ${MINGW_PACKAGE_PREFIX}-python-defusedxml \
-                ${MINGW_PACKAGE_PREFIX}-python-wheel \
-                ${MINGW_PACKAGE_PREFIX}-python-patch-ng \
-                ${MINGW_PACKAGE_PREFIX}-cmake \
-                ${MINGW_PACKAGE_PREFIX}-gles-headers \
-                ${MINGW_PACKAGE_PREFIX}-glew \
-                ${MINGW_PACKAGE_PREFIX}-glfw \
-                ${MINGW_PACKAGE_PREFIX}-angleproject \
-                ${MINGW_PACKAGE_PREFIX}-nsis
             cygpath -w $MINGW_PREFIX/bin    >> $GITHUB_PATH
             cygpath -w $MINGW_PREFIX/../bin >> $GITHUB_PATH
 
@@ -342,12 +336,6 @@ jobs:
                                       qtconnectivity5-dev \
                                       qt5-qmake
           fi
-    
-    - name: Set up Visual Studio shell
-      if: ${{ runner.os == 'Windows' }}
-      uses: egor-tensin/vs-shell@v2
-      with:
-        arch: x64  
     
     - name: Build FFTW3
       if: ${{matrix.build-fftw}}
