@@ -141,6 +141,16 @@ jobs:
         shell: bash
 
     steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Debug submodule paths
+      run: |
+        git submodule status
+        ls -al .git/modules/thirdparty/kissfft/config
+        
     - name: Install the Apple certificate and provisioning profile
       if: ${{runner.os == 'macOS'}}
       env:
