@@ -41,20 +41,20 @@ jobs:
           qt-version: '6.5.1'
           msystem: 'UCRT64'
           build-fftw: true
-#        - name: "windows-qt5-msvc"
-#          os: windows-latest
-#          toolchain:
-#            cc: 'cl'
-#            cxx: 'cl'
-#          flags: ''
-#          shell: 'msys2 {0}'
-#          deps-prefix: "D:/deps"
-#          aqt-os: "windows"
-#          aqt-arch: "win64_msvc2019_64"
-#          aqt-prefix: "D:/"
-#          qt-version: '5.15.2'
-#          msystem: 'UCRT64'
-#          build-fftw: true
+        - name: "windows-qt5-msvc"
+          os: windows-latest
+          toolchain:
+            cc: 'cl'
+            cxx: 'cl'
+          flags: ''
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "windows"
+          aqt-arch: "win64_msvc2019_64"
+          aqt-prefix: "D:/"
+          qt-version: '5.15.2'
+          msystem: 'UCRT64'
+          build-fftw: true
         - name: "windows-qt6-mingw"
           os: windows-latest
           toolchain:
@@ -69,20 +69,20 @@ jobs:
           qt-version: '6.5.1'
           msystem: 'UCRT64'
           build-fftw: false
-#        - name: "windows-qt5-mingw"
-#          os: windows-latest
-#          toolchain:
-#            cc: 'gcc'
-#            cxx: 'g++'
-#          flags: ""
-#          shell: 'msys2 {0}'
-#          deps-prefix: "D:/deps"
-#          aqt-os: "none"
-#          aqt-arch: "win64_mingw81"
-#          aqt-prefix: "D:/"
-#          qt-version: '5.15.2'
-#          msystem: 'MINGW64'
-#          build-fftw: false
+        - name: "windows-qt5-mingw"
+          os: windows-latest
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'msys2 {0}'
+          deps-prefix: "D:/deps"
+          aqt-os: "none"
+          aqt-arch: "win64_mingw81"
+          aqt-prefix: "D:/"
+          qt-version: '5.15.2'
+          msystem: 'MINGW64'
+          build-fftw: false
         - name: "linux-qt6"
           os: ubuntu-latest
           toolchain:
@@ -96,19 +96,19 @@ jobs:
           aqt-prefix: "/home/runner/"
           qt-version: '6.5.1'
           build-fftw: false
-#        - name: "linux-qt5"
-#          os: ubuntu-22.04
-#          toolchain:
-#            cc: 'gcc'
-#            cxx: 'g++'
-#          flags: ""
-#          shell: 'bash'
-#          deps-prefix: "/home/runner/deps"
-#          aqt-os: "none"
-#          aqt-arch: "gcc_64"
-#          aqt-prefix: "/home/runner/"
-#          qt-version: '5.15.2'
-#          build-fftw: false
+        - name: "linux-qt5"
+          os: ubuntu-22.04
+          toolchain:
+            cc: 'gcc'
+            cxx: 'g++'
+          flags: ""
+          shell: 'bash'
+          deps-prefix: "/home/runner/deps"
+          aqt-os: "none"
+          aqt-arch: "gcc_64"
+          aqt-prefix: "/home/runner/"
+          qt-version: '5.15.2'
+          build-fftw: false
         - name: "macos-qt6-universal"
           os: macos-latest
           toolchain:
@@ -122,19 +122,19 @@ jobs:
           aqt-prefix: "/Users/runner/"
           qt-version: '6.5.1'
           build-fftw: true
-#        - name: "macos-qt5-legacy"
-#          os: macos-latest
-#          toolchain:
-#            cc: 'clang'
-#            cxx: 'clang++'
-#          flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\""
-#          shell: 'bash'
-#          deps-prefix: "/Users/runner/deps"
-#          aqt-os: "mac"
-#          aqt-arch: ""
-#          aqt-prefix: "/Users/runner/"
-#          qt-version: '5.15.2'
-#          build-fftw: true
+        - name: "macos-qt5-legacy"
+          os: macos-latest
+          toolchain:
+            cc: 'clang'
+            cxx: 'clang++'
+          flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\""
+          shell: 'bash'
+          deps-prefix: "/Users/runner/deps"
+          aqt-os: "mac"
+          aqt-arch: ""
+          aqt-prefix: "/Users/runner/"
+          qt-version: '5.15.2'
+          build-fftw: true
     runs-on: ${{matrix.os}}
     defaults:
       run:
