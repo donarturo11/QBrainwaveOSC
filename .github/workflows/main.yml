@@ -352,7 +352,9 @@ jobs:
     - name: Build FFTW3
       if: ${{matrix.build-fftw}}
       run: |
-          pushd ${HOME}/build-deps &> /dev/null
+          FFTW_WORK=${HOME}/fftw-work
+          [[ ! $FFTW_WORK ]] && mkdir $FFTW_WORK
+          pushd $FFTW_WORK &> /dev/null
           export FFTW_DIR=${DEPSPATH}
           mkdir fftw-src
           curl -L https://www.fftw.org/fftw-3.3.10.tar.gz | tar -xz --strip-components=1 -C fftw-src
