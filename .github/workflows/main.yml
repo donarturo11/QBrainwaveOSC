@@ -352,8 +352,9 @@ jobs:
     - name: Build FFTW3
       if: ${{matrix.build-fftw}}
       run: |
-          FFTW_WORK=${HOME}/fftw-work
-          [[ ! $FFTW_WORK ]] && mkdir $FFTW_WORK
+          export FFTW_WORK=${HOME}/fftw-work
+          [[ ! $FFTW_WORK ]] && mkdir -v $FFTW_WORK
+          ls -lah $FFTW_WORK
           pushd $FFTW_WORK &> /dev/null
           export FFTW_DIR=${DEPSPATH}
           mkdir fftw-src
