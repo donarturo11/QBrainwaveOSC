@@ -352,10 +352,10 @@ jobs:
     - name: Build FFTW3
       if: ${{matrix.build-fftw}}
       run: |
+          export OLDPWD=${PWD}
           export FFTW_WORK=${HOME}/fftw-work
           mkdir -v $FFTW_WORK || echo "${FFTW_WORK} already exists"
-          ls -lah $FFTW_WORK
-          pushd $FFTW_WORK &> /dev/null
+          cd $FFTW_WORK
           export FFTW_DIR=${DEPSPATH}
           mkdir fftw-src
           curl -L https://www.fftw.org/fftw-3.3.10.tar.gz | tar -xz --strip-components=1 -C fftw-src
@@ -363,7 +363,6 @@ jobs:
           cmake --build fftw-build
           cmake --install fftw-build
           echo "FFTW_DIR=${FFTW_DIR}" >> $GITHUB_ENV
-          popd &> /dev/null
 
     - name: Install FFTW3 (MinGW)
       if: ${{!(matrix.build-fftw) && (runner.os == 'Windows')}}
