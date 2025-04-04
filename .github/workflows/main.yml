@@ -352,6 +352,7 @@ jobs:
     - name: Build FFTW3
       if: ${{matrix.build-fftw}}
       run: |
+          pushd ${HOME}/build-deps &> /dev/null
           export FFTW_DIR=${DEPSPATH}
           mkdir fftw-src
           curl -L https://www.fftw.org/fftw-3.3.10.tar.gz | tar -xz --strip-components=1 -C fftw-src
@@ -359,6 +360,7 @@ jobs:
           cmake --build fftw-build
           cmake --install fftw-build
           echo "FFTW_DIR=${FFTW_DIR}" >> $GITHUB_ENV
+          popd &> /dev/null
 
     - name: Install FFTW3 (MinGW)
       if: ${{!(matrix.build-fftw) && (runner.os == 'Windows')}}
@@ -374,10 +376,10 @@ jobs:
       run: |
           sudo apt-get install -y libfftw3-dev
 
-    - name: Checkout Repo
-      uses: actions/checkout@v4
-      with:
-          submodules: 'recursive'
+#    - name: Checkout Repo
+#      uses: actions/checkout@v4
+#      with:
+#          submodules: 'recursive'
 
     - name: Run Configure
       run: |
