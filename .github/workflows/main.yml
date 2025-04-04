@@ -353,7 +353,7 @@ jobs:
       if: ${{matrix.build-fftw}}
       run: |
           export FFTW_WORK=${HOME}/fftw-work
-          [[ ! $FFTW_WORK ]] && mkdir -v $FFTW_WORK
+          mkdir -v $FFTW_WORK || echo "${FFTW_WORK} already exists"
           ls -lah $FFTW_WORK
           pushd $FFTW_WORK &> /dev/null
           export FFTW_DIR=${DEPSPATH}
