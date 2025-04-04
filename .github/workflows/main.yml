@@ -301,7 +301,11 @@ jobs:
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-connectivity \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-serialport \
                 ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-tools \
-                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-charts
+                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-charts \
+                ${MINGW_PACKAGE_PREFIX}-gles-headers \
+                ${MINGW_PACKAGE_PREFIX}-glew \
+                ${MINGW_PACKAGE_PREFIX}-glfw \
+                ${MINGW_PACKAGE_PREFIX}-angleproject
           if [[ ${QTVER} == 6 ]]; then
               export QT_ROOT_DIR="$(qmake6 -query QT_INSTALL_PREFIX)"
           else
