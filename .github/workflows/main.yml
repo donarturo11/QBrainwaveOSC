@@ -169,12 +169,6 @@ jobs:
           security list-keychain -d user -s $KEYCHAIN_PATH
           security set-key-partition-list -S apple-tool:,apple: -s -k $KEYCHAIN_PASSWORD $KEYCHAIN_PATH
           security find-identity
-
-    - name: Set up Visual Studio shell
-      if: ${{ runner.os == 'Windows' }}
-      uses: egor-tensin/vs-shell@v2
-      with:
-        arch: x64
     
     - if: ${{runner.os == 'Windows'}}
       name: Install MinGW
@@ -348,7 +342,13 @@ jobs:
                                       qtconnectivity5-dev \
                                       qt5-qmake
           fi
-      
+    
+    - name: Set up Visual Studio shell
+      if: ${{ runner.os == 'Windows' }}
+      uses: egor-tensin/vs-shell@v2
+      with:
+        arch: x64  
+    
     - name: Build FFTW3
       if: ${{matrix.build-fftw}}
       run: |
