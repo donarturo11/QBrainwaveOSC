@@ -1,0 +1,13 @@
+message(APP: "${APP}")
+message(SEARCH_DIRS: ${SEARCH_DIRS})
+if(WIN32)
+ set(SEARCH_DIRS "$ENV{PATH};${SEARCH_DIRS}")
+ find_program (WINDEPLOYQT_EXECUTABLE NAMES windeployqt windeployqt6)
+ execute_process(COMMAND ${WINDEPLOYQT_EXECUTABLE} "${APP}")
+elseif(APPLE)
+ find_program (MACDEPLOYQT_EXECUTABLE NAMES macdeployqt macdeployqt6)
+ execute_process(COMMAND ${MACDEPLOYQT_EXECUTABLE} "${APP}")
+endif()
+
+include(BundleUtilities)
+fixup_bundle("${APP}" "" "${SEARCH_DIRS}")

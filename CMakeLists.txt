@@ -25,6 +25,10 @@ include_directories(
    ${PROJECT_SOURCE_DIR}/src/GUI/GraphsWidget
 )
 
+set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/lib/archive)
+set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/lib)
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/out/bin)
+
 option(FORCE_QT5 "Force qt5 install" OFF)
 option(FORCE_QT6 "Force qt6 install" OFF)
 
@@ -32,8 +36,16 @@ option(USE_FFTW "Use FFTW" ON)
 
 if(USE_FFTW)
 message("Using fftw3")
+#    if(USE_FFTW STREQUAL "legacy")
+        find_package(FFTW3 REQUIRED)
+#    else()
+#        find_package(FFTW3 REQUIRED CONFIG)
+#    endif()
 add_compile_definitions(USE_FFTW)
-find_package(FFTW REQUIRED)
+message("FFTW3_LIBRARIES: ${FFTW3_LIBRARIES}")
+message("FFTW3_LIBRARY: ${FFTW3_LIBRARY}")
+message("FFTW3_INCLUDE_DIRS: ${FFTW3_INCLUDE_DIRS}")
+#include_directories(${FFTW3_INCLUDE_DIRS})
 else()
 message("Using kissfft")
 add_compile_definitions(USE_KISSFFT)
@@ -42,13 +54,13 @@ endif()
 
 if(FORCE_QT5)
     set(QT_VERSION_MAJOR 5)
-    find_package(Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts Network)
+    find_package(Qt5 REQUIRED COMPONENTS Core Widgets SerialPort Charts Network)
 elseif(FORCE_QT6)
     set(QT_VERSION_MAJOR 6)
-    find_package(Qt6 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts Network)
+    find_package(Qt6 REQUIRED COMPONENTS Core Widgets SerialPort Charts Network)
 else()
-    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts Network)
-    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets Bluetooth SerialPort Charts Network)
+    find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Core Widgets SerialPort Charts Network)
+    find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Widgets SerialPort Charts Network)
 endif()
 
 if (${QT_VERSION_MAJOR} EQUAL 5)
@@ -62,7 +74,6 @@ add_compile_definitions(_USE_MATH_DEFINES)
 endif()
 
 add_subdirectory(src)
-
 # set icon
 if(APPLE)
     set(APP_ICON_MACOSX "${CMAKE_CURRENT_SOURCE_DIR}/desktop/AppIcon.icns")
@@ -119,41 +130,48 @@ ELSEIF(APPLE)
     )
 ENDIF()
 
+
 if(USE_FFTW)
-target_link_libraries(${PROJECT_NAME} PRIVATE fftw3)
+  target_link_libraries(${PROJECT_NAME} PRIVATE FFTW3::fftw3)
 endif()
 
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
-target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Bluetooth)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::SerialPort)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Charts)
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt${QT_VERSION_MAJOR}::Network)
 
+## deploy
+add_custom_target(deploy)
+add_custom_command(TARGET deploy POST_BUILD
+    COMMAND ${CMAKE_COMMAND}
+        -DAPP="$<TARGET_FILE:${PROJECT_NAME}>"
+        -DSEARCH_DIRS="${CMAKE_LINK_DIRECTORIES}"
+        -P "${CMAKE_SOURCE_DIR}/cmake/deploy.cmake"
+)
+
+
+### install ##
 if(WIN32)
     message("Installing for Windows")
     include(GNUInstallDirs)
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_NAME}/lib/archive)
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_NAME}/lib)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_NAME})
-    install(FILES desktop/AppIcon.ico DESTINATION ${PROJECT_NAME})
+    set(CMAKE_INSTALL_BINDIR .)
+    install(FILES desktop/AppIcon.ico DESTINATION ${CMAKE_INSTALL_BINDIR})
 elseif(UNIX AND (NOT APPLE))
     message("Installing for UNIX")
     include(GNUInstallDirs)
-    set (CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)
-    set (CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/lib)
-    set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/bin)
-    install(FILES desktop/AppIcon.png RENAME ${PROJECT_NAME}.png DESTINATION ${CMAKE_INSTALL_PREFIX}/share/icons/hicolor/128/apps)
-    install(FILES desktop/${PROJECT_NAME}.desktop DESTINATION ${CMAKE_INSTALL_PREFIX}/share/applications)
+    install(FILES desktop/AppIcon.png RENAME ${PROJECT_NAME}.png DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/128/apps)
+    install(FILES desktop/${PROJECT_NAME}.desktop DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
 elseif(APPLE)
     message("Installing for macOS")
     install(FILES desktop/AppIcon.icns DESTINATION ${CMAKE_INSTALL_PREFIX}/${PROJECT_NAME}.app/Contents/Resources)
 endif()
 
 install(TARGETS ${PROJECT_NAME}
-    BUNDLE DESTINATION .
+    BUNDLE DESTINATION ${CMAKE_INSTALL_PREFIX}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
+message(STATUS CMAKE_PREFIX_PATH: ${CMAKE_PREFIX_PATH})
 include(CPackConfig)
 
 if(QT_VERSION_MAJOR EQUAL 6)
