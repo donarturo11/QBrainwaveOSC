@@ -19,7 +19,7 @@ on:
         type: boolean
 env:
   PKGNAME: QBrainwaveOSC
-  IDENTITY_NAME: ${{ secrets.IDENTITY_NAME }}
+  PKGVERSION: 0.1
   CMAKE_POLICY_VERSION_MINIMUM: 3.5
   CMAKE_BUILD_TYPE: Release
 
@@ -28,88 +28,57 @@ jobs:
     strategy:
       matrix:
         qt-version: [ 5, 6 ]
-        name: [ "windows-msvc", "windows-mingw", "macos-arm64", "macos-x86_64", "linux" ]
+        name: [ "windows-msvc", "windows-mingw", "macos-arm64", "macos-x86_64", "linux", "linux-arm" ]
         include:
           - name: "windows-msvc"
             os: "windows-latest"
-            toolchain: "msvc"
+            msystem: "MSYS"
           - name: "windows-mingw"
             os: "windows-latest"
-            toolchain: "mingw"
+            msystem: "UCRT64"
           - name: "macos-arm64"
-            os: "macos-14"
+            os: "macos-15"
           - name: "macos-x86_64"
-            os: "macos-13"
+            os: "macos-15-intel"
           - name: "linux"
             os: "ubuntu-latest"
+          - name: "linux-arm"
+            os: "ubuntu-24.04-arm"
     runs-on: ${{matrix.os}}
     defaults:
       run:
         shell: bash
     steps:
-    - name: OS info
-      run: |
-        echo "UNAME_S: $(uname -s)"
-        echo "UNAME_O: $(uname -o)"
-        echo "UNAME_M: $(uname -m)"
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
         submodules: recursive
-    - name: Install the Apple certificate and provisioning profile
-      if: ${{runner.os == 'macOS'}}
-      env:
-          P12_CERTIFICATE_BASE64: ${{ secrets.P12_CERTIFICATE_BASE64 }}
-          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+    - if: ${{ runner.os == 'Windows' }}
       run: |
-          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          echo -n "$P12_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security default-keychain -s $KEYCHAIN_PATH
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign -T /usr/bin/productsign
-          security list-keychain -d user -s $KEYCHAIN_PATH
-          security set-key-partition-list -S apple-tool:,apple: -s -k $KEYCHAIN_PASSWORD $KEYCHAIN_PATH
-          security find-identity
-    - name: Prepare workspace
+        echo "C:\\msys64\\usr\\bin" >> $GITHUB_PATH
+        echo "MSYSTEM=${{ matrix.msystem }}" >> $GITHUB_ENV
+    - name: Fetch scripts
+      run: curl -L https://freeshell.de/arturwro/pub/QBrainwaveOSC-scripts.tar.gz | tar -vxz
+    - name: Setup environment
       env:
         PROFILE_NAME: ${{ matrix.name }}
         QT_VERSION: ${{ matrix.qt-version }}
+        OWNCLOUD_TOKEN: ${{ secrets.OWNCLOUD_TOKEN }}
       run: |
-        cd $GITHUB_WORKSPACE
-        echo "::group::Fetch scripts"
-        curl -L https://freeshell.de/arturwro/pub/QBrainwaveOSC-scripts.tar.gz | tar -vxz
-        echo "::endgroup::"
-        echo "::group::setup variables" 
-        echo SCRIPTS_DIR=$(pwd)/.github/scripts >> $GITHUB_ENV
-        echo SOURCE_DIR=$(pwd) >> $GITHUB_ENV
-        echo BUILD_DIR=$(pwd)/build-${PROFILE_NAME}-qt${QT_VERSION}
-        (
-          cd $RUNNER_WORKSPACE
-            mkdir artifacts
-          cd artifacts
-          if [[ $RUNNER_OS == "Windows" ]]; then
-            echo ARTIFACTS_DIR=$(cygpath -w $PWD) >> $GITHUB_ENV
-          else
-            echo ARTIFACTS_DIR=$(pwd) >> $GITHUB_ENV
-          fi
-        )
-        set -a; source $GITHUB_ENV; set +a
-        echo "::endgroup::"
-    - name: Setup environment
-      run: ${SCRIPTS_DIR}/setup_environment.sh ${{ matrix.name }}
+        export BASH_ENV=$(pwd)/${{ matrix.name }}-qt${{ matrix.qt-version }}.bashrc; touch $BASH_ENV
+        ./buildscripts/setup_environment.sh
+        echo "BASH_ENV=$BASH_ENV" >> $GITHUB_ENV
     - name: Install dependencies
-      run: ${SCRIPTS_DIR}/install_dependencies.sh ${{ matrix.name }} qt${{ matrix.qt-version }}    
+      run: ./buildscripts/install_dependencies.sh
     - name: Configure & compile
-      run: ${SCRIPTS_DIR}/compile.sh
-    - name: Upload All Binaries
-      uses: actions/upload-artifact@v4
+      run: ./buildscripts/compile.sh
+    - name: Create package
+      run: ./buildscripts/package.sh
+    - run: echo FULL_PKGNAME=$FULL_PKGNAME >> $GITHUB_ENV
+    - uses: actions/upload-artifact@v4
       with:
-        name: ${{env.PKGNAME}}-${{matrix.name}}-${{matrix.qt-version}}
-        path: ${{env.ARTIFACTS_DIR}}
+        name: ${{env.FULL_PKGNAME}}
+        path: ${{github.workspace}}/out/*
   publish:
     needs: build
     #if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
@@ -118,7 +87,7 @@ jobs:
       contents: write
     steps:
       - name: Setup environment
-        run:
+        run: |
           echo ARTIFACTS_DIR=$RUNNER_WORKSPACE/artifacts >> $GITHUB_ENV
           set -a; source $GITHUB_ENV; set +a
           [[ ! -e $ARTIFACTS_DIR ]] && mkdir $ARTIFACTS_DIR
@@ -126,17 +95,22 @@ jobs:
       - name: Get Build Tag
         id: get_tag
         run: |
-             DATE=$(date +'%Y%m%d-%H%M')
-             BUILD_TAG="${PKGNAME}-snapshot-${DATE}"
-             echo "BUILD_TAG=${BUILD_TAG}" >> $GITHUB_OUTPUT
-             echo DATE=$DATE >> $GITHUB_ENV
+          DATE=$(date +'%Y%m%d-%H%M')
+          BUILD_TAG="${PKGNAME}-snapshot-${DATE}"
+          echo "BUILD_TAG=${BUILD_TAG}" >> $GITHUB_OUTPUT
+          echo DATE=$DATE >> $GITHUB_ENV
 
       - name: Get artifacts
         uses: actions/download-artifact@v4
         with:
-          path: ${{runner.workspace}}/artifacts
+          path: ${{runner.workspace}}/artifacts-temp
 
-      - if: github.event_name == 'push' # this is a snapshot build. create a release and upload binaries
+      - name: Flat structure
+        run: |
+          find $RUNNER_WORKSPACE/artifacts-temp -type f \
+            -exec mv -v {} $ARTIFACTS_DIR \;
+
+      - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') # this is a snapshot build. create a release and upload binaries
         name: Create Snapshot Release
         uses: softprops/action-gh-release@v2
         with:
