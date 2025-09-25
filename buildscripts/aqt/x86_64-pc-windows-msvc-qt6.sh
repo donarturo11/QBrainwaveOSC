@@ -1,0 +1,5 @@
+export AQT_HOST='windows'
+export AQT_OS='win64'
+export AQT_ARCH='msvc2022_64'
+export AQT_VERSION='6.8.0'
+export AQT_MODULES='qtcharts qtserialport'
