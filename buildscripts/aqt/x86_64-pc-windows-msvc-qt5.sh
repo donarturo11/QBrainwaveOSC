@@ -1,0 +1,5 @@
+export AQT_OS='win64'
+export AQT_HOST='windows'
+export AQT_ARCH='msvc2017_64'
+export AQT_VERSION='5.12.12'
+export AQT_MODULES='qtcharts'

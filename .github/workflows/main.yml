@@ -5,7 +5,7 @@ on:
   pull_request:
     branches: [ ]
   push:
-    branches: [ main ]
+    branches: [ rewrite-workflow ]
   create:
       tags: ['v*'] # Push events to matching v*, i.e. v1.0, v20.15.10
   workflow_dispatch:
@@ -18,543 +18,117 @@ on:
         required: false
         type: boolean
 env:
-  pkgname: QBrainwaveOSC
-  IDENTITY_NAME: ${{ secrets.IDENTITY_NAME }}
+  PKGNAME: QBrainwaveOSC
+  PKGVERSION: 0.2
   CMAKE_POLICY_VERSION_MINIMUM: 3.5
+  CMAKE_BUILD_TYPE: Release
 
 jobs:
   build:
     strategy:
       matrix:
-       include:
-        - name: "windows-qt6-msvc"
-          os: windows-latest
-          toolchain:
-            cc: 'cl'
-            cxx: 'cl'
-          flags: ''
-          shell: 'msys2 {0}'
-          deps-prefix: "D:/deps"
-          aqt-os: "windows"
-          aqt-arch: "win64_msvc2019_64"
-          aqt-prefix: "D:/"
-          qt-version: '6.5.1'
-          msystem: 'UCRT64'
-          build-fftw: true
-        - name: "windows-qt5-msvc"
-          os: windows-latest
-          toolchain:
-            cc: 'cl'
-            cxx: 'cl'
-          flags: ''
-          shell: 'msys2 {0}'
-          deps-prefix: "D:/deps"
-          aqt-os: "windows"
-          aqt-arch: "win64_msvc2019_64"
-          aqt-prefix: "D:/"
-          qt-version: '5.15.2'
-          msystem: 'UCRT64'
-          build-fftw: true
-        - name: "windows-qt6-mingw"
-          os: windows-latest
-          toolchain:
-            cc: 'gcc'
-            cxx: 'g++'
-          flags: ""
-          shell: 'msys2 {0}'
-          deps-prefix: "D:/deps"
-          aqt-os: "none"
-          aqt-arch: "win64_mingw"
-          aqt-prefix: "D:/"
-          qt-version: '6.5.1'
-          msystem: 'UCRT64'
-          build-fftw: false
-        - name: "windows-qt5-mingw"
-          os: windows-latest
-          toolchain:
-            cc: 'gcc'
-            cxx: 'g++'
-          flags: ""
-          shell: 'msys2 {0}'
-          deps-prefix: "D:/deps"
-          aqt-os: "none"
-          aqt-arch: "win64_mingw81"
-          aqt-prefix: "D:/"
-          qt-version: '5.15.2'
-          msystem: 'MINGW64'
-          build-fftw: false
-        - name: "linux-qt6"
-          os: ubuntu-latest
-          toolchain:
-            cc: 'gcc'
-            cxx: 'g++'
-          flags: ""
-          shell: 'bash'
-          deps-prefix: "/home/runner/deps"
-          aqt-os: "none"
-          aqt-arch: "gcc_64"
-          aqt-prefix: "/home/runner/"
-          qt-version: '6.5.1'
-          build-fftw: false
-        - name: "linux-qt5"
-          os: ubuntu-22.04
-          toolchain:
-            cc: 'gcc'
-            cxx: 'g++'
-          flags: ""
-          shell: 'bash'
-          deps-prefix: "/home/runner/deps"
-          aqt-os: "none"
-          aqt-arch: "gcc_64"
-          aqt-prefix: "/home/runner/"
-          qt-version: '5.15.2'
-          build-fftw: false
-        - name: "macos-qt6-universal"
-          os: macos-latest
-          toolchain:
-            cc: 'clang'
-            cxx: 'clang++'
-          flags: "-DCMAKE_OSX_ARCHITECTURES=\"x86_64;arm64\""
-          shell: 'bash'
-          deps-prefix: "/Users/runner/deps"
-          aqt-os: "mac"
-          aqt-arch: ""
-          aqt-prefix: "/Users/runner/"
-          qt-version: '6.5.1'
-          build-fftw: true
-        - name: "macos-qt5-legacy"
-          os: macos-latest
-          toolchain:
-            cc: 'clang'
-            cxx: 'clang++'
-          flags: "-DCMAKE_OSX_DEPLOYMENT_TARGET=\"10.13\" -DCMAKE_OSX_ARCHITECTURES=\"x86_64\""
-          shell: 'bash'
-          deps-prefix: "/Users/runner/deps"
-          aqt-os: "mac"
-          aqt-arch: ""
-          aqt-prefix: "/Users/runner/"
-          qt-version: '5.15.2'
-          build-fftw: true
+        qt-version: [ 5, 6 ]
+        name: [ "windows-msvc", "windows-mingw", "macos-arm64", "macos-x86_64", "linux", "linux-arm" ]
+        include:
+          - name: "windows-msvc"
+            os: "windows-latest"
+            msystem: "MSYS"
+          - name: "windows-mingw"
+            os: "windows-latest"
+            msystem: "UCRT64"
+          - name: "macos-arm64"
+            os: "macos-15"
+          - name: "macos-x86_64"
+            os: "macos-15-intel"
+          - name: "linux"
+            os: "ubuntu-latest"
+          - name: "linux-arm"
+            os: "ubuntu-24.04-arm"
     runs-on: ${{matrix.os}}
     defaults:
       run:
         shell: bash
-
     steps:
-    - name: Set up Visual Studio shell
-      if: ${{ runner.os == 'Windows' }}
-      uses: egor-tensin/vs-shell@v2
-      with:
-        arch: x64
-        
+    - name: test
+      run: |
+        pwd
+        ls -lah
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
         submodules: recursive
-
-    - name: Debug submodule paths
+    - name: Test TAG
+      run: git tag | tail -1
+    - if: ${{ runner.os == 'Windows' }}
       run: |
-        git submodule status
-        ls -al .git/modules/thirdparty/kissfft/config
-        
-    - name: Install the Apple certificate and provisioning profile
-      if: ${{runner.os == 'macOS'}}
-      env:
-          P12_CERTIFICATE_BASE64: ${{ secrets.P12_CERTIFICATE_BASE64 }}
-          P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
-      run: |
-          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
-          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
-          echo -n "$P12_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
-          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-          security default-keychain -s $KEYCHAIN_PATH
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH -T /usr/bin/codesign -T /usr/bin/productsign
-          security list-keychain -d user -s $KEYCHAIN_PATH
-          security set-key-partition-list -S apple-tool:,apple: -s -k $KEYCHAIN_PASSWORD $KEYCHAIN_PATH
-          security find-identity
-    
-    - if: ${{runner.os == 'Windows'}}
-      name: Install MinGW
-      uses: msys2/setup-msys2@v2
-      with:
-        msystem: ${{ matrix.msystem }}
-        update: true
-        cache: true
-        install: |
-            base base-devel p7zip zip git
-
-    - if: ${{runner.os == 'Windows'}}
-      name: Prepare MinGW
-      shell: 'msys2 {0}'
-      run: |
-            pacman -S --noconfirm \
-                ${MINGW_PACKAGE_PREFIX}-toolchain
-            cygpath -w $MINGW_PREFIX/bin    >> $GITHUB_PATH
-            cygpath -w $MINGW_PREFIX/../bin >> $GITHUB_PATH
-
+        echo "C:\\msys64\\usr\\bin" >> $GITHUB_PATH
+        echo "MSYSTEM=${{ matrix.msystem }}" >> $GITHUB_ENV
     - name: Setup environment
-      shell: bash
+      env:
+        PROFILE_NAME: ${{ matrix.name }}
+        QT_VERSION_MAJOR: ${{ matrix.qt-version }}
+        OWNCLOUD_TOKEN: ${{ secrets.OWNCLOUD_TOKEN }}
       run: |
-        [[ $RUNNER_OS == 'Linux' ]] && sudo apt-get update && sudo apt-get install ninja-build -y
-        echo "CC=${{ matrix.toolchain.cc }}" >> $GITHUB_ENV
-        echo "CXX=${{ matrix.toolchain.cxx }}" >> $GITHUB_ENV
-        echo 'CMAKE_GENERATOR=Ninja' >> $GITHUB_ENV
-        echo "CMAKE_C_COMPILER=${CC}" >> $GITHUB_ENV
-        echo "CMAKE_CXX_COMPILER=${CXX}" >> $GITHUB_ENV
-    
-    - name: Install Linux Dependencies
-      if: ${{runner.os == 'Linux'}}
-      run: |
-           sudo apt-get update
-           sudo apt-get install -y cmake-extras libasound2-dev \
-                                   libegl1-mesa-dev libfuse2 libpulse-dev 
-           sudo apt-get install -y libunwind-dev \
-                                   libgstreamer1.0-dev \
-                                   libgstreamer-plugins-base1.0-0 \
-                                   libgstreamer-plugins-base1.0-dev \
-                                   gstreamer1.0-libav \
-                                   gstreamer1.0-plugins-good \
-                                   gstreamer1.0-plugins-bad 
-           sudo apt-get install -y libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 \
-                                   libxcb-cursor0 libxcb-cursor-dev \
-                                   libxcb-keysyms1-dev libxcb-randr0 \
-                                   libxcb-render-util0 libxcb-shape0
-
-    - name: Create empty dependencies directory
-      run: |
-          mkdir -p ${{ matrix.deps-prefix }}
-          
-    - name: Prepare Packages names
-      run: |
-          PACKAGE_NAME=${{env.pkgname}}-${{matrix.name}}
-          echo "PACKAGE_NAME=$PACKAGE_NAME" >> ${GITHUB_ENV}
-              
-    - name: Prepare workdir (UNIX)
-      if: ${{runner.os != 'Windows'}}
-      run: |
-           export WORKDIR="${{github.workspace}}"
-           export AQTPATH="${{matrix.aqt-prefix}}"
-           export DEPSPATH="${{matrix.deps-prefix}}"
-           echo "WORKDIR=${WORKDIR}" >> $GITHUB_ENV
-           echo "AQTPATH=${AQTPATH}" >> $GITHUB_ENV
-           echo "DEPSPATH=${DEPSPATH}" >> $GITHUB_ENV
-
-    - name: Prepare workdir (MINGW)
-      if: ${{runner.os == 'Windows'}}
-      run: |
-           export WORKDIR="$(cygpath -m "${{github.workspace}}")"
-           export AQTPATH="$(cygpath -m "${{matrix.aqt-prefix}}")"
-           export DEPSPATH="$(cygpath -m "${{matrix.deps-prefix}}")"
-           echo "WORKDIR=${WORKDIR}" >> $GITHUB_ENV
-           echo "AQTPATH=${AQTPATH}" >> $GITHUB_ENV
-           echo "DEPSPATH=${DEPSPATH}" >> $GITHUB_ENV
-
-    - name: Prepare macOS temp disk
-      if: ${{runner.os == 'macOS'}}
-      run: |
-          export TEMP_DMGFILE=${HOME}/temp.dmg
-          hdiutil create -size 700m -fs HFS+ -volname "${PACKAGE_NAME}" "${TEMP_DMGFILE}"
-          hdiutil attach "${TEMP_DMGFILE}"
-          TEMP_DMGPOINT="/Volumes/${PACKAGE_NAME}"
-          echo "TEMP_DMGNAME=\"${TEMP_DMGNAME}\"" >> $GITHUB_ENV
-          echo "TEMP_DMGFILE=\"${TEMP_DMGFILE}\"" >> $GITHUB_ENV
-          echo "TEMP_DMGPOINT=\"${TEMP_DMGPOINT}\"" >> $GITHUB_ENV
-          ls -lah ${PWD}
-
-    - name: Setup install prefix
-      run: |
-           if [ ${{ runner.os }} == "Linux" ]; then
-               export INSTALL_PREFIX=${{env.WORKDIR}}/${{env.pkgname}}-appdir/usr
-           elif [ ${{ runner.os }} == "macOS" ]; then
-               export INSTALL_PREFIX="${{env.TEMP_DMGPOINT}}"
-           else
-               export INSTALL_PREFIX=${{env.WORKDIR}}/${{env.pkgname}}-appdir
-           fi
-           echo "INSTALL_PREFIX=$INSTALL_PREFIX" >> $GITHUB_ENV
-
-    - name: Install Qt (jurplel)
-      uses: jurplel/install-qt-action@v4
-      if: ${{matrix.aqt-os != 'none'}}
+        export SCRIPTS_DIR=$(cd buildscripts; pwd)
+        TMP=$(cd $RUNNER_TEMP; pwd)
+        export TMPDIR=$(mktemp -p $TMP -d .job-build-XXXXXXXX)
+        export BASH_ENV=$TMPDIR/.bashenv
+        cat > $BASH_ENV << EOF
+          export PKGNAME=$PKGNAME
+          export PKGVERSION=$PKGVERSION
+          export QT_VERSION_MAJOR=${{ matrix.qt-version }}
+          export ARTIFACTS_DIR=$(pwd)/out/
+          export TMPDIR=$TMPDIR
+          export SCRIPTS_DIR=$SCRIPTS_DIR
+          export ENV_FILE=$TMPDIR/environment.sh
+        EOF
+        echo BASH_ENV=$BASH_ENV >> $GITHUB_ENV
+        ./buildscripts/setup_environment.sh       
+    - name: Install dependencies
+      run: ./buildscripts/install_dependencies.sh
+    - name: Configure & compile
+      run: ./buildscripts/compile.sh
+    - name: Create package
+      run: ./buildscripts/package.sh
+    - run: |
+        source $ENV_FILE || true
+        echo FULL_PKGNAME=$FULL_PKGNAME >> $GITHUB_ENV
+    - uses: actions/upload-artifact@v4
       with:
-        version: ${{matrix.qt-version}}
-        host: ${{matrix.aqt-os}}
-        target: 'desktop'
-        arch: ${{matrix.aqt-arch}}
-        dir: ${{matrix.aqt-prefix}}
-        install-deps: 'true'
-        modules: ${{ startsWith(matrix.qt-version, '6') && 'qtcharts qtserialport qtconnectivity' || 'qtcharts' }}
-        cache: 'true'
-        cache-key-prefix: 'install-qt-action'
-        setup-python: 'true'
-        set-env: 'true'
-           
-    - name: Install QT (mingw)
-      if: ${{matrix.aqt-os == 'none' && runner.os == 'Windows'}}
-      shell: 'msys2 {0}'
-      run: |
-          QTVER=${{matrix.qt-version}}
-          QTVER=${QTVER:0:1}
-          pacman -S --noconfirm \
-                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-connectivity \
-                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-serialport \
-                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-tools \
-                ${MINGW_PACKAGE_PREFIX}-qt${QTVER}-charts \
-                ${MINGW_PACKAGE_PREFIX}-gles-headers \
-                ${MINGW_PACKAGE_PREFIX}-glew \
-                ${MINGW_PACKAGE_PREFIX}-glfw \
-                ${MINGW_PACKAGE_PREFIX}-angleproject
-          if [[ ${QTVER} == 6 ]]; then
-              export QT_ROOT_DIR="$(qmake6 -query QT_INSTALL_PREFIX)"
-          else
-              export QT_ROOT_DIR="$(qmake -query QT_INSTALL_PREFIX)"
-          fi
-          echo QT_ROOT_DIR="${QT_ROOT_DIR}" >> $GITHUB_ENV
-
-    - name: Install QT (linux)
-      if: ${{matrix.aqt-os == 'none' && runner.os == 'Linux'}}
-      run: |
-          QTVER=${{matrix.qt-version}}
-          QTVER=${QTVER:0:1}
-          if [[ ${QTVER} == 6 ]]; then
-              sudo apt-get install -y qt6-base-dev \
-                                      qt6-base-dev-tools \
-                                      qt6-serialport-dev \
-                                      qt6-charts-dev \
-                                      qt6-connectivity-dev \
-                                      qt6-tools-dev \
-                                      qt6-tools-dev-tools \
-                                      qmake6
-          else
-              sudo apt-get install -y qtbase5-dev \
-                                      libqt5charts5-dev \
-                                      libqt5serialport5-dev \
-                                      qtconnectivity5-dev \
-                                      qt5-qmake
-          fi
-    
-    - name: Build FFTW3
-      if: ${{matrix.build-fftw}}
-      run: |
-          export OLDPWD=${PWD}
-          export FFTW_WORK=${HOME}/fftw-work
-          mkdir -v $FFTW_WORK || echo "${FFTW_WORK} already exists"
-          cd $FFTW_WORK
-          export FFTW_DIR=${DEPSPATH}
-          mkdir fftw-src
-          curl -L https://www.fftw.org/fftw-3.3.10.tar.gz | tar -xz --strip-components=1 -C fftw-src
-          cmake -S fftw-src -B fftw-build ${{matrix.flags}} -DCMAKE_INSTALL_PREFIX=${FFTW_DIR}
-          cmake --build fftw-build
-          cmake --install fftw-build
-          echo "FFTW_DIR=${FFTW_DIR}" >> $GITHUB_ENV
-
-    - name: Install FFTW3 (MinGW)
-      if: ${{!(matrix.build-fftw) && (runner.os == 'Windows')}}
-      shell: 'msys2 {0}'
-      run: |
-          export FFTW_DIR=$(cygpath -m ${MINGW_PREFIX})
-          pacman -S --noconfirm \
-                ${MINGW_PACKAGE_PREFIX}-fftw
-          echo "FFTW_DIR=${FFTW_DIR}" >> ${GITHUB_ENV}
-
-    - name: Install FFTW3 (Linux)
-      if: ${{!(matrix.build-fftw) && (runner.os == 'Linux')}}
-      run: |
-          sudo apt-get install -y libfftw3-dev
-
-#    - name: Checkout Repo
-#      uses: actions/checkout@v4
-#      with:
-#          submodules: 'recursive'
-
-    - name: Run Configure
-      run: |
-           echo "::notice::QT_ROOT_DIR=${QT_ROOT_DIR}"
-           echo "::notice::FFTW_DIR=${FFTW_DIR}"
-           cmake -S "${{env.WORKDIR}}" \
-                 -B "${{env.WORKDIR}}/build" ${{matrix.flags}} \
-                 -DCMAKE_BUILD_TYPE=Release \
-                 -DCMAKE_INSTALL_PREFIX="${INSTALL_PREFIX}" \
-                 -DCMAKE_PREFIX_PATH="${QT_ROOT_DIR};${FFTW_DIR}"
-
-    - name: Compile Code
-      run: cmake --build ${{env.WORKDIR}}/build
-
-    - name: Prepare appdir
-      run: |
-           if [ ${{ runner.os }} == "Windows" ]; then export SUFFIX="${{env.pkgname}}"
-           elif [ ${{ runner.os }} == "macOS" ]; then export SUFFIX="${{env.pkgname}}.app"
-           else export SUFFIX=""
-           fi
-           export APPDIR="${{env.INSTALL_PREFIX}}/${SUFFIX}"
-           echo "APPDIR=${APPDIR}" >> $GITHUB_ENV
-
-    - name: Install
-      run: |
-           cmake --install ${{env.WORKDIR}}/build --prefix "${{ env.INSTALL_PREFIX }}"
-
-    - name: Create MacOS Package
-      if: ${{runner.os == 'macOS'}}
-      run: |
-           DESTINATION_DIR=${{env.PACKAGE_NAME}}
-           DIST_DMG=${{env.PACKAGE_NAME}}.dmg
-           mkdir ${DESTINATION_DIR}  || echo "::warning:: ${DESTINATION_DIR} already exists"
-           ${QT_ROOT_DIR}/bin/macdeployqt \
-                              "${{env.APPDIR}}"
-           find ${{env.DEPSPATH}} -name "*.dylib" -exec cp {} "${{env.APPDIR}}"/Contents/Frameworks \;
-           codesign --verbose --strict --continue --timestamp --force --deep -s ${IDENTITY_NAME} "${{env.APPDIR}}"
-           ln -s /Applications/ "${{ env.TEMP_DMGPOINT }}"/Applications           
-           hdiutil detach "${{ env.TEMP_DMGPOINT }}"
-           hdiutil convert ${{ env.TEMP_DMGFILE }} -format UDBZ \
-                    -o ${DESTINATION_DIR}/${DIST_DMG}
-           shasum -a 256 ${DESTINATION_DIR}/${DIST_DMG}
-           
-    - name: Create Windows Package
-      if: ${{runner.os == 'Windows'}}
-      run: |
-           export ARTIFACT_DIR=${{env.WORKDIR}}/${PACKAGE_NAME}
-           find "${{env.DEPSPATH}}" -name "*.dll"  -exec cp {} ${{env.APPDIR}}/ \;
-           if [[ ${{matrix.aqt-os }} == 'none' ]]; then
-               windeployqt ${{env.APPDIR}}/ || echo "::warning::Unknown error"
-           else
-               ${QT_ROOT_DIR}/bin/windeployqt.exe ${{env.APPDIR}}/
-           fi
-           if [[ ${{matrix.aqt-os }} == 'none' ]]; then
-            echo "::notice:: Deploying additional libs"
-            for i in $(ldd ${{env.APPDIR}}/${{env.pkgname}} | cut -f 3 -d " " | grep "/bin/")
-             do cp -v $i ${{env.APPDIR}}/
-            done
-           fi
-           mkdir $ARTIFACT_DIR || echo "::warning::${ARTIFACT_DIR} already exists"
-           cd $ARTIFACT_DIR
-           cpack --config ${{env.WORKDIR}}/build/CPackConfig.cmake -G NSIS -V
-           mv ${{env.pkgname}}*.exe ${PACKAGE_NAME}-Installer.exe
-           cpack --config ${{env.WORKDIR}}/build/CPackConfig.cmake -G 7Z
-           mv ${{env.pkgname}}*.7z ${PACKAGE_NAME}-Portable.7z
-           rm -Rf _CPack_Packages/
-    
-    - name: Create AppImage
-      if: ${{runner.os == 'Linux'}}
-      run: | 
-           if [[ ${{matrix.aqt-os}} == "linux" ]]; then
-               sudo bash -c "echo ${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}/lib > /etc/ld.so.conf.d/aqt.conf"
-               sudo bash -c "echo ${{matrix.deps-prefix}}/lib > /etc/ld.so.conf.d/deps.conf"
-               sudo rm /etc/ld.so.cache
-               sudo ldconfig
-           fi
-           echo "::group:: Downloading linux deploy"
-               wget -q https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-               wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
-               wget -q https://github.com/linuxdeploy/linuxdeploy-plugin-appimage/releases/download/continuous/linuxdeploy-plugin-appimage-x86_64.AppImage
-           echo "::endgroup::"
-           LINUXDEPLOY=linuxdeploy-x86_64.AppImage
-           chmod +x *.AppImage
-           APPDIR=${{env.pkgname}}.AppDir
-           ICONFILE=$(find ${{ env.APPDIR }} -name *.png)
-           DESKTOPFILE=$(find ${{env.APPDIR}} -name *.desktop)
-           EXECFILE=$(find ${{env.APPDIR}} -name ${{env.pkgname}} -type f -executable)
-           if [[ ${{matrix.aqt-os}} == "linux" ]]; then
-               export QTDIR=${{matrix.aqt-prefix}}/${{matrix.qt-version}}/${{matrix.aqt-subdir}}
-               export QMAKE=${QTDIR}/bin/qmake
-               export QT_INSTALL_PLUGINS=${QTDIR}/plugins/
-           fi
-           echo "::group:: Linux deploy QT"
-               ./${LINUXDEPLOY} \
-                   --appdir=${APPDIR} \
-                   --executable=${EXECFILE} \
-                   --icon-file=${ICONFILE} \
-                   --desktop-file=${DESKTOPFILE} \
-                   --plugin qt
-           echo "::endgroup::"
-           echo "::group:: Creating AppImage"
-               ./${LINUXDEPLOY} --appdir=${APPDIR} --output=appimage
-               mv ${{env.pkgname}}*.AppImage ${{env.pkgname}}-${{matrix.name}}.AppImage
-               export APPIMAGEDIR=${{github.workspace}}/${{env.pkgname}}-${{matrix.name}}
-               mkdir $APPIMAGEDIR || echo "::warning::${APPIMAGEDIR} already exists"
-               cp ${{env.pkgname}}-${{matrix.name}}.AppImage ${{env.pkgname}}-${{matrix.name}}
-           echo "::endgroup::"
-    
-#    - name: Setup tmate session
-#      uses: mxschmitt/action-tmate@v3
-#      if: ${{ failure() }}
-#      with:
-#          limit-access-to-actor: true
-#          #install-dependencies: false
-#          timeout-minutes: 60
-    
-    - name: Upload All Binaries
-      uses: actions/upload-artifact@v4
-      with:
-        name: ${{env.pkgname}}-${{matrix.name}}
-        path: ${{github.workspace}}/${{env.pkgname}}-${{matrix.name}}
-                
-
+        name: ${{env.FULL_PKGNAME}}
+        path: ${{github.workspace}}/out/*
   publish:
     needs: build
-    if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
+    #if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
     runs-on: ubuntu-latest
     permissions:
       contents: write
     steps:
+      - name: Setup environment
+        run: |
+          echo ARTIFACTS_DIR=$RUNNER_WORKSPACE/artifacts >> $GITHUB_ENV
+          set -a; source $GITHUB_ENV; set +a
+          [[ ! -e $ARTIFACTS_DIR ]] && mkdir $ARTIFACTS_DIR
+
       - name: Get Build Tag
         id: get_tag
         run: |
-             DATE=$(date +'%Y%m%d-%H%M')
-             BUILD_TAG="${{env.pkgname}}-snapshot-${DATE}"
-             echo "BUILD_TAG=${BUILD_TAG}" >> $GITHUB_OUTPUT
-             echo DATE=$DATE >> $GITHUB_ENV
+          DATE=$(date +'%Y%m%d-%H%M')
+          BUILD_TAG="${PKGNAME}-snapshot-${DATE}"
+          echo "BUILD_TAG=${BUILD_TAG}" >> $GITHUB_OUTPUT
+          echo DATE=$DATE >> $GITHUB_ENV
 
-      - name: Get macOS universal binary
+      - name: Get artifacts
         uses: actions/download-artifact@v4
         with:
-          name: ${{env.pkgname}}-macos-qt6-universal
-          path: ${{github.workspace}}/${{env.pkgname}}-macos-qt6-universal
+          path: ${{runner.workspace}}/artifacts-temp
 
-      - name: Get macOS legacy binary
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{env.pkgname}}-macos-qt5-legacy
-          path: ${{github.workspace}}/${{env.pkgname}}-macos-qt5-legacy
+      - name: Flat structure
+        run: |
+          find $RUNNER_WORKSPACE/artifacts-temp -type f \
+            -exec mv -v {} $ARTIFACTS_DIR \;
 
-      - name: Get Linux binary (QT6)
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{env.pkgname}}-linux-qt6
-          path: ${{github.workspace}}/${{env.pkgname}}-linux-qt6
-
-      - name: Get Linux binary (QT5)
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{env.pkgname}}-linux-qt5
-          path: ${{github.workspace}}/${{env.pkgname}}-linux-qt5
-
-      - name: Get Windows binary (Qt6 MSVC)
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{env.pkgname}}-windows-qt6-msvc
-          path: ${{github.workspace}}/${{env.pkgname}}-windows-qt6-msvc
-
-      - name: Get Windows binary (Qt5 MSVC)
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{env.pkgname}}-windows-qt5-msvc
-          path: ${{github.workspace}}/${{env.pkgname}}-windows-qt5-msvc
-
-      - name: Get Windows binary (Qt6 MINGW)
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{env.pkgname}}-windows-qt6-mingw
-          path: ${{github.workspace}}/${{env.pkgname}}-windows-qt6-mingw
-
-      - name: Get Windows (Qt5 MinGW)
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{env.pkgname}}-windows-qt5-mingw
-          path: ${{github.workspace}}/${{env.pkgname}}-windows-qt5-mingw
-
-      - if: github.event_name == 'push' # this is a snapshot build. create a release and upload binaries
+      - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') # this is a snapshot build. create a release and upload binaries
         name: Create Snapshot Release
         uses: softprops/action-gh-release@v2
         with:
@@ -563,14 +137,7 @@ jobs:
           generate_release_notes: true
           prerelease: true
           files: |
-            ${{github.workspace}}/${{env.pkgname}}-macos-qt6-universal/*
-            ${{github.workspace}}/${{env.pkgname}}-macos-qt5-legacy/*
-            ${{github.workspace}}/${{env.pkgname}}-linux-qt6/*
-            ${{github.workspace}}/${{env.pkgname}}-linux-qt5/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-qt6-mingw/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-qt5-mingw/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-qt6-msvc/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-qt5-msvc/*
+            ${{runner.workspace}}/artifacts/*
 
       - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') # this is a versioned build. check if release already exists
         name: Find Existing Release
@@ -591,11 +158,27 @@ jobs:
           generate_release_notes: true
           prerelease: false
           files: |
-            ${{github.workspace}}/${{env.pkgname}}-macos-qt6-universal/*
-            ${{github.workspace}}/${{env.pkgname}}-macos-qt5-legacy/*
-            ${{github.workspace}}/${{env.pkgname}}-linux-qt6/*
-            ${{github.workspace}}/${{env.pkgname}}-linux-qt5/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-qt6-mingw/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-qt5-mingw/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-qt6-msvc/*
-            ${{github.workspace}}/${{env.pkgname}}-windows-qt5-msvc/*
+            ${{runner.workspace}}/artifacts/*
+      - name: Publish on freeshell
+        env:
+          OWNCLOUD_TOKEN: ${{ secrets.OWNCLOUD_TOKEN }}
+          FREESHELL_HTTP: ${{ runner.temp }}/.freeshell-http.conf
+        run: |
+          if [[ -n $OWNCLOUD_TOKEN ]]; then
+            curl -H "Authorization: Basic $OWNCLOUD_TOKEN" -L https://freeshell.de/owncloud/remote.php/webdav/CI/secrets/freeshell-http.conf > $FREESHELL_HTTP
+            md5sum $FREESHELL_HTTP
+            cd ${{runner.workspace}}/artifacts
+            . $FREESHELL_HTTP
+            for f in *; do
+              [[ -f $f ]] && curl -XPUT -H "$FREESHELL_HEADER" -L "${FREESHELL_ROOT_URL}/pub/QBrainwaveOSC/${GITHUB_REF_NAME}/${{ github.sha }}/$f" -T $f
+            done
+            cd $GITHUB_WORKSPACE
+            PKGREVISION=$(git rev-parse --short HEAD)
+            pwd
+            tar -vcz $(basename $GITHUB_WORKSPACE) | curl -XPUT -H "$FREESHELL_HEADER" -T - -L "${FREESHELL_ROOT_URL}/pub/QBrainwaveOSC/${GITHUB_REF_NAME}/${{ github.sha }}/${PKGNAME}-${PKGVERSION}.${PKGREVISION}-source.tar.gz"
+          fi
+      - name: Pack all artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{env.PKGNAME}}-snapshot-${{github.ref_name}}-${{ env.DATE }}
+          path: ${{env.ARTIFACTS_DIR}}
