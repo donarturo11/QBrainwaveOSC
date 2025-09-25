@@ -24,7 +24,32 @@ env:
   CMAKE_BUILD_TYPE: Release
 
 jobs:
+  build-info:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ env.PKGNAME }}
+      version: ${{ steps.info.outputs.version }}
+      date: ${{ steps.info.outputs.date }}
+      build-tag: ${{ steps.info.outputs.build-tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - if: github.event_name == 'push'
+        working-directory: ${{ github.workspace }}
+        run: echo VERSION=$(git rev-parse --short HEAD) >> $GITHUB_ENV
+      - if: github.event_name == 'create' && startsWith(github.ref, 'refs/tags/v') # this is a versioned build. check if release already exists
+        run: echo VERSION=$(basename ${{ github.env }} >> $GITHUB_ENV
+      - id: info
+        run: |
+          DATE=$(date +'%Y%m%d-%H%M')
+          BUILD_TAG="${PKGNAME}-snapshot-${DATE}"
+          echo "build-tag=${BUILD_TAG}" >> $GITHUB_OUTPUT
+          echo "date=${DATE}" >> $GITHUB_OUTPUT
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - run: |
+          echo "${{toJSON(github)}}"
+
   build:
+    needs: build-info
     strategy:
       matrix:
         qt-version: [ 5, 6 ]
@@ -47,11 +72,12 @@ jobs:
       run:
         shell: bash
     steps:
-    - name: OS info
+    - name: info
       run: |
         echo "UNAME_S: $(uname -s)"
         echo "UNAME_O: $(uname -o)"
         echo "UNAME_M: $(uname -m)"
+        echo '${{ toJSON(needs) }}'
     - name: Checkout repository
       uses: actions/checkout@v4
       with:
@@ -78,6 +104,8 @@ jobs:
       env:
         PROFILE_NAME: ${{ matrix.name }}
         QT_VERSION: ${{ matrix.qt-version }}
+        PKGVERSION: ${{ needs.build-info.outputs.version }}
+        DATE: ${{ needs.build-info.outputs.date }}
       run: |
         cd $GITHUB_WORKSPACE
         echo "::group::Fetch scripts"
@@ -85,8 +113,6 @@ jobs:
         echo "::endgroup::"
         echo "::group::setup variables" 
         echo SCRIPTS_DIR=$(pwd)/.github/scripts >> $GITHUB_ENV
-        echo SOURCE_DIR=$(pwd) >> $GITHUB_ENV
-        echo BUILD_DIR=$(pwd)/build-${PROFILE_NAME}-qt${QT_VERSION}
         (
           cd $RUNNER_WORKSPACE
             mkdir artifacts
@@ -97,18 +123,40 @@ jobs:
             echo ARTIFACTS_DIR=$(pwd) >> $GITHUB_ENV
           fi
         )
-        set -a; source $GITHUB_ENV; set +a
+        TAG=qt${QT_VERSION}-${PROFILE_NAME}
+        FULL_PKGNAME=${PKGNAME}-${PKGVERSION}_${TAG}
+        BUILDENV=$(cd $ARTIFACTS_DIR; pwd)/build-${TAG}.env
+        PKGINFO=$(cd $ARTIFACTS_DIR; pwd)/${FULL_PKGNAME}.info
+        touch $BUILDENV
+        touch $PKGINFO
+        echo PKGNAME=$PKGNAME >> $PKGINFO
+        echo PKGVERSION=$PKGVERSION >> $PKGINFO
+        echo TAG=$TAG >> $PKGINFO
+        echo FULL_PKGNAME=$FULL_PKGNAME >> $PKGINFO
+        set -a; source $PKGINFO; set +a
+        echo QT_VERSION=$QT_VERSION >> $BUILDENV
+        echo PROFILE_NAME=$PROFILE_NAME >> $BUILDENV
+        echo SOURCE_DIR=$(pwd) >> $BUILDENV
+        echo BUILD_DIR=$(pwd)/build-${PROFILE_NAME}-qt${QT_VERSION} >> $BUILDENV
+        echo BUILDENV=$BUILDENV >> $GITHUB_ENV
+        echo PKGINFO=$PKGINFO >> $GITHUB_ENV
+        cat $PKGINFO >> $GITHUB_ENV
+        cat $BUILDENV >> $GITHUB_ENV
         echo "::endgroup::"
     - name: Setup environment
-      run: ${SCRIPTS_DIR}/setup_environment.sh ${{ matrix.name }}
+      run: ${SCRIPTS_DIR}/setup_environment.sh ${{ matrix.name }} qt${{ matrix.qt-version }}
     - name: Install dependencies
       run: ${SCRIPTS_DIR}/install_dependencies.sh ${{ matrix.name }} qt${{ matrix.qt-version }}    
     - name: Configure & compile
       run: ${SCRIPTS_DIR}/compile.sh
+    - name: Create package
+      run: ${SCRIPTS_DIR}/package.sh
+    - name: Check artifacts
+      run: ls -lah $(cd $ARTIFACTS_DIR; pwd)
     - name: Upload All Binaries
       uses: actions/upload-artifact@v4
       with:
-        name: ${{env.PKGNAME}}-${{matrix.name}}-${{matrix.qt-version}}
+        name: build-${{env.FULL_PKGNAME}}
         path: ${{env.ARTIFACTS_DIR}}
   publish:
     needs: build
@@ -118,7 +166,7 @@ jobs:
       contents: write
     steps:
       - name: Setup environment
-        run:
+        run: |
           echo ARTIFACTS_DIR=$RUNNER_WORKSPACE/artifacts >> $GITHUB_ENV
           set -a; source $GITHUB_ENV; set +a
           [[ ! -e $ARTIFACTS_DIR ]] && mkdir $ARTIFACTS_DIR
@@ -136,7 +184,7 @@ jobs:
         with:
           path: ${{runner.workspace}}/artifacts
 
-      - if: github.event_name == 'push' # this is a snapshot build. create a release and upload binaries
+      - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') # this is a snapshot build. create a release and upload binaries
         name: Create Snapshot Release
         uses: softprops/action-gh-release@v2
         with:
