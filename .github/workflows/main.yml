@@ -156,7 +156,7 @@ jobs:
     - name: Upload All Binaries
       uses: actions/upload-artifact@v4
       with:
-        name: build-${{env.FULL_PKGNAME}}
+        name: ${{env.FULL_PKGNAME}}
         path: ${{env.ARTIFACTS_DIR}}
   publish:
     needs: build
