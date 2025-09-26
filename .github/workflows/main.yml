@@ -53,7 +53,7 @@ jobs:
     strategy:
       matrix:
         qt-version: [ 5, 6 ]
-        name: [ "windows-msvc", "windows-mingw", "macos-arm64", "macos-x86_64", "linux" ]
+        name: [ "windows-msvc", "windows-mingw", "macos-arm64", "macos-x86_64", "linux", "linux-arm" ]
         include:
           - name: "windows-msvc"
             os: "windows-latest"
