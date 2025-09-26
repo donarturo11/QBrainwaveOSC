@@ -124,6 +124,7 @@ jobs:
           else
             echo ARTIFACTS_DIR=$(pwd) >> $GITHUB_ENV
           fi
+          export ARTIFACTS_DIR=$(pwd)
         )
         TAG=qt${QT_VERSION}-${PROFILE_NAME}
         FULL_PKGNAME=${PKGNAME}-${PKGVERSION}_${TAG}
@@ -176,15 +177,20 @@ jobs:
       - name: Get Build Tag
         id: get_tag
         run: |
-             DATE=$(date +'%Y%m%d-%H%M')
-             BUILD_TAG="${PKGNAME}-snapshot-${DATE}"
-             echo "BUILD_TAG=${BUILD_TAG}" >> $GITHUB_OUTPUT
-             echo DATE=$DATE >> $GITHUB_ENV
+          DATE=$(date +'%Y%m%d-%H%M')
+          BUILD_TAG="${PKGNAME}-snapshot-${DATE}"
+          echo "BUILD_TAG=${BUILD_TAG}" >> $GITHUB_OUTPUT
+          echo DATE=$DATE >> $GITHUB_ENV
 
       - name: Get artifacts
         uses: actions/download-artifact@v4
         with:
-          path: ${{runner.workspace}}/artifacts
+          path: ${{runner.workspace}}/artifacts-temp
+
+      - name: Flat structure
+        run: |
+          find $RUNNER_WORKSPACE/artifacts-temp -type f \
+            -exec mv -v {} $ARTIFACTS_DIR \;
 
       - if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') # this is a snapshot build. create a release and upload binaries
         name: Create Snapshot Release
