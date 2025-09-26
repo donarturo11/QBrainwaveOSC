@@ -67,6 +67,8 @@ jobs:
             os: "macos-13"
           - name: "linux"
             os: "ubuntu-latest"
+          - name: "linux-arm"
+            os: "ubuntu-24.04-arm"
     runs-on: ${{matrix.os}}
     defaults:
       run:
