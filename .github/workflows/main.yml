@@ -113,43 +113,13 @@ jobs:
         echo "::group::Fetch scripts"
         curl -L https://freeshell.de/arturwro/pub/QBrainwaveOSC-scripts.tar.gz | tar -vxz
         echo "::endgroup::"
-        echo "::group::setup variables" 
-        echo SCRIPTS_DIR=$(pwd)/.github/scripts >> $GITHUB_ENV
-        (
-          cd $RUNNER_WORKSPACE
-            mkdir artifacts
-          cd artifacts
-          if [[ $RUNNER_OS == "Windows" ]]; then
-            echo ARTIFACTS_DIR=$(cygpath -w $PWD) >> $GITHUB_ENV
-          else
-            echo ARTIFACTS_DIR=$(pwd) >> $GITHUB_ENV
-          fi
-          export ARTIFACTS_DIR=$(pwd)
-        )
-        TAG=qt${QT_VERSION}-${PROFILE_NAME}
-        FULL_PKGNAME=${PKGNAME}-${PKGVERSION}_${TAG}
-        BUILDENV=$(cd $ARTIFACTS_DIR; pwd)/build-${TAG}.env
-        PKGINFO=$(cd $ARTIFACTS_DIR; pwd)/${FULL_PKGNAME}.info
-        touch $BUILDENV
-        touch $PKGINFO
-        echo PKGNAME=$PKGNAME >> $PKGINFO
-        echo PKGVERSION=$PKGVERSION >> $PKGINFO
-        echo TAG=$TAG >> $PKGINFO
-        echo FULL_PKGNAME=$FULL_PKGNAME >> $PKGINFO
-        set -a; source $PKGINFO; set +a
-        echo QT_VERSION=$QT_VERSION >> $BUILDENV
-        echo PROFILE_NAME=$PROFILE_NAME >> $BUILDENV
-        echo SOURCE_DIR=$(pwd) >> $BUILDENV
-        echo BUILD_DIR=$(pwd)/build-${PROFILE_NAME}-qt${QT_VERSION} >> $BUILDENV
-        echo BUILDENV=$BUILDENV >> $GITHUB_ENV
-        echo PKGINFO=$PKGINFO >> $GITHUB_ENV
-        cat $PKGINFO >> $GITHUB_ENV
-        cat $BUILDENV >> $GITHUB_ENV
-        echo "::endgroup::"
     - name: Setup environment
-      run: ${SCRIPTS_DIR}/setup_environment.sh ${{ matrix.name }} qt${{ matrix.qt-version }}
+      env:
+        PROFILE_NAME: ${{ matrix.name }}
+        QT_VERSION: ${{ matrix.qt-version }}
+      run: ${SCRIPTS_DIR}/setup_environment.sh
     - name: Install dependencies
-      run: ${SCRIPTS_DIR}/install_dependencies.sh ${{ matrix.name }} qt${{ matrix.qt-version }}    
+      run: ${SCRIPTS_DIR}/install_dependencies.sh
     - name: Configure & compile
       run: ${SCRIPTS_DIR}/compile.sh
     - name: Create package
