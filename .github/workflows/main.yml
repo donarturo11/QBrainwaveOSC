@@ -117,7 +117,9 @@ jobs:
       env:
         PROFILE_NAME: ${{ matrix.name }}
         QT_VERSION: ${{ matrix.qt-version }}
-      run: ${SCRIPTS_DIR}/setup_environment.sh
+      run: |
+        cd $GITHUB_WORKSPACE
+        ./buildscripts/setup_environment.sh
     - name: Install dependencies
       run: ${SCRIPTS_DIR}/install_dependencies.sh
     - name: Configure & compile
