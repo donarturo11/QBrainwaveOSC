@@ -112,14 +112,14 @@ jobs:
         cd $GITHUB_WORKSPACE
         echo "::group::Fetch scripts"
         curl -L https://freeshell.de/arturwro/pub/QBrainwaveOSC-scripts.tar.gz | tar -vxz
+        cd $GITHUB_WORKSPACE/buildscripts
+        echo SCRIPTS_DIR=$(pwd) >> $GITHUB_ENV
         echo "::endgroup::"
     - name: Setup environment
       env:
         PROFILE_NAME: ${{ matrix.name }}
         QT_VERSION: ${{ matrix.qt-version }}
-      run: |
-        cd $GITHUB_WORKSPACE
-        ./buildscripts/setup_environment.sh
+      run: ${SCRIPTS_DIR}/setup_environment.sh
     - name: Install dependencies
       run: ${SCRIPTS_DIR}/install_dependencies.sh
     - name: Configure & compile
