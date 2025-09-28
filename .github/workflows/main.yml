@@ -123,11 +123,11 @@ jobs:
         ${SCRIPTS_DIR}/setup_environment.sh
         set -a; source ${SCRIPTS_DIR}/profile; set +a
         cat $ENV >> $GITHUB_ENV
-    - name: Set up Visual Studio shell
-      if: ${{ matrix.toolchain == 'msvc' }}
-      uses: egor-tensin/vs-shell@v2
-      with:
-        arch: x64
+#    - name: Set up Visual Studio shell
+#      if: ${{ matrix.toolchain == 'msvc' }}
+#      uses: egor-tensin/vs-shell@v2
+#      with:
+#        arch: x64
     - name: Install dependencies
       run: ${SCRIPTS_DIR}/install_dependencies.sh
     - name: Configure & compile
