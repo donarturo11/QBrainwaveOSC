@@ -137,6 +137,7 @@ jobs:
       run: ${SCRIPTS_DIR}/package.sh
     - name: Check artifacts
       run: |
+        set -a; source ${SCRIPTS_DIR}/profile; set +a
         ls -lah $(cd $ARTIFACTS_DIR; pwd)
         if [[ $RUNNER_OS == "Windows" ]]; then
           echo "ARTIFACTS_DIR=$(cygpath -w $ARTIFACTS_DIR)" >> $GITHUB_ENV
