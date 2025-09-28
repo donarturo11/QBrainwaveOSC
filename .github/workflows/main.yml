@@ -129,11 +129,17 @@ jobs:
 #      with:
 #        arch: x64
     - name: Install dependencies
-      run: ${SCRIPTS_DIR}/install_dependencies.sh
+      run: |
+        set -a; source ${SCRIPTS_DIR}/profile; set +a
+        ${SCRIPTS_DIR}/install_dependencies.sh
     - name: Configure & compile
-      run: ${SCRIPTS_DIR}/compile.sh
+      run: |
+        set -a; source ${SCRIPTS_DIR}/profile; set +a
+        ${SCRIPTS_DIR}/compile.sh
     - name: Create package
-      run: ${SCRIPTS_DIR}/package.sh
+      run: |
+        set -a; source ${SCRIPTS_DIR}/profile; set +a
+        ${SCRIPTS_DIR}/package.sh
     - name: Check artifacts
       run: ls -lah $(cd $ARTIFACTS_DIR; pwd)
     - name: Upload All Binaries
