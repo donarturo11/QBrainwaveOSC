@@ -135,7 +135,11 @@ jobs:
     - name: Create package
       run: ${SCRIPTS_DIR}/package.sh
     - name: Check artifacts
-      run: ls -lah $(cd $ARTIFACTS_DIR; pwd)
+      run: |
+        ls -lah $(cd $ARTIFACTS_DIR; pwd)
+        if [[ $RUNNER_OS == "Windows" ]]; then
+          echo "ARTIFACTS_DIR=$(cygpath -w $ARTIFACTS_DIR)" >> $GITHUB_ENV
+        fi
     - name: Upload All Binaries
       uses: actions/upload-artifact@v4
       with:
