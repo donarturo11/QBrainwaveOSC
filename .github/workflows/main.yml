@@ -144,6 +144,7 @@ jobs:
         else
           echo "ARTIFACTS_DIR=$ARTIFACTS_DIR" >> $GITHUB_ENV
         fi
+        cat $GITHUB_ENV
     - name: Upload All Binaries
       uses: actions/upload-artifact@v4
       with:
