@@ -114,6 +114,7 @@ jobs:
         curl -L https://freeshell.de/arturwro/pub/QBrainwaveOSC-scripts.tar.gz | tar -vxz
         cd $GITHUB_WORKSPACE/buildscripts
         echo SCRIPTS_DIR=$(pwd) >> $GITHUB_ENV
+        echo PKGVERSION=$PKGVERSION >> $GITHUB_ENV
         echo "::endgroup::"
     - name: Setup environment
       env:
