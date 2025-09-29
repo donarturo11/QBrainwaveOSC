@@ -122,8 +122,8 @@ jobs:
         QT_VERSION: ${{ matrix.qt-version }}
       run: |
         ${SCRIPTS_DIR}/setup_environment.sh
-        set -a; source ${SCRIPTS_DIR}/profile; set +a
-        cat $ENV >> $GITHUB_ENV
+        echo "BUILD_DIR='$BUILD_DIR'" >> $GITHUB_ENV
+        cat $GITHUB_ENV
 #    - name: Set up Visual Studio shell
 #      if: ${{ matrix.toolchain == 'msvc' }}
 #      uses: egor-tensin/vs-shell@v2
@@ -135,21 +135,10 @@ jobs:
       run: ${SCRIPTS_DIR}/compile.sh
     - name: Create package
       run: ${SCRIPTS_DIR}/package.sh
-    - name: Check artifacts
-      run: |
-        set -a; source ${SCRIPTS_DIR}/profile; set +a
-        ls -lah $(cd $ARTIFACTS_DIR; pwd)
-        if [[ $RUNNER_OS == "Windows" ]]; then
-          echo "ARTIFACTS_DIR=$(cygpath -w $ARTIFACTS_DIR)" >> $GITHUB_ENV
-        else
-          echo "ARTIFACTS_DIR=$ARTIFACTS_DIR" >> $GITHUB_ENV
-        fi
-        cat $GITHUB_ENV
-    - name: Upload All Binaries
       uses: actions/upload-artifact@v4
       with:
         name: ${{env.FULL_PKGNAME}}
-        path: ${{env.ARTIFACTS_DIR}}
+        path: ${{github.workspace}}/out*
   publish:
     needs: build
     #if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
