@@ -122,7 +122,8 @@ jobs:
         QT_VERSION: ${{ matrix.qt-version }}
       run: |
         ${SCRIPTS_DIR}/setup_environment.sh
-        echo "BUILD_DIR='$BUILD_DIR'" >> $GITHUB_ENV
+        cat $GITHUB_WORKSPACE/build.env >> $GITHUB_ENV
+        rm  $GITHUB_WORKSPACE/build.env
         cat $GITHUB_ENV
 #    - name: Set up Visual Studio shell
 #      if: ${{ matrix.toolchain == 'msvc' }}
