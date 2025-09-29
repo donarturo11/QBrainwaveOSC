@@ -112,6 +112,8 @@ jobs:
         cd $GITHUB_WORKSPACE
         echo "::group::Fetch scripts"
         curl -L https://freeshell.de/arturwro/pub/QBrainwaveOSC-scripts.tar.gz | tar -vxz
+        echo "BUILD_DIR=$(pwd)/build" >> $GITHUB_ENV
+        echo "ARTIFACTS_DIR=$(pwd)/out" >> $GITHUB_ENV
         cd $GITHUB_WORKSPACE/buildscripts
         echo SCRIPTS_DIR=$(pwd) >> $GITHUB_ENV
         echo PKGVERSION=$PKGVERSION >> $GITHUB_ENV
@@ -135,11 +137,11 @@ jobs:
     - name: Configure & compile
       run: ${SCRIPTS_DIR}/compile.sh
     - name: Create package
-      run: ${SCRIPTS_DIR}/package.sh
+      run: ${SCRIPTS_DIR}/package.sh        
     - uses: actions/upload-artifact@v4
       with:
         name: ${{env.FULL_PKGNAME}}
-        path: ${{github.workspace}}/out*
+        path: ${{github.workspace}}/out
   publish:
     needs: build
     #if: github.event_name != 'pull_request' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v'))
