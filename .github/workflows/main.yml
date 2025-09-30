@@ -133,7 +133,7 @@ jobs:
       run: ${SCRIPTS_DIR}/compile.sh
     - name: Create package
       run: ${SCRIPTS_DIR}/package.sh
-    - run: echo FULL_PKGNAME=$FULL_PKGNAME >> $GITHUB_ENV
+    - run: source ${SCRIPTS_DIR}/environment.sh; echo FULL_PKGNAME=$FULL_PKGNAME >> $GITHUB_ENV
     - uses: actions/upload-artifact@v4
       with:
         name: ${{env.FULL_PKGNAME}}
