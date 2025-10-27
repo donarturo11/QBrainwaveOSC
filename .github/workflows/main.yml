@@ -65,9 +65,12 @@ jobs:
         QT_VERSION: ${{ matrix.qt-version }}
         OWNCLOUD_TOKEN: ${{ secrets.OWNCLOUD_TOKEN }}
       run: |
-        export BASH_ENV=$(pwd)/${{ matrix.name }}-qt${{ matrix.qt-version }}.bashrc; touch $BASH_ENV
+        export BASH_ENV=$(pwd)/profile-${{ matrix.name }}-qt${{ matrix.qt-version }}.bashrc; touch $BASH_ENV
+        export SCRIPTS_DIR=${PWD}/buildscripts
         ./buildscripts/setup_environment.sh
         echo "BASH_ENV=$BASH_ENV" >> $GITHUB_ENV
+        echo "TMPDIR=$TMPDIR"     >> $GITHUB_ENV
+        
     - name: Install dependencies
       run: ./buildscripts/install_dependencies.sh
     - name: Configure & compile
