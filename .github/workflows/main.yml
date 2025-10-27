@@ -66,6 +66,8 @@ jobs:
         OWNCLOUD_TOKEN: ${{ secrets.OWNCLOUD_TOKEN }}
       run: |
         export BASH_ENV=${PWD}/profile-${{ matrix.name }}-qt${{ matrix.qt-version }}.bashrc; touch $BASH_ENV
+        export TMPDIR=${HOME}/_temp
+        [[ ! -e $TMPDIR ]] && mkdir -vp $TMPDIR
         export SCRIPTS_DIR=${PWD}/buildscripts
         ./buildscripts/setup_environment.sh
         echo "BASH_ENV=$BASH_ENV" >> $GITHUB_ENV        
