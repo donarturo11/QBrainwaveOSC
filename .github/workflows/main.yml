@@ -64,7 +64,7 @@ jobs:
         PROFILE_NAME: ${{ matrix.name }}
         QT_VERSION_MAJOR: ${{ matrix.qt-version }}
         OWNCLOUD_TOKEN: ${{ secrets.OWNCLOUD_TOKEN }}
-    - run: |
+      run: |
         export SCRIPTS_DIR=$(cd buildscripts; pwd)
         TMP=$(cd $RUNNER_TEMP; pwd)
         export TMPDIR=$(mktemp -p $TMP -d .job-build-XXXXXXXX)
