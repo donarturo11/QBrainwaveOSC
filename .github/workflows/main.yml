@@ -73,6 +73,7 @@ jobs:
           export PKGNAME=$PKGNAME
           export PKGVERSION=$PKGVERSION
           export QT_VERSION_MAJOR=${{ matrix.qt-version }}
+          export ARTIFACTS_DIR=$(pwd)/out/
           export TMPDIR=$TMPDIR
           export SCRIPTS_DIR=$SCRIPTS_DIR
           export ENV_FILE=$TMPDIR/environment.sh
