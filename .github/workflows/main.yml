@@ -86,7 +86,9 @@ jobs:
       run: ./buildscripts/compile.sh
     - name: Create package
       run: ./buildscripts/package.sh
-    - run: echo FULL_PKGNAME=$FULL_PKGNAME >> $GITHUB_ENV
+    - run: |
+        [[ -e $ENV_FILE ]] && . $ENV_FILE
+        echo FULL_PKGNAME=$FULL_PKGNAME >> $GITHUB_ENV
     - uses: actions/upload-artifact@v4
       with:
         name: ${{env.FULL_PKGNAME}}
