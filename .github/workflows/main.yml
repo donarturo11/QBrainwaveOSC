@@ -87,6 +87,8 @@ jobs:
     - name: Create package
       run: ./buildscripts/package.sh
     - run: |
+        set +e
+        echo $ENV_FILE
         [[ -e $ENV_FILE ]] && . $ENV_FILE
         echo FULL_PKGNAME=$FULL_PKGNAME >> $GITHUB_ENV
     - uses: actions/upload-artifact@v4
