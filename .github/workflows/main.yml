@@ -422,15 +422,14 @@ jobs:
            export ARTIFACT_DIR=${{env.WORKDIR}}/${PACKAGE_NAME}
            find "${{env.DEPSPATH}}" -name "*.dll"  -exec cp {} ${{env.APPDIR}}/ \;
            if [[ ${{matrix.aqt-os }} == 'none' ]]; then
-               windeployqt ${{env.APPDIR}}/ || echo "::warning::Unknown error"
+               windeployqt ${INSTALL_PREFIX}/ || echo "::warning::Unknown error"
            else
-               ${QT_ROOT_DIR}/bin/windeployqt.exe ${{env.APPDIR}}/
+               ${QT_ROOT_DIR}/bin/windeployqt.exe ${INSTALL_PREFIX}
            fi
-           if [[ ${{matrix.aqt-os }} == 'none' ]]; then
-            echo "::notice:: Deploying additional libs"
-            for i in $(ldd ${{env.APPDIR}}/${{env.pkgname}} | cut -f 3 -d " " | grep "/bin/")
-             do cp -v $i ${{env.APPDIR}}/
-            done
+           echo "::notice:: Deploying additional libs"
+           for i in $(ldd ${INSTALL_PREFIX}/bin/QBrainwaveOSC.exe | cut -f 3 -d " " | grep "/bin/")
+            do cp -v $i ${{env.APPDIR}}/
+           done
            fi
            mkdir $ARTIFACT_DIR || echo "::warning::${ARTIFACT_DIR} already exists"
            cd $ARTIFACT_DIR
