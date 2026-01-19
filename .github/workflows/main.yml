@@ -49,7 +49,7 @@ jobs:
         shell: bash
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
       with:
         submodules: recursive
     - if: ${{ runner.os == 'Windows' }}
@@ -97,19 +97,30 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Setup environment
-        run: |
-          echo ARTIFACTS_DIR=$RUNNER_WORKSPACE/artifacts >> $GITHUB_ENV
-          set -a; source $GITHUB_ENV; set +a
-          [[ ! -e $ARTIFACTS_DIR ]] && mkdir $ARTIFACTS_DIR
-
+      - name: Checkout repository
+        uses: actions/checkout@v6
       - name: Get Build Tag
         id: get_tag
         run: |
           DATE=$(date +'%Y%m%d-%H%M')
-          BUILD_TAG="${PKGNAME}-snapshot-${DATE}"
-          echo "BUILD_TAG=${BUILD_TAG}" >> $GITHUB_OUTPUT
+          PKGVERSION=$(< $GITHUB_WORKSPACE/project-version)
+          if [[ $GITHUB_REF_TYPE == "branch" ]]; then
+             PKGREVISION=$(git rev-parse --short HEAD)
+          fi
+          BUILD_TAG=${PKGVERSION}${PKGREVISION+.}${PKGREVISION}
+          FULL_PKGNAME=${PKGNAME}-${PKGVERSION}${PKGREVISION+.}${PKGREVISION}
+          echo PKGVERSION=$PKGVERSION >> $GITHUB_ENV
+          echo FULL_PKGNAME=$FULL_PKGNAME >> $GITHUB_ENV
+          echo "BUILD_TAG=${BUILD_TAG}" >> $GITHUB_ENV
           echo DATE=$DATE >> $GITHUB_ENV
+
+      - name: Setup environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libarchive-tools
+          echo ARTIFACTS_DIR=$RUNNER_WORKSPACE/artifacts >> $GITHUB_ENV
+          set -a; source $GITHUB_ENV; set +a
+          [[ ! -e $ARTIFACTS_DIR ]] && mkdir $ARTIFACTS_DIR
 
       - name: Get artifacts
         uses: actions/download-artifact@v4
@@ -125,8 +136,8 @@ jobs:
         name: Create Snapshot Release
         uses: softprops/action-gh-release@v2
         with:
-          name: ${{ steps.get_tag.outputs.BUILD_TAG }}
-          tag_name: ${{ steps.get_tag.outputs.BUILD_TAG }}
+          name: ${{ env.BUILD_TAG }}
+          tag_name: ${{ env.BUILD_TAG }}
           generate_release_notes: true
           prerelease: true
           files: |
@@ -160,18 +171,19 @@ jobs:
           if [[ -n $OWNCLOUD_TOKEN ]]; then
             curl -H "Authorization: Basic $OWNCLOUD_TOKEN" -L https://freeshell.de/owncloud/remote.php/webdav/CI/secrets/freeshell-http.conf > $FREESHELL_HTTP
             md5sum $FREESHELL_HTTP
-            cd ${{runner.workspace}}/artifacts
             . $FREESHELL_HTTP
+            cd ${GITHUB_WORKSPACE}
+            if [[ $GITHUB_REF_TYPE == "tag" ]]; then
+              _subdir=$GITHUB_REF_NAME
+            else
+              _subdir=$GITHUB_REF_NAME/$DATE
+            fi
+            cd ${ARTIFACTS_DIR}
+            _root_url=${FREESHELL_ROOT_URL}/pub/QBrainwaveOSC/$_subdir/
             for f in *; do
-              [[ -f $f ]] && curl -XPUT -H "$FREESHELL_HEADER" -L "${FREESHELL_ROOT_URL}/pub/QBrainwaveOSC/${GITHUB_REF_NAME}/${{ github.sha }}/$f" -T $f
+              [[ -f $f ]] && curl -XPUT -H "$FREESHELL_HEADER" -qL "${_root_url}/$f" -T $f
             done
-            cd $GITHUB_WORKSPACE
-            PKGREVISION=$(git rev-parse --short HEAD)
-            pwd
-            tar -vcz $(basename $GITHUB_WORKSPACE) | curl -XPUT -H "$FREESHELL_HEADER" -T - -L "${FREESHELL_ROOT_URL}/pub/QBrainwaveOSC/${GITHUB_REF_NAME}/${{ github.sha }}/${PKGNAME}-${PKGVERSION}.${PKGREVISION}-source.tar.gz"
+            cd $(dirname ${GITHUB_WORKSPACE})
+            tar -vcz $(basename $GITHUB_WORKSPACE) | curl -XPUT -H "$FREESHELL_HEADER" -T - -qL "${_root_url}/${FULL_PKGNAME}-source.tar.gz"
+            bsdtar --format zip -vc $(basename $GITHUB_WORKSPACE) | curl -XPUT -H "$FREESHELL_HEADER" -T - -qL "${_root_url}/${FULL_PKGNAME}-source.zip"
           fi
-      - name: Pack all artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{env.PKGNAME}}-snapshot-${{github.ref_name}}-${{ env.DATE }}
-          path: ${{env.ARTIFACTS_DIR}}
