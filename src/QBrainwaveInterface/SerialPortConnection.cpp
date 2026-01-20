@@ -20,7 +20,7 @@ void SerialPortConnection::setupConnection(QVariantMap args)
     auto deviceType = args["type"].toString();
     if (deviceType == "ThinkGearStreamParser") {
         connect(this, &DeviceConnection::connectionStatusChanged,
-                [this](auto status) {
+                [this](Brainwave::Device::ConnectionStatus status) {
                     switch(status) {
                         case Device::ConnectionStatus::Connected:
                             qDebug() << "Connecting ThinkGear";
