@@ -3,7 +3,6 @@
 #include "DataHandler.h"
 #include "KISSRingBuffer.h"
 #include "SpectrumAnalyser.h"
-#include <vector>
 namespace Brainwave {
 class RawWaveAnalyser
 {
@@ -13,7 +12,7 @@ public:
     void put(float& value);
     void setBufferSize(int b) {_wave_buf.resize(b);}
     size_t buffersize() const { return _wave_buf.capacity(); }
-    void setSamplerate(int s) { _samplerate = s; }
+    void setSamplerate(int);
     int samplerate() const { return _samplerate; }
     void setDataHandler(DataHandler *h) { _handler = h; }
     DataHandler *handler() const { return _handler; }

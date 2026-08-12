@@ -12,6 +12,7 @@ class QBrainwaveInterface : public QObject
 public:
     QBrainwaveInterface(QObject *parent = nullptr);
     ~QBrainwaveInterface();
+    RawWaveAnalyser* analyser() {return &_analyser;}
     void setupConnection(QVariantMap);
     void deleteConnection();
     void setupParser(QString);
