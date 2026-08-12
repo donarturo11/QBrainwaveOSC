@@ -104,7 +104,7 @@ windows)
   echo "export CHERE_INVOKING=1" >> $TOOLCHAIN_ENV
   echo "source /c/msys64/etc/profile" >> $TOOLCHAIN_ENV
   source $TOOLCHAIN_ENV
-  pacman -Syuu
+  pacman -Syuu --noconfirm
   pacman -S pactoys --noconfirm --needed
   #echo "source $TOOLCHAIN_ENV" >> $ENV_FILE
   if [[ "$CHOST" == "x86_64-pc-windows-msvc" ]]; then
@@ -121,6 +121,7 @@ windows)
   ;;
 macos)
   BREW_ENV=$ENV_DIR/00-brew.sh
+  echo export HOMEBREW_NO_ASK=1 >> $BREW_ENV
   echo export CMAKE_PREFIX_PATH=\"\${CMAKE_PREFIX_PATH}\${CMAKE_PREFIX_PATH+:}$HOMEBREW_PREFIX\" >> $BREW_ENV
   echo export LC_RPATH=\"${LC_RPATH}${LC_RPATH+:}${HOMEBREW_PREFIX}/lib\" >> $BREW_ENV
   cat $BREW_ENV
