@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AnalyserWidget</class>
+ <widget class="QWidget" name="AnalyserWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>325</width>
+    <height>28</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QCheckBox" name="enable_rawwave_analyser">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>3</y>
+     <width>146</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Raw Wave Analyser</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="samplerate_cb">
+   <property name="geometry">
+    <rect>
+     <x>240</x>
+     <y>0</y>
+     <width>81</width>
+     <height>25</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="samplerate_label">
+   <property name="geometry">
+    <rect>
+     <x>150</x>
+     <y>5</y>
+     <width>71</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Samplerate:</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

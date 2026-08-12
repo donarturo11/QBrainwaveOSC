@@ -17,6 +17,12 @@ void RawWaveAnalyser::put(float& value)
     if (_wave_buf.full()) process();
 }
 
+void RawWaveAnalyser::setSamplerate(int s) { 
+		_samplerate = s;
+		_wave_buf.resize(_samplerate);
+		_sp = SpectrumAnalyser(_samplerate);
+	}
+
 void RawWaveAnalyser::process()
 {
     auto input = _wave_buf.readAll();
