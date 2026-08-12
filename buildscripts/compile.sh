@@ -6,6 +6,8 @@ export ENV_FILE=${ENV_FILE:-$TMPDIR/environment.sh}
 SCRIPTS_DIR=${SCRIPTS_DIR:-$(cd $(dirname 0); pwd)}
 CWD=${CWD:-$(pwd)}
 
+echo CMAKE_PREFIX_PATH=$CMAKE_PREFIX_PATH
+
 SOURCE_DIR=${SOURCE_DIR:-$CWD}
 BUILD_DIR=${BUILD_DIR:-$CWD/build}
 cmake -S $SOURCE_DIR \
